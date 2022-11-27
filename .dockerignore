@@ -1,0 +1,11 @@
+node_modules
+tests
+CHANGELOG.md
+README.md
+Dockerfile
+.git
+.husky
+.dockerignore
+.gitignore
+.npmignore
+.github

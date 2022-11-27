@@ -1,0 +1,28 @@
+#!/bin/bash
+stash() {
+  # check if we have uncommited changes to stash
+  git status --porcelain | grep "^." >/dev/null
+  if [ $? -eq 0 ]; then
+    if git stash save -u "git-update on `date`"; then
+      stash=1
+    fi
+  fi
+}
+unstash() {
+  # check if we have uncommited change to restore from the stash
+  if [ $stash -eq 1 ]; then
+    git stash pop;
+  fi
+}
+stash=0
+stash
+
+set -e
+VERSION=$(node -e "process.stdout.write(JSON.parse(fs.readFileSync('package.json')).version)")
+yarn version-e2e:set "v${VERSION}"
+yarn lint --fix
+git add --all
+git commit --amend --no-edit
+set +e
+
+unstash
