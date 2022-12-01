@@ -68,12 +68,6 @@
       "eslint --fix"
     ]
   },
-  "standard-version": {
-    "scripts": {
-      "postcommit": "yarn version-e2e:commit",
-      "posttag": "yarn version-major-branch:up && yarn version-major-branch:push"
-    }
-  },
   "scripts": {
     "lint": "eslint .",
     "test": "NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" jest tests",
@@ -82,6 +76,7 @@
     "postinstall": "[ -d '.husky' ] && husky install || true && link-module-alias",
     "precommit": "lint-staged",
     "release": "semantic-release --no-ci --repositoryUrl $(git remote get-url origin)",
+    "publish": "semantic-release --plugins @semantic-release/npm --plugins @semantic-release/github",
     "push": "git push -f --follow-tags origin master",
     "delivery": "git push && yarn release && yarn push",
     "version-major-branch:up": "scripts/dev-tools/bin/version-major-branch",
