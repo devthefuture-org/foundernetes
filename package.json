@@ -81,7 +81,7 @@
     "test:update-snapshots": "yarn test -u",
     "postinstall": "[ -d '.husky' ] && husky install || true && link-module-alias",
     "precommit": "lint-staged",
-    "release": "semantic-release",
+    "release": "semantic-release --no-ci --repositoryUrl $(git remote get-url origin)",
     "push": "git push -f --follow-tags origin master",
     "delivery": "git push && yarn release && yarn push",
     "version-major-branch:up": "scripts/dev-tools/bin/version-major-branch",

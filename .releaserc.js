@@ -17,6 +17,9 @@ const commitTemplate = readFileAsync(
   path.join(TEMPLATE_DIR, "commit-template.hbs")
 )
 
+const npmPublish = !!process.env.NPM_TOKEN
+const github = !!(process.env.GITHUB_TOKEN || process.env.GH_TOKEN)
+
 module.exports = {
   branches: [
     "master",
@@ -63,17 +66,22 @@ module.exports = {
     [
       "@semantic-release/exec",
       {
-        publishCmd: "yarn version-e2e:commit",
+        prepare: "yarn version-e2e:commit",
       },
     ],
     [
       "@semantic-release/exec",
       {
-        publishCmd:
-          "yarn version-major-branch:up && yarn version-major-branch:push",
+        prepare: "yarn version-major-branch:up",
+        publishCmd: "yarn version-major-branch:push",
       },
     ],
-    "@semantic-release/npm",
-    "@semantic-release/github",
+    [
+      "@semantic-release/npm",
+      {
+        npmPublish,
+      },
+    ],
+    ...(github ? ["@semantic-release/github"] : []),
   ],
 }

@@ -1,0 +1,36 @@
+name: Merge Release
+
+on: 
+  pull_request:
+    types: [closed]
+    
+concurrency:
+  cancel-in-progress: true
+  group: trigger-release-${{ github.ref_name }}
+
+jobs:
+  yarn-release:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    name: Release
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: yarn --immutable
+
+      - name: Run release
+        env:
+          GIT_AUTHOR_EMAIL: "41898282+github-actions[bot]@users.noreply.github.com"
+          GIT_AUTHOR_NAME: "github-actions[bot]"
+          # NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: yarn release
+      
+      - name: Push release
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git remote set-url --push origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+          git push -f --follow-tags origin master
