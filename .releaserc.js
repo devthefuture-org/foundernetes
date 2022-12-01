@@ -43,7 +43,7 @@ module.exports = {
           partials: { commitTemplate },
           helpers: {
             async datetime(format = "UTC:yyyy-mm-dd") {
-              const dateFormat = await import("dateformat")
+              const { default: dateFormat } = await import("dateformat")
               return dateFormat(new Date(), format)
             },
           },
