@@ -72,8 +72,8 @@ module.exports = {
     [
       "@semantic-release/exec",
       {
-        prepare: "yarn version-major-branch:up",
-        publishCmd: "yarn version-major-branch:push",
+        publishCmd:
+          "yarn version-major-branch:up && yarn version-major-branch:push",
       },
     ],
     [
