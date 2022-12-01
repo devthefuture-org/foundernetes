@@ -1,3 +1,8 @@
+# [v1.0.3](https://github.com/devthejo/foundernetes/compare/v1.0.2...v1.0.3) ([object Promise])
+
+## 🐛 Bug Fixes
+- [`65bbba8`](https://github.com/devthejo/foundernetes/commit/65bbba8)  major version
+
 # [v1.0.2](https://github.com/devthejo/foundernetes/compare/v1.0.1...v1.0.2) ([object Promise])
 
 ## 🐛 Bug Fixes
