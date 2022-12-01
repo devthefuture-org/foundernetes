@@ -29,8 +29,9 @@ git branch -f $MAJOR_VERSION master # reset major version to current
 git checkout $MAJOR_VERSION
 
 yarn version-e2e
-git add --all
-git commit -m "chore: link major version branch to $MAJOR_VERSION"
+if git add --all; then
+  git commit -m "chore: link major version branch to $MAJOR_VERSION"
+fi
 set +e
 
 git checkout $branch
