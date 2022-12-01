@@ -37,6 +37,12 @@
     "zx": "^7.1.1"
   },
   "devDependencies": {
+    "@semantic-release/changelog": "^6.0.1",
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^8.0.6",
+    "@semantic-release/npm": "^9.0.1",
+    "dateformat": "^5.0.3",
     "docsify-cli": "^4.4.4",
     "eslint": "^8.28.0",
     "eslint-config-airbnb-base": "^15.0.0",
@@ -51,7 +57,8 @@
     "lint-staged": "^13.0.4",
     "prettier": "^2.8.0",
     "replace": "^1.2.2",
-    "standard-version": "^9.5.0"
+    "semantic-release": "^19.0.5",
+    "semantic-release-gitmoji": "^1.4.5"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -74,7 +81,7 @@
     "test:update-snapshots": "yarn test -u",
     "postinstall": "[ -d '.husky' ] && husky install || true && link-module-alias",
     "precommit": "lint-staged",
-    "release": "standard-version",
+    "release": "semantic-release",
     "push": "git push -f --follow-tags origin master",
     "delivery": "git push && yarn release && yarn push",
     "version-major-branch:up": "scripts/dev-tools/bin/version-major-branch",

@@ -1,5 +1,5 @@
 module.exports = {
-  ignorePatterns: ["!.versionrc.js"],
+  ignorePatterns: ["!.releaserc.js"],
   settings: {
     "import/resolver": {
       alias: true,
@@ -14,7 +14,7 @@ module.exports = {
     "import/no-extraneous-dependencies": [
       "error",
       {
-        devDependencies: ["scripts/**/*", "tests/**/*"],
+        devDependencies: ["scripts/**/*", "tests/**/*", ".releaserc.js"],
         optionalDependencies: false,
         peerDependencies: false,
       },
