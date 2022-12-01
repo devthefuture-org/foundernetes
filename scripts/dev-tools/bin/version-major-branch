@@ -19,9 +19,15 @@ stash
 branch=`git branch | grep "\*" | cut -d " " -f 2-9`
 
 set -e
-MAJOR_VERSION=$(git describe --tags $(git rev-list --tags --max-count=1) | cut -d '.' -f 1)
-git checkout $MAJOR_VERSION || git checkout -b $MAJOR_VERSION
+
+export MAJOR_VERSION=$(git describe --tags $(git rev-list --tags --max-count=1) | cut -d '.' -f 1)
+
+if ! [ `git rev-parse --verify $MAJOR_VERSION 2>/dev/null` ]; then
+  git checkout -b $MAJOR_VERSION
+fi
 git branch -f $MAJOR_VERSION master # reset major version to current
+git checkout $MAJOR_VERSION
+
 yarn version-e2e
 git add --all
 git commit -m "chore: link major version branch to $MAJOR_VERSION"
