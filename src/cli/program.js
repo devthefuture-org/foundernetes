@@ -1,7 +1,7 @@
 const { Command } = require("commander")
 
 const ctx = require("~/ctx")
-// const loadConfig = require("~/config/load-config")
+const loadConfig = require("~/config")
 const createLogger = require("~/utils/logger-factory")
 const globalLogger = require("~/utils/logger")
 const options = require("./options")
@@ -19,8 +19,8 @@ module.exports = () => {
     .hook("preAction", async (_thisCommand, actionCommand) => {
       const opts = actionCommand.optsWithGlobals()
 
-      // const config = await loadConfig(opts)
-      // ctx.set("config", config)
+      const config = await loadConfig(opts)
+      ctx.set("config", config)
 
       const loggerOverride = ctx.get("loggerOverride")
       let logger = createLogger({
@@ -28,8 +28,7 @@ module.exports = () => {
         secrets: [],
       })
       if (loggerOverride) {
-        // logger = loggerOverride(logger, config)
-        logger = loggerOverride(logger)
+        logger = loggerOverride(logger, config)
       }
       ctx.set("logger", logger)
 

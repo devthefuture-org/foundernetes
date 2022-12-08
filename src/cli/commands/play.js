@@ -1,12 +1,13 @@
-// const play = require("~/play")
+const playbook = require("~/playbook")
 
 const options = require("../options")
 
 module.exports = (program) =>
   program
     .command("play")
-    .description("Run the Infra as Code setup")
+    .description("run playbooks")
     .addOption(options.cwd)
-    .action(async (_opts, _command) => {
-      // await play(opts)
+    .argument("[target...]", "playbook name or tags")
+    .action(async (targets, opts, _command) => {
+      await playbook(opts, targets)
     })
