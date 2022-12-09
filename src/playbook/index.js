@@ -1,20 +1,19 @@
 const path = require("path")
 
 const async = require("async")
-
 const fs = require("fs-extra")
+const nctx = require("nctx")
 
 const ctx = require("~/ctx")
-
 const playbookKey = require("~/utils/playbook-key")
-
 const logError = require("~/error/log-error")
 
+const asyncCollCtx = require("~/common/async-coll-ctx")
 const playbookCtx = require("./ctx")
 
 const exts = [".js"]
 
-module.exports = async (_options, targets = []) => {
+module.exports = async (options, targets = []) => {
   const config = ctx.require("config")
   const logger = ctx.require("logger")
 
@@ -57,12 +56,18 @@ module.exports = async (_options, targets = []) => {
   const playbooksContext = {}
 
   const runPlaybook = async (playbook) => {
-    const log = playbookCtx.require("logger")
+    const chalk = (await import("chalk")).default
+    const playbookName = playbookCtx.require("playbookName")
+    const counter = playbookCtx.require("counter")
     try {
       await playbook(playbooksContext)
     } catch (error) {
-      logError(log, error)
+      logError(logger, error)
     }
+    const msg = `report: ${chalk.green(`OK=${counter.ok}`)} ${chalk.cyanBright(
+      `Changed=${counter.changed}`
+    )} ${chalk.red(`Failed=${counter.failed}`)}`
+    logger.info(msg, { playbookName })
   }
 
   try {
@@ -84,10 +89,18 @@ module.exports = async (_options, targets = []) => {
           }, {})
 
     playbookCtx.provide()
-    await async.eachOfSeries(playbooks, async (playbook, playbookName) => {
-      playbookCtx.set("logger", logger.child({ playbookName }))
-      await runPlaybook(playbook)
-    })
+    asyncCollCtx.provide()
+
+    const parallel = options.P
+    const method = parallel ? async.eachOf : async.eachOfSeries
+    await method(playbooks, async (playbook, playbookName) =>
+      nctx.fork(async () => {
+        const counter = { ok: 0, changed: 0, failed: 0, total: 0 }
+        playbookCtx.set("counter", counter)
+        playbookCtx.set("playbookName", playbookName)
+        await runPlaybook(playbook)
+      }, [playbookCtx])
+    )
   } catch (error) {
     logger.error(error)
     process.exit(1)

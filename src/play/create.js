@@ -4,8 +4,10 @@ const FoundernetesPlayPostCheckError = require("~/error/play-post-check")
 const FoundernetesPlayRunError = require("~/error/play-run")
 const FoundernetesValidateVarsError = require("~/error/validate-vars")
 
+const playbookCtx = require("~/playbook/ctx")
+
 module.exports = async (play) => {
-  const { check, run, onFail, onSuccess, onNoOp } = play
+  const { check, run, onOK, onChanged, onFailed } = play
 
   let { preCheck, postCheck } = play
   if (!preCheck) {
@@ -21,6 +23,8 @@ module.exports = async (play) => {
   }
 
   return async (vars) => {
+    const counter = playbookCtx.require("counter")
+
     if (typeof vars === "function") {
       vars = await vars()
     }
@@ -36,19 +40,27 @@ module.exports = async (play) => {
     if (!preCheckResult) {
       const runResult = await run(vars)
       if (!runResult) {
+        counter.failed++
         throw new FoundernetesPlayRunError()
       }
       const postCheckResult = await postCheck(vars)
       if (!postCheckResult) {
-        if (onFail) {
-          await onFail(vars)
+        counter.failed++
+        if (onFailed) {
+          await onFailed(vars)
         }
         throw new FoundernetesPlayPostCheckError()
-      } else if (onSuccess) {
-        await onSuccess(vars)
+      } else {
+        counter.changed++
+        if (onChanged) {
+          await onChanged(vars)
+        }
       }
-    } else if (onNoOp) {
-      await onNoOp(vars)
+    } else {
+      counter.ok++
+      if (onOK) {
+        await onOK(vars)
+      }
     }
   }
 }

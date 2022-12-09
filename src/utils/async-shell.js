@@ -3,7 +3,13 @@ const { spawn } = require("child_process")
 const globalLogger = require("./logger")
 const parseCommand = require("./parse-command")
 
-const promiseFromChildProcess = (child, callback, logger, extraOptions) => {
+const promiseFromChildProcess = (
+  child,
+  callback,
+  logger,
+  extraOptions,
+  { cmd, args }
+) => {
   const { ignoreErrors = [] } = extraOptions
   child.on("error", () => {}) // avoid crash on not found executable
   const out = []
@@ -30,7 +36,7 @@ const promiseFromChildProcess = (child, callback, logger, extraOptions) => {
       } else {
         const error = new Error(err.join())
         error.code = code
-        logger.trace("error running command")
+        logger.trace("error running command", { cmd, args })
         reject(error)
       }
     })
@@ -47,10 +53,8 @@ module.exports = (
   const [cmd, args] = parseCommand(arg)
   const defaultOptions = { encoding: "utf-8" }
   const childProcess = spawn(cmd, args, { ...defaultOptions, ...options })
-  return promiseFromChildProcess(
-    childProcess,
-    callback,
-    logger.child({ cmd, args }),
-    extraOptions
-  )
+  return promiseFromChildProcess(childProcess, callback, logger, extraOptions, {
+    cmd,
+    args,
+  })
 }

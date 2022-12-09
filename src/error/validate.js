@@ -11,13 +11,13 @@ module.exports = class FoundernetesValidateVarsError extends FoundernetesError {
     const { validate } = this
     const { schema, errors } = validate
     return [
+      `${this.toString()} ${
+        errors ? `${JSON.stringify(errors, null, 2)}` : ""
+      }`,
       {
         ...(schema ? { schema } : {}),
         ...(errors ? { errors } : {}),
       },
-      `${this.toString()} ${
-        errors ? `${JSON.stringify(errors, null, 2)}` : ""
-      }`,
     ]
   }
 }

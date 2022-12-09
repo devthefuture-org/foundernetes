@@ -35,7 +35,7 @@ module.exports = async (target) => {
       })
     })
   } catch (error) {
-    logger.error({ error }, `yarn failed in "${target}"`)
+    logger.error(`yarn failed in "${target}"`, { error })
     throw error
   }
 }
