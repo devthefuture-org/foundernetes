@@ -1,4 +1,4 @@
-const { Loggerr } = require("loggerr")
+const { Logger } = require("direct-logger")
 
 module.exports = (opts = {}) => {
   const levels = opts.levels || [
@@ -9,10 +9,10 @@ module.exports = (opts = {}) => {
     "error",
     "fatal",
   ]
-  const logger = new Loggerr({
+  const logger = Logger({
     levels,
     formatter: "cli",
-    streams: Loggerr.levels.map((_level, _i) => process.stderr),
+    streams: Logger.levels.map((_level, _i) => process.stderr),
     ...opts,
   })
   if (process.env.F10S_LOG_LEVEL) {

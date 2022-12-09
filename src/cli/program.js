@@ -24,7 +24,6 @@ module.exports = () => {
 
       const loggerOverride = ctx.get("loggerOverride")
       let logger = createLogger({
-        sync: false,
         secrets: [],
       })
       if (loggerOverride) {

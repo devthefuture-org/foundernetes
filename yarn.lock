@@ -1797,7 +1797,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chalk@npm:^4.0.0, chalk@npm:^4.1.0":
+"chalk@npm:^4.0.0, chalk@npm:^4.1.0, chalk@npm:^4.1.2":
   version: 4.1.2
   resolution: "chalk@npm:4.1.2"
   dependencies:
@@ -1811,13 +1811,6 @@ __metadata:
   version: 5.1.2
   resolution: "chalk@npm:5.1.2"
   checksum: 804d7485e33531abe45b14e91026ceb5615974a8c04259ab0806f214a7666f6ea03e39ab124f7d5a0c78a83fda89005f236db3c5f10c2abe9ae875f7aa56bcb5
-  languageName: node
-  linkType: hard
-
-"chalk@npm:^5.2.0":
-  version: 5.2.0
-  resolution: "chalk@npm:5.2.0"
-  checksum: 03d8060277de6cf2fd567dc25fcf770593eb5bb85f460ce443e49255a30ff1242edd0c90a06a03803b0466ff0687a939b41db1757bec987113e83de89a003caa
   languageName: node
   linkType: hard
 
@@ -2669,6 +2662,14 @@ __metadata:
   checksum: fa05e18324510d7283f55862f3161c6759a3f2f8dbce491a2fc14c8324c498286c54282c1f0e933cb930da8419b30679389499b919122952a4f8592362ef4615
   languageName: node
   linkType: hard
+
+"direct-logger@portal:/lab/devthejo/direct-logger::locator=foundernetes%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "direct-logger@portal:/lab/devthejo/direct-logger::locator=foundernetes%40workspace%3A."
+  dependencies:
+    chalk: ^4.1.0
+  languageName: node
+  linkType: soft
 
 "docsify-cli@npm:^4.4.4":
   version: 4.4.4
@@ -3559,11 +3560,12 @@ __metadata:
     async-retry: ^1.3.3
     axios: ^1.2.0
     axios-retry: ^3.3.1
-    chalk: ^5.2.0
+    chalk: ^4.1.2
     commander: ^9.4.1
     commit-and-tag-version: ^10.1.0
     compare-versions: ^5.0.1
     decompress: ^4.2.1
+    direct-logger: ^2.0.0
     docsify-cli: ^4.4.4
     dotenv: ^16.0.3
     enquirer: ^2.3.6
@@ -3586,7 +3588,6 @@ __metadata:
     lodash.camelcase: ^4.3.0
     lodash.mergewith: ^4.6.2
     lodash.pick: ^4.4.0
-    loggerr: ^3.3.0
     micromatch: ^4.0.5
     nctx: ^1.3.0
     parse-github-url: ^1.0.2
@@ -5565,15 +5566,6 @@ __metadata:
     slice-ansi: ^4.0.0
     wrap-ansi: ^6.2.0
   checksum: ae2f85bbabc1906034154fb7d4c4477c79b3e703d22d78adee8b3862fa913942772e7fa11713e3d96fb46de4e3cabefbf5d0a544344f03b58d3c4bff52aa9eb2
-  languageName: node
-  linkType: hard
-
-"loggerr@npm:^3.3.0":
-  version: 3.3.0
-  resolution: "loggerr@npm:3.3.0"
-  dependencies:
-    chalk: ^4.1.0
-  checksum: 5ab37f2b082cf8811d6cfbb690ae7b9b505513db21b6dfc6605accaf26e17d585ccc0547b78eede17aa048b5cc3b59e79639d88cfa8a47cb7acf33a5995c08be
   languageName: node
   linkType: hard
 

@@ -8,6 +8,7 @@ const createValidator = require("~/vars/create-validator")
 const yaml = require("~/utils/yaml")
 const async = require("~/common/async")
 const asyncCollCtx = require("~/common/async-coll-ctx")
+const playbookCtx = require("~/playbook/ctx")
 const ctx = require("~/ctx")
 // const createMiddleware = require("~/middleware")
 
@@ -21,7 +22,8 @@ module.exports = {
   createValidator,
   validate,
   async,
-  asyncCollCtx,
   ctx,
+  asyncCollCtx,
+  playbookCtx,
   // createMiddleware,
 }

@@ -57,7 +57,7 @@ module.exports = async (options, targets = []) => {
 
   const runPlaybook = async (playbook) => {
     const chalk = (await import("chalk")).default
-    const playbookName = playbookCtx.require("playbookName")
+    const playbookLogger = playbookCtx.require("logger")
     const counter = playbookCtx.require("counter")
     try {
       await playbook(playbooksContext)
@@ -67,7 +67,7 @@ module.exports = async (options, targets = []) => {
     const msg = `report: ${chalk.green(`OK=${counter.ok}`)} ${chalk.cyanBright(
       `Changed=${counter.changed}`
     )} ${chalk.red(`Failed=${counter.failed}`)}`
-    logger.info(msg, { playbookName })
+    playbookLogger.info(msg)
   }
 
   try {
@@ -98,6 +98,7 @@ module.exports = async (options, targets = []) => {
         const counter = { ok: 0, changed: 0, failed: 0, total: 0 }
         playbookCtx.set("counter", counter)
         playbookCtx.set("playbookName", playbookName)
+        playbookCtx.set("logger", logger.child({ playbookName }))
         await runPlaybook(playbook)
       }, [playbookCtx])
     )

@@ -1,3 +1,3 @@
 const loggerFactory = require("./logger-factory")
 
-module.exports = loggerFactory({ sync: true })
+module.exports = loggerFactory()
