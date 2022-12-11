@@ -6,10 +6,11 @@ const nctx = require("nctx")
 
 const ctx = require("~/ctx")
 const playbookKey = require("~/utils/playbook-key")
-const logError = require("~/error/log-error")
 
 const asyncCollCtx = require("~/common/async-coll-ctx")
+
 const playbookCtx = require("./ctx")
+const runPlaybook = require("./run-playbook")
 
 const exts = [".js"]
 
@@ -53,55 +54,51 @@ module.exports = async (options, targets = []) => {
 
   const definedTarget = targets.length > 0
 
-  const playbooksContext = {}
-
-  const runPlaybook = async (playbook) => {
-    const chalk = (await import("chalk")).default
-    const playbookLogger = playbookCtx.require("logger")
-    const counter = playbookCtx.require("counter")
-    try {
-      await playbook(playbooksContext)
-    } catch (error) {
-      logError(logger, error)
-    }
-    const msg = `report: ${chalk.green(`OK=${counter.ok}`)} ${chalk.cyanBright(
-      `Changed=${counter.changed}`
-    )} ${chalk.red(`Failed=${counter.failed}`)}`
-    playbookLogger.info(msg)
-  }
-
   try {
-    const playbooks =
+    const playbookFactories =
       !definedTarget && rootPlaybook
         ? { index: rootPlaybook }
-        : Object.entries(existingPlaybooks).reduce((acc, [key, playbook]) => {
-            if (!playbook) {
-              return acc
-            }
-            if (definedTarget) {
-              const playbookTargets = [key, ...(playbook.tags || [])]
-              if (!targets.some((t) => playbookTargets.includes(t))) {
+        : Object.entries(existingPlaybooks).reduce(
+            (acc, [key, playbookFactory]) => {
+              if (!playbookFactory) {
                 return acc
               }
-            }
-            acc[key] = playbook
-            return acc
-          }, {})
+              if (definedTarget) {
+                const playbookTargets = [key, ...(playbookFactory.tags || [])]
+                if (!targets.some((t) => playbookTargets.includes(t))) {
+                  return acc
+                }
+              }
+              acc[key] = playbookFactory
+              return acc
+            },
+            {}
+          )
+
+    const playbooks = (
+      await Promise.all(
+        Object.entries(playbookFactories).map(
+          async ([playbookName, playbookFactory]) => [
+            playbookName,
+            await playbookFactory(),
+          ]
+        )
+      )
+    ).reduce((acc, [playbookName, playbook]) => {
+      acc[playbookName] = playbook
+      return acc
+    }, {})
 
     playbookCtx.provide()
     asyncCollCtx.provide()
 
     const parallel = options.P
     const method = parallel ? async.eachOf : async.eachOfSeries
-    await method(playbooks, async (playbook, playbookName) =>
+    await method(playbooks, async (playbookDefinition, playbookName) => {
       nctx.fork(async () => {
-        const counter = { ok: 0, changed: 0, failed: 0, total: 0 }
-        playbookCtx.set("counter", counter)
-        playbookCtx.set("playbookName", playbookName)
-        playbookCtx.set("logger", logger.child({ playbookName }))
-        await runPlaybook(playbook)
+        await runPlaybook(playbookDefinition, playbookName)
       }, [playbookCtx])
-    )
+    })
   } catch (error) {
     logger.error(error)
     process.exit(1)

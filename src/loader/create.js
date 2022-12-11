@@ -4,6 +4,8 @@ const FoundernetesValidateVarsError = require("~/error/validate-vars")
 const FoundernetesValidateDataError = require("~/error/validate-data")
 
 module.exports = async (loader) => {
+  const { middlewares = [] } = loader
+
   const memoizationRegistry = new Map()
   const { load } = loader
 
@@ -17,6 +19,22 @@ module.exports = async (loader) => {
   }
 
   return async (vars = {}) => {
+    // const asyncCollCtx = loaderCtx.
+    for (const middleware of middlewares) {
+      if (middleware.registerContext) {
+        await middleware.registerContext()
+        // await middleware.registerContext({asyncCollCtx})
+      }
+    }
+
+    for (const middleware of middlewares) {
+      if (middleware.vars) {
+        const result = middleware.vars(vars)
+        if (result) {
+          vars = result
+        }
+      }
+    }
     if (typeof vars === "function") {
       vars = await vars()
     }

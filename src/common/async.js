@@ -80,10 +80,11 @@ const foundernetesCollectionMethods = Object.entries(async).reduce(
           asyncCollCtx.set("coll", coll)
           const iteratee = args[iterateeIndex]
           args[iterateeIndex] = async.ensureAsync(async (...iterateeArgs) => {
-            const asyncCollMiddlewares =
-              asyncCollCtx.get("asyncCollMiddlewares") || []
+            const asyncCollMiddlewares = asyncCollCtx.get("middlewares") || []
             for (const middleware of asyncCollMiddlewares) {
-              await middleware(...iterateeArgs)
+              if (middleware.iteration) {
+                await middleware.iteration(...iterateeArgs)
+              }
             }
             return iteratee(...iterateeArgs)
           })

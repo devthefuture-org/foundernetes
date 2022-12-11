@@ -3565,7 +3565,7 @@ __metadata:
     commit-and-tag-version: ^10.1.0
     compare-versions: ^5.0.1
     decompress: ^4.2.1
-    direct-logger: ^2.0.0
+    direct-logger: ^2.2.0
     docsify-cli: ^4.4.4
     dotenv: ^16.0.3
     enquirer: ^2.3.6
