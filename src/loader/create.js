@@ -3,23 +3,22 @@ const createValidator = require("~/vars/create-validator")
 const FoundernetesValidateVarsError = require("~/error/validate-vars")
 const FoundernetesValidateDataError = require("~/error/validate-data")
 
-module.exports = async (loader) => {
-  const { middlewares = [] } = loader
-
+module.exports = async (definition) => {
   const memoizationRegistry = new Map()
-  const { load } = loader
+  const { load } = definition
 
-  let { validateVars } = loader
+  let { validateVars } = definition
   if (validateVars && typeof validateVars === "object") {
     validateVars = await createValidator(validateVars)
   }
-  let { validateData } = loader
+  let { validateData } = definition
   if (validateData && typeof validateData === "object") {
     validateData = await createValidator(validateData)
   }
 
-  return async (vars = {}) => {
+  const loader = async (vars = {}) => {
     // const asyncCollCtx = loaderCtx.
+    const { middlewares } = loader
     for (const middleware of middlewares) {
       if (middleware.registerContext) {
         await middleware.registerContext()
@@ -49,7 +48,7 @@ module.exports = async (loader) => {
       }
     }
 
-    let { memoizeVars } = loader
+    let { memoizeVars } = definition
     if (typeof memoizeVars === "function") {
       memoizeVars = await memoizeVars(vars)
     } else if (Array.isArray(memoizeVars)) {
@@ -81,4 +80,11 @@ module.exports = async (loader) => {
 
     return data
   }
+
+  loader.middlewares = definition.middlewares || []
+  loader.use = (middleware) => {
+    loader.middlewares.push(middleware)
+  }
+
+  return loader
 }

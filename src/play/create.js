@@ -6,10 +6,10 @@ const FoundernetesValidateVarsError = require("~/error/validate-vars")
 
 const playbookCtx = require("~/playbook/ctx")
 
-module.exports = async (play) => {
-  const { check, run, onOK, onChanged, onFailed } = play
+module.exports = async (definition) => {
+  const { check, run, onOK, onChanged, onFailed } = definition
 
-  let { preCheck, postCheck } = play
+  let { preCheck, postCheck } = definition
   if (!preCheck) {
     preCheck = check
   }
@@ -17,12 +17,28 @@ module.exports = async (play) => {
     postCheck = check
   }
 
-  let { validate } = play
+  let { validate } = definition
   if (validate && typeof validate === "object") {
     validate = await createValidator(validate)
   }
 
-  return async (vars) => {
+  const play = async (vars) => {
+    const { middlewares } = play
+    for (const middleware of middlewares) {
+      if (middleware.registerContext) {
+        await middleware.registerContext()
+        // await middleware.registerContext({asyncCollCtx})
+      }
+    }
+
+    for (const middleware of middlewares) {
+      if (middleware.vars) {
+        const result = middleware.vars(vars)
+        if (result) {
+          vars = result
+        }
+      }
+    }
     const counter = playbookCtx.require("counter")
 
     if (typeof vars === "function") {
@@ -63,4 +79,11 @@ module.exports = async (play) => {
       }
     }
   }
+
+  play.middlewares = definition.middlewares || []
+  play.use = (middleware) => {
+    play.middlewares.push(middleware)
+  }
+
+  return play
 }
