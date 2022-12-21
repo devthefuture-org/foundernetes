@@ -1,6 +1,8 @@
 const async = require("async")
 const nctx = require("nctx")
 
+const composeMutable = require("~/utils/compose-mutable")
+
 const collectionSimpleMethods = [
   "concat",
   "concatSeries",
@@ -45,6 +47,20 @@ const collectionReducerMethods = ["reduce", "reduceRight", "transform"]
 
 const asyncCollCtx = require("./async-coll-ctx")
 
+const nullFunc = async () => {}
+
+const createMiddlewareComposition = (key) => {
+  const asyncCollMiddlewares = asyncCollCtx.get("middlewares") || []
+  const middlewares = asyncCollMiddlewares.filter(
+    (middleware) => typeof middleware[key] === "function"
+  )
+  if (middlewares.length === 0) {
+    middlewares.push({ [key]: nullFunc })
+  }
+  const composers = middlewares.map((middleware) => middleware[key])
+  return composeMutable(...composers)
+}
+
 const foundernetesCollectionMethods = Object.entries(async).reduce(
   (acc, [methodName, func]) => {
     let method = func
@@ -69,27 +85,42 @@ const foundernetesCollectionMethods = Object.entries(async).reduce(
     }
 
     if (inCollectionMethods) {
-      let iterateeIndex
+      let iteratorIndex
       if (collectionSimpleMethods) {
-        iterateeIndex = 0
+        iteratorIndex = 0
       } else {
-        iterateeIndex = 1
+        iteratorIndex = 1
       }
-      method = async (coll, ...args) =>
-        nctx.fork(async () => {
-          asyncCollCtx.set("coll", coll)
-          const iteratee = args[iterateeIndex]
-          args[iterateeIndex] = async.ensureAsync(async (...iterateeArgs) => {
-            const asyncCollMiddlewares = asyncCollCtx.get("middlewares") || []
-            for (const middleware of asyncCollMiddlewares) {
-              if (middleware.iteration) {
-                await middleware.iteration(...iterateeArgs)
-              }
+      method = async (coll, ...args) => {
+        const collectionFunc = async (...collectionArgs) => {
+          const collectionComposition =
+            createMiddlewareComposition("collection")
+          const collection = await collectionComposition(...collectionArgs)
+          if (collection !== undefined) {
+            collectionArgs[0] = collection
+          }
+          return func(...collectionArgs)
+        }
+
+        return nctx.fork(async () => {
+          // asyncCollCtx.set("item", coll)
+          const iterationComposition = createMiddlewareComposition("iteration")
+
+          const iterator = args[iteratorIndex]
+          args[iteratorIndex] = async.ensureAsync(async (...iteratorArgs) => {
+            const item = await iterationComposition(...iteratorArgs)
+            if (item !== undefined) {
+              iteratorArgs[0] = item
             }
-            return iteratee(...iterateeArgs)
+            // console.log("iteratorArgs", iteratorArgs)
+            const result = await iterator(...iteratorArgs)
+            // console.log("result", result)
+            return result
           })
-          return func(coll, ...args)
+
+          return collectionFunc(coll, ...args)
         }, [asyncCollCtx])
+      }
     }
 
     acc[methodName] = method

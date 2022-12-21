@@ -4,6 +4,6 @@ module.exports = (logger, error) => {
   if (error instanceof FoundernetesError) {
     logger.error(...error.getErrorLoggerParams())
   } else {
-    logger.error(error.toString())
+    logger.error(error)
   }
 }

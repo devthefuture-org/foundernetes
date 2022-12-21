@@ -6,10 +6,13 @@ const ctx = require("~/ctx")
 const playbookCtx = require("./ctx")
 
 module.exports = async (playbookDefinition, playbookName) => {
-  const { playbook, middlewares } = playbookDefinition
+  const { playbook, middlewares = [] } = playbookDefinition
+
   const counter = { ok: 0, changed: 0, failed: 0, total: 0 }
+
   const logger = ctx.require("logger")
   const playbookLogger = logger.child({ playbookName })
+
   playbookCtx.assign({
     counter,
     playbookName,
