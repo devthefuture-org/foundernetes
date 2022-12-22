@@ -45,12 +45,12 @@ const collectionLimitMethods = [
 
 const collectionReducerMethods = ["reduce", "reduceRight", "transform"]
 
-const asyncCollCtx = require("./async-coll-ctx")
+const asyncLoopCtx = require("./async-coll-ctx")
 
 const nullFunc = async () => {}
 
 const createMiddlewareComposition = (key) => {
-  const asyncCollMiddlewares = asyncCollCtx.get("middlewares") || []
+  const asyncCollMiddlewares = asyncLoopCtx.get("middlewares") || []
   const middlewares = asyncCollMiddlewares.filter(
     (middleware) => typeof middleware[key] === "function"
   )
@@ -103,7 +103,7 @@ const foundernetesCollectionMethods = Object.entries(async).reduce(
         }
 
         return nctx.fork(async () => {
-          // asyncCollCtx.set("item", coll)
+          // asyncLoopCtx.set("item", coll)
           const iterationComposition = createMiddlewareComposition("iteration")
 
           const iterator = args[iteratorIndex]
@@ -119,7 +119,7 @@ const foundernetesCollectionMethods = Object.entries(async).reduce(
           })
 
           return collectionFunc(coll, ...args)
-        }, [asyncCollCtx])
+        }, [asyncLoopCtx])
       }
     }
 

@@ -7,10 +7,9 @@ const nctx = require("nctx")
 const ctx = require("~/ctx")
 const playbookKey = require("~/utils/playbook-key")
 
-const asyncCollCtx = require("~/common/async-coll-ctx")
+const asyncLoopCtx = require("~/common/async-coll-ctx")
 
 const playbookCtx = require("./ctx")
-const runPlaybook = require("./run-playbook")
 
 const exts = [".js"]
 
@@ -90,13 +89,13 @@ module.exports = async (options, targets = []) => {
     }, {})
 
     playbookCtx.provide()
-    asyncCollCtx.provide()
+    asyncLoopCtx.provide()
 
     const parallel = options.P
     const method = parallel ? async.eachOf : async.eachOfSeries
-    await method(playbooks, async (playbookDefinition, playbookName) => {
+    await method(playbooks, async (playbook, playbookName) => {
       nctx.fork(async () => {
-        await runPlaybook(playbookDefinition, playbookName)
+        await playbook({ playbookName })
       }, [playbookCtx])
     })
   } catch (error) {

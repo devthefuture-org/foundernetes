@@ -27,7 +27,7 @@ module.exports = async (definition) => {
     for (const middleware of middlewares) {
       if (middleware.registerContext) {
         await middleware.registerContext()
-        // await middleware.registerContext({asyncCollCtx})
+        // await middleware.registerContext({asyncLoopCtx})
       }
     }
 

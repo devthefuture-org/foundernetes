@@ -17,12 +17,12 @@ module.exports = async (definition) => {
   }
 
   const loader = async (vars = {}) => {
-    // const asyncCollCtx = loaderCtx.
+    // const asyncLoopCtx = loaderCtx.
     const { middlewares } = loader
     for (const middleware of middlewares) {
       if (middleware.registerContext) {
         await middleware.registerContext()
-        // await middleware.registerContext({asyncCollCtx})
+        // await middleware.registerContext({asyncLoopCtx})
       }
     }
 
