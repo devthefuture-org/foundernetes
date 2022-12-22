@@ -5,10 +5,10 @@ const ctx = require("~/ctx")
 
 const playbookCtx = require("./ctx")
 
-module.exports = async (definition, playbookName) => {
+module.exports = async (definition) => {
   const counter = { ok: 0, changed: 0, failed: 0, total: 0 }
 
-  const { playbook, middlewares = [] } = definition
+  const { playbook, middlewares = [], name: playbookName } = definition
 
   return async () => {
     const logger = ctx.require("logger")

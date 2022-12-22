@@ -74,28 +74,20 @@ module.exports = async (options, targets = []) => {
             {}
           )
 
-    const playbooks = (
-      await Promise.all(
-        Object.entries(playbookFactories).map(
-          async ([playbookName, playbookFactory]) => [
-            playbookName,
-            await playbookFactory(),
-          ]
-        )
+    const playbooks = await Promise.all(
+      Object.entries(playbookFactories).map(([name, playbookFactory]) =>
+        playbookFactory({ name })
       )
-    ).reduce((acc, [playbookName, playbook]) => {
-      acc[playbookName] = playbook
-      return acc
-    }, {})
+    )
 
     playbookCtx.provide()
     asyncLoopCtx.provide()
 
     const parallel = options.P
     const method = parallel ? async.eachOf : async.eachOfSeries
-    await method(playbooks, async (playbook, playbookName) => {
+    await method(playbooks, async (playbook) => {
       nctx.fork(async () => {
-        await playbook({ playbookName })
+        await playbook()
       }, [playbookCtx])
     })
   } catch (error) {
