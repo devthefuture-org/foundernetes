@@ -16,6 +16,7 @@ module.exports = async (definition) => {
       counter,
       playbookName,
       logger: playbookLogger,
+      middlewares: [],
     })
 
     for (const middleware of middlewares) {

@@ -9,7 +9,6 @@ const validate = require("~/vars/validate")
 const createValidator = require("~/vars/create-validator")
 const yaml = require("~/utils/yaml")
 const async = require("~/common/async")
-const asyncLoopCtx = require("~/common/async-coll-ctx")
 const ctx = require("~/ctx")
 // const createMiddleware = require("~/middleware")
 
@@ -26,6 +25,5 @@ module.exports = {
   validate,
   async,
   ctx,
-  asyncLoopCtx,
   // createMiddleware,
 }

@@ -2,6 +2,7 @@ const async = require("async")
 const nctx = require("nctx")
 
 const composeMutable = require("~/utils/compose-mutable")
+const ctx = require("~/ctx")
 
 const collectionSimpleMethods = [
   "concat",
@@ -45,12 +46,10 @@ const collectionLimitMethods = [
 
 const collectionReducerMethods = ["reduce", "reduceRight", "transform"]
 
-const asyncLoopCtx = require("./async-coll-ctx")
-
 const nullFunc = async () => {}
 
 const createMiddlewareComposition = (key) => {
-  const asyncCollMiddlewares = asyncLoopCtx.get("middlewares") || []
+  const asyncCollMiddlewares = ctx.require("middlewares")
   const middlewares = asyncCollMiddlewares.filter(
     (middleware) => typeof middleware[key] === "function"
   )
@@ -103,7 +102,6 @@ const foundernetesCollectionMethods = Object.entries(async).reduce(
         }
 
         return nctx.fork(async () => {
-          // asyncLoopCtx.set("item", coll)
           const iterationComposition = createMiddlewareComposition("iteration")
 
           const iterator = args[iteratorIndex]
@@ -119,7 +117,7 @@ const foundernetesCollectionMethods = Object.entries(async).reduce(
           })
 
           return collectionFunc(coll, ...args)
-        }, [asyncLoopCtx])
+        }, [ctx])
       }
     }
 

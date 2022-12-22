@@ -7,8 +7,6 @@ const nctx = require("nctx")
 const ctx = require("~/ctx")
 const playbookKey = require("~/utils/playbook-key")
 
-const asyncLoopCtx = require("~/common/async-coll-ctx")
-
 const exts = [".js"]
 
 module.exports = async (options, targets = []) => {
@@ -77,8 +75,6 @@ module.exports = async (options, targets = []) => {
         playbookFactory({ name })
       )
     )
-
-    asyncLoopCtx.provide()
 
     const parallel = options.P
     const method = parallel ? async.eachOf : async.eachOfSeries
