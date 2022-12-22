@@ -4,7 +4,7 @@ const FoundernetesPlayPostCheckError = require("~/error/play-post-check")
 const FoundernetesPlayRunError = require("~/error/play-run")
 const FoundernetesValidateVarsError = require("~/error/validate-vars")
 
-const playbookCtx = require("~/playbook/ctx")
+const ctx = require("~/ctx")
 
 module.exports = async (definition) => {
   const { check, run, onOK, onChanged, onFailed } = definition
@@ -39,7 +39,7 @@ module.exports = async (definition) => {
         }
       }
     }
-    const counter = playbookCtx.require("counter")
+    const counter = ctx.require("counter")
 
     if (typeof vars === "function") {
       vars = await vars()

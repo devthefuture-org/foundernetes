@@ -9,8 +9,6 @@ const playbookKey = require("~/utils/playbook-key")
 
 const asyncLoopCtx = require("~/common/async-coll-ctx")
 
-const playbookCtx = require("./ctx")
-
 const exts = [".js"]
 
 module.exports = async (options, targets = []) => {
@@ -80,7 +78,6 @@ module.exports = async (options, targets = []) => {
       )
     )
 
-    playbookCtx.provide()
     asyncLoopCtx.provide()
 
     const parallel = options.P
@@ -88,7 +85,7 @@ module.exports = async (options, targets = []) => {
     await method(playbooks, async (playbook) => {
       nctx.fork(async () => {
         await playbook()
-      }, [playbookCtx])
+      }, [ctx])
     })
   } catch (error) {
     logger.error(error)

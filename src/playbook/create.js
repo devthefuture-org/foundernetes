@@ -3,8 +3,6 @@ const chalk = require("chalk")
 const logError = require("~/error/log-error")
 const ctx = require("~/ctx")
 
-const playbookCtx = require("./ctx")
-
 module.exports = async (definition) => {
   const counter = { ok: 0, changed: 0, failed: 0, total: 0 }
 
@@ -14,7 +12,7 @@ module.exports = async (definition) => {
     const logger = ctx.require("logger")
     const playbookLogger = logger.child({ playbookName })
 
-    playbookCtx.assign({
+    ctx.assign({
       counter,
       playbookName,
       logger: playbookLogger,
