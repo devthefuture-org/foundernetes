@@ -1,7 +1,9 @@
 const pick = require("lodash.pick")
+
 const createValidator = require("~/vars/create-validator")
 const FoundernetesValidateVarsError = require("~/error/validate-vars")
 const FoundernetesValidateDataError = require("~/error/validate-data")
+const ctx = require("~/ctx")
 
 module.exports = async (definition) => {
   const memoizationRegistry = new Map()
@@ -16,68 +18,69 @@ module.exports = async (definition) => {
     validateData = await createValidator(validateData)
   }
 
-  const loader = async (vars = {}) => {
-    const { middlewares } = loader
-    for (const middleware of middlewares) {
-      if (middleware.registerContext) {
-        await middleware.registerContext()
-      }
-    }
-
-    for (const middleware of middlewares) {
-      if (middleware.vars) {
-        const result = middleware.vars(vars)
-        if (result) {
-          vars = result
+  const loader = async (vars = {}) =>
+    ctx.fork(async () => {
+      const { middlewares } = loader
+      for (const middleware of middlewares) {
+        if (middleware.registerContext) {
+          await middleware.registerContext()
         }
       }
-    }
-    if (typeof vars === "function") {
-      vars = await vars()
-    }
 
-    if (validateVars) {
-      const isValid = await validateVars(vars)
-      if (!isValid) {
-        throw new FoundernetesValidateVarsError({
-          vars,
-          validate: validateVars,
-        })
+      for (const middleware of middlewares) {
+        if (middleware.vars) {
+          const result = middleware.vars(vars)
+          if (result) {
+            vars = result
+          }
+        }
       }
-    }
-
-    let { memoizeVars } = definition
-    if (typeof memoizeVars === "function") {
-      memoizeVars = await memoizeVars(vars)
-    } else if (Array.isArray(memoizeVars)) {
-      memoizeVars = pick(vars, memoizeVars)
-    } else if (memoizeVars === true) {
-      memoizeVars = vars
-    }
-
-    const useMemoization = memoizeVars !== undefined
-    if (useMemoization && memoizationRegistry.has(memoizeVars)) {
-      return memoizationRegistry.get(memoizeVars)
-    }
-
-    const data = await load(vars)
-
-    if (validateData) {
-      const isValid = await validateData(data)
-      if (!isValid) {
-        throw new FoundernetesValidateDataError({
-          vars,
-          validate: validateData,
-        })
+      if (typeof vars === "function") {
+        vars = await vars()
       }
-    }
 
-    if (useMemoization) {
-      memoizationRegistry.set(memoizeVars, data)
-    }
+      if (validateVars) {
+        const isValid = await validateVars(vars)
+        if (!isValid) {
+          throw new FoundernetesValidateVarsError({
+            vars,
+            validate: validateVars,
+          })
+        }
+      }
 
-    return data
-  }
+      let { memoizeVars } = definition
+      if (typeof memoizeVars === "function") {
+        memoizeVars = await memoizeVars(vars)
+      } else if (Array.isArray(memoizeVars)) {
+        memoizeVars = pick(vars, memoizeVars)
+      } else if (memoizeVars === true) {
+        memoizeVars = vars
+      }
+
+      const useMemoization = memoizeVars !== undefined
+      if (useMemoization && memoizationRegistry.has(memoizeVars)) {
+        return memoizationRegistry.get(memoizeVars)
+      }
+
+      const data = await load(vars)
+
+      if (validateData) {
+        const isValid = await validateData(data)
+        if (!isValid) {
+          throw new FoundernetesValidateDataError({
+            vars,
+            validate: validateData,
+          })
+        }
+      }
+
+      if (useMemoization) {
+        memoizationRegistry.set(memoizeVars, data)
+      }
+
+      return data
+    })
 
   loader.middlewares = definition.middlewares || []
   loader.use = (middleware) => {
