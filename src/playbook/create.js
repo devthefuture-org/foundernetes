@@ -9,13 +9,12 @@ module.exports = async (definition) => {
   const { playbook, middlewares = [], name: playbookName } = definition
 
   return async () => {
-    const logger = ctx.require("logger")
-    const playbookLogger = logger.child({ playbookName })
+    const logger = ctx.require("logger").child({ playbookName })
 
     ctx.assign({
       counter,
       playbookName,
-      logger: playbookLogger,
+      logger,
       middlewares: [],
     })
 
@@ -28,11 +27,11 @@ module.exports = async (definition) => {
     try {
       await playbook()
     } catch (error) {
-      logError(playbookLogger, error)
+      logError(logger, error)
     }
     const msg = `report: ${chalk.green(`OK=${counter.ok}`)} ${chalk.cyanBright(
       `Changed=${counter.changed}`
     )} ${chalk.red(`Failed=${counter.failed}`)}`
-    playbookLogger.info(msg)
+    logger.info(msg)
   }
 }
