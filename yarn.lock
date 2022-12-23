@@ -2663,13 +2663,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"direct-logger@portal:/lab/devthejo/direct-logger::locator=foundernetes%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "direct-logger@portal:/lab/devthejo/direct-logger::locator=foundernetes%40workspace%3A."
+"direct-logger@npm:^2.2.1":
+  version: 2.2.1
+  resolution: "direct-logger@npm:2.2.1"
   dependencies:
     chalk: ^4.1.0
+  checksum: 24cd23d369dcb1c80565c1312a807990046f36c904c59998c2e6c8dd3f28d1f2b24a2c30a4bc389bb5c222b7fdee47b020b7b7387a675000ceba19f0a037ecf5
   languageName: node
-  linkType: soft
+  linkType: hard
 
 "docsify-cli@npm:^4.4.4":
   version: 4.4.4
@@ -3589,7 +3590,7 @@ __metadata:
     lodash.mergewith: ^4.6.2
     lodash.pick: ^4.4.0
     micromatch: ^4.0.5
-    nctx: ^1.3.0
+    nctx: ^1.4.0
     parse-github-url: ^1.0.2
     prettier: ^2.8.0
     pretty-ms: ^8.0.0
@@ -5958,15 +5959,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nctx@npm:^1.3.0":
-  version: 1.3.0
-  resolution: "nctx@npm:1.3.0"
+"nctx@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "nctx@npm:1.4.0"
   dependencies:
     lodash.defaultsdeep: ^4.6.1
     lodash.get: ^4.4.2
     lodash.merge: ^4.6.2
     lodash.set: ^4.3.2
-  checksum: 6105d23740c8b873b17899153977f27d1d95b6432213588e748387d010c8acce265ff3de2afa5137dca357777e8f7a7a8e351772d303475910b9a9d2b55ffcd8
+  checksum: 458e035eaedb438186010ea3c771a98ae1ed72d489dd96c518de33345788b04f3d099627bf7b83a21360a085f2faa3cd5b6cef772c7850e0150aba3df54400ff
   languageName: node
   linkType: hard
 

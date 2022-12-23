@@ -1,5 +1,4 @@
 const async = require("async")
-const nctx = require("nctx")
 
 const composeMutable = require("~/utils/compose-mutable")
 const ctx = require("~/ctx")
@@ -101,7 +100,7 @@ const foundernetesCollectionMethods = Object.entries(async).reduce(
           return func(...collectionArgs)
         }
 
-        return nctx.fork(async () => {
+        return ctx.fork(async () => {
           const iterationComposition = createMiddlewareComposition("iteration")
 
           const iterator = args[iteratorIndex]
@@ -117,7 +116,7 @@ const foundernetesCollectionMethods = Object.entries(async).reduce(
           })
 
           return collectionFunc(coll, ...args)
-        }, [ctx])
+        })
       }
     }
 

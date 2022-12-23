@@ -2,7 +2,6 @@ const path = require("path")
 
 const async = require("async")
 const fs = require("fs-extra")
-const nctx = require("nctx")
 
 const ctx = require("~/ctx")
 const playbookKey = require("~/utils/playbook-key")
@@ -77,12 +76,8 @@ module.exports = async (options, targets = []) => {
     )
 
     const parallel = options.P
-    const method = parallel ? async.eachOf : async.eachOfSeries
-    await method(playbooks, async (playbook) => {
-      nctx.fork(async () => {
-        await playbook()
-      }, [ctx])
-    })
+    const method = parallel ? async.parallel : async.series
+    await method(playbooks)
   } catch (error) {
     logger.error(error)
     process.exit(1)
