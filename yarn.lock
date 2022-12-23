@@ -3590,7 +3590,7 @@ __metadata:
     lodash.mergewith: ^4.6.2
     lodash.pick: ^4.4.0
     micromatch: ^4.0.5
-    nctx: ^1.4.0
+    nctx: ^1.4.1
     parse-github-url: ^1.0.2
     prettier: ^2.8.0
     pretty-ms: ^8.0.0
@@ -5959,15 +5959,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nctx@npm:^1.4.0":
-  version: 1.4.0
-  resolution: "nctx@npm:1.4.0"
+"nctx@npm:^1.4.1":
+  version: 1.4.1
+  resolution: "nctx@npm:1.4.1"
   dependencies:
     lodash.defaultsdeep: ^4.6.1
     lodash.get: ^4.4.2
     lodash.merge: ^4.6.2
     lodash.set: ^4.3.2
-  checksum: 458e035eaedb438186010ea3c771a98ae1ed72d489dd96c518de33345788b04f3d099627bf7b83a21360a085f2faa3cd5b6cef772c7850e0150aba3df54400ff
+  checksum: 106899f9090804cb68cd0756c71493dbc77b5b371009a5f9e3172c2db2d1e751c3c78557935f781a90d6a9426dd6306b268cf843d8c79aeec9ecc74d27c64f81
   languageName: node
   linkType: hard
 

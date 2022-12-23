@@ -30,7 +30,7 @@
     "lodash.mergewith": "^4.6.2",
     "lodash.pick": "^4.4.0",
     "micromatch": "^4.0.5",
-    "nctx": "^1.4.0",
+    "nctx": "^1.4.1",
     "parse-github-url": "^1.0.2",
     "pretty-ms": "^8.0.0",
     "qs": "^6.11.0",
