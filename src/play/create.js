@@ -4,6 +4,8 @@ const FoundernetesPlayPostCheckError = require("~/error/play-post-check")
 const FoundernetesPlayRunError = require("~/error/play-run")
 const FoundernetesValidateVarsError = require("~/error/validate-vars")
 
+const getPluginName = require("~/std/get-plugin-name")
+
 const ctx = require("~/ctx")
 
 module.exports = async (definition) => {
@@ -24,6 +26,10 @@ module.exports = async (definition) => {
 
   const play = async (vars) =>
     ctx.fork(async () => {
+      const name = getPluginName(definition, "play")
+
+      ctx.replace("logger", (log) => log.child({ play: name }))
+
       const { middlewares } = play
       for (const middleware of middlewares) {
         if (middleware.hook) {

@@ -5,6 +5,8 @@ const FoundernetesValidateVarsError = require("~/error/validate-vars")
 const FoundernetesValidateDataError = require("~/error/validate-data")
 const ctx = require("~/ctx")
 
+const getPluginName = require("~/std/get-plugin-name")
+
 module.exports = async (definition) => {
   const memoizationRegistry = new Map()
   const { load } = definition
@@ -20,6 +22,10 @@ module.exports = async (definition) => {
 
   const loader = async (vars = {}) =>
     ctx.fork(async () => {
+      const name = getPluginName(definition, "loader")
+
+      ctx.replace("logger", (log) => log.child({ loader: name }))
+
       const { middlewares } = loader
       for (const middleware of middlewares) {
         if (middleware.hook) {

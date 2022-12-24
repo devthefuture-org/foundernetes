@@ -17,7 +17,9 @@ module.exports = async (definition) => {
 
   return async () =>
     ctx.fork(async () => {
-      const logger = ctx.require("logger").child({ playbook: playbookName })
+      const logger = ctx.replace("logger", (log) =>
+        log.child({ playbook: playbookName })
+      )
 
       let { default: iterator } = iterators
       if (!iterator) {
@@ -25,9 +27,9 @@ module.exports = async (definition) => {
       }
 
       ctx.assign({
+        logger,
         counter,
         playbookName,
-        logger,
         middlewares,
         iterators,
         iterator,
