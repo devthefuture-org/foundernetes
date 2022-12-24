@@ -1,7 +1,10 @@
 const composeReducer =
   (f, g) =>
   async (...args) => {
-    const result = await g(...args)
+    let result = await g(...args)
+    if (result === undefined) {
+      result = args
+    }
     return f(...result)
   }
 module.exports = (...fns) => {
