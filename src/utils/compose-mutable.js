@@ -7,4 +7,9 @@ const composeReducer =
     }
     return f(...result)
   }
-module.exports = (...fns) => fns.reduce(composeReducer)
+module.exports = (...fns) => {
+  if (fns.length === 0) {
+    fns.push((arg) => arg)
+  }
+  return fns.reduce(composeReducer)
+}

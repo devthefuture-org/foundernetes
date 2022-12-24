@@ -22,8 +22,8 @@ module.exports = async (definition) => {
     ctx.fork(async () => {
       const { middlewares } = loader
       for (const middleware of middlewares) {
-        if (middleware.registerContext) {
-          await middleware.registerContext()
+        if (middleware.hook) {
+          await middleware.hook(loader)
         }
       }
 
