@@ -51,10 +51,19 @@ module.exports = (params = {}) => {
               "collection",
               iterator.middlewares
             )
-            const collection = await collectionComposition(...collectionArgs)
-            if (collection !== undefined) {
-              collectionArgs[0] = collection
+            let collection = await collectionComposition(...collectionArgs)
+            if (collection === undefined) {
+              ;[collection] = collectionArgs
             }
+            collectionArgs[0] = collection
+
+            const collectionHookParam = { collection }
+            for (const middleware of middlewares) {
+              if (middleware.hook) {
+                await middleware.hook(collectionHookParam, "collection")
+              }
+            }
+
             return func(...collectionArgs)
           }
 
@@ -65,14 +74,29 @@ module.exports = (params = {}) => {
             )
 
             const iteratorCallback = args[iteratorIndex]
-            args[iteratorIndex] = async.ensureAsync(async (...iteratorArgs) => {
-              const item = await iterationComposition(...iteratorArgs)
-              if (item !== undefined) {
+            args[iteratorIndex] = async.ensureAsync(async (...iteratorArgs) =>
+              ctx.fork(async () => {
+                let item = await iterationComposition(...iteratorArgs)
+                if (item === undefined) {
+                  ;[item] = iteratorArgs
+                }
                 iteratorArgs[0] = item
-              }
-              const result = await iteratorCallback(...iteratorArgs)
-              return result
-            })
+
+                const [, index] = iteratorArgs
+                const iterationHookParam = {
+                  item,
+                  ...(index !== undefined ? { index } : {}),
+                }
+                for (const middleware of middlewares) {
+                  if (middleware.hook) {
+                    await middleware.hook(iterationHookParam, "iteration")
+                  }
+                }
+
+                const result = await iteratorCallback(...iteratorArgs)
+                return result
+              })
+            )
 
             return collectionFunc(coll, ...args)
           })

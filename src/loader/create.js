@@ -33,7 +33,7 @@ module.exports = async (definition) => {
       const { middlewares } = loader
       for (const middleware of middlewares) {
         if (middleware.hook) {
-          await middleware.hook(loader)
+          await middleware.hook(loader, "loader")
         }
       }
 

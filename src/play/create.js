@@ -37,7 +37,7 @@ module.exports = async (definition) => {
       const { middlewares } = play
       for (const middleware of middlewares) {
         if (middleware.hook) {
-          await middleware.hook(play)
+          await middleware.hook(play, "play")
         }
       }
 
