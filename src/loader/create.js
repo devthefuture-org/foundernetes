@@ -20,11 +20,15 @@ module.exports = async (definition) => {
     validateData = await createValidator(validateData)
   }
 
+  const name = getPluginName(definition, "loader")
+
   const loader = async (vars = {}) =>
     ctx.fork(async () => {
-      const name = getPluginName(definition, "loader")
-
-      ctx.replace("logger", (log) => log.child({ loader: name }))
+      ctx.assign({
+        play: {
+          name,
+        },
+      })
 
       const { middlewares } = loader
       for (const middleware of middlewares) {

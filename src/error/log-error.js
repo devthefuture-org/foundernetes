@@ -1,6 +1,11 @@
+const ctx = require("~/ctx")
+
 const FoundernetesError = require("./foundernetes")
 
-module.exports = (logger, error) => {
+module.exports = (error, logger) => {
+  if (!logger) {
+    logger = ctx.get("logger")
+  }
   if (error instanceof FoundernetesError) {
     logger.error(...error.getErrorLoggerParams())
   } else {

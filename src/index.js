@@ -11,7 +11,6 @@ const validate = require("~/vars/validate")
 const createValidator = require("~/vars/create-validator")
 const yaml = require("~/utils/yaml")
 const ctx = require("~/ctx")
-// const createMiddleware = require("~/middleware")
 
 module.exports = {
   cli,
@@ -27,5 +26,4 @@ module.exports = {
   createValidator,
   validate,
   ctx,
-  // createMiddleware,
 }

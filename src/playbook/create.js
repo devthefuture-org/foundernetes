@@ -17,20 +17,16 @@ module.exports = async (definition) => {
 
   return async () =>
     ctx.fork(async () => {
-      const logger = ctx.replace("logger", (log) =>
-        log.child({ playbook: playbookName })
-      )
-
       let { default: iterator } = iterators
       if (!iterator) {
         iterator = defaultIterator
       }
 
       ctx.assign({
-        logger,
-        counter,
-        playbookName,
-        middlewares,
+        playbook: {
+          name: playbookName,
+          counter,
+        },
         iterators,
         iterator,
       })
@@ -43,7 +39,7 @@ module.exports = async (definition) => {
         }
         await playbook()
       } catch (error) {
-        logError(logger, error)
+        logError(error)
       }
 
       const msg = `report: ${chalk.green(
@@ -51,6 +47,7 @@ module.exports = async (definition) => {
       )} ${chalk.cyanBright(`Changed=${counter.changed}`)} ${chalk.red(
         `Failed=${counter.failed}`
       )}`
+      const logger = ctx.require("logger")
       logger.info(msg)
     })
 }

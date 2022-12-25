@@ -18,6 +18,7 @@ module.exports = (definition, type) => {
   pluginPath = removePrefix(pluginPath, `${type}/`)
   pluginPath = removePrefix(pluginPath, `${type}s/`)
   pluginPath = removeSuffix(pluginPath, ".js")
-
-  return pluginPath
+  if (!pluginPath.startsWith("/")) {
+    return pluginPath
+  }
 }

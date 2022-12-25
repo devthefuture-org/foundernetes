@@ -1,3 +1,5 @@
+const os = require("os")
+
 const fs = require("fs-extra")
 const camelCase = require("lodash.camelcase")
 
@@ -16,11 +18,13 @@ const emptyAsUndefinedCheck = (val) =>
   val === undefined || val === "" || val === null
 
 module.exports = async ({
+  name,
+  cwd,
+  home = true,
   configBasename = "config",
   inlineConfigs = [],
-  configDirs = [],
   configPreCompilers = [],
-  configOverride = {},
+  configStructure = {},
   env = process.env,
   options,
   mergeWith = deepmerge,
@@ -30,10 +34,26 @@ module.exports = async ({
   const extendsConfig = (src = {}) => {
     mergeWith(config, src)
   }
+
+  if (home === true) {
+    home = os.homedir() || os.tmpdir()
+  }
+  const configDirs = [`${cwd}/.${name}`]
+  if (home) {
+    configDirs.push(`${home}/.${name}`)
+  }
   for (const dir of configDirs) {
     extendsConfig(await getConfigYaml(`${dir}/${configBasename}.yaml`))
     extendsConfig(await getConfigYaml(`${dir}/${configBasename}.yml`))
   }
+  if (await fs.pathExists(`${cwd}/.${name}rc.js`)) {
+    let rcConfig = require(`${cwd}/.${name}rc.js`)
+    if (typeof rcConfig === "function") {
+      rcConfig = rcConfig(config)
+    }
+    extendsConfig(rcConfig)
+  }
+
   for (const inlineConfig of inlineConfigs) {
     extendsConfig(inlineConfig)
   }
@@ -44,7 +64,7 @@ module.exports = async ({
   const optionKeys = Object.keys(options)
   const envKeys = Object.keys(env)
 
-  for (const [key, def] of Object.entries(configOverride)) {
+  for (const [key, def] of Object.entries(configStructure)) {
     const {
       envParser,
       default: defaultValue,

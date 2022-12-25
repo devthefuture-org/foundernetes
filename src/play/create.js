@@ -24,11 +24,15 @@ module.exports = async (definition) => {
     validate = await createValidator(validate)
   }
 
+  const name = getPluginName(definition, "play")
+
   const play = async (vars) =>
     ctx.fork(async () => {
-      const name = getPluginName(definition, "play")
-
-      ctx.replace("logger", (log) => log.child({ play: name }))
+      ctx.assign({
+        play: {
+          name,
+        },
+      })
 
       const { middlewares } = play
       for (const middleware of middlewares) {
@@ -45,7 +49,7 @@ module.exports = async (definition) => {
           }
         }
       }
-      const counter = ctx.require("counter")
+      const counter = ctx.require("playbook.counter")
 
       if (typeof vars === "function") {
         vars = await vars()

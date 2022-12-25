@@ -1,12 +1,20 @@
-module.exports =
-  (create) =>
-  (definition) =>
-  async (override = {}) => {
-    if (typeof override === "function") {
-      override = await override(override)
-    }
+const getCallerPath = require("~/utils/get-caller-path")
+
+module.exports = (create) => (definition) => {
+  const callerPath = getCallerPath()
+  return async (override = {}) => {
     if (typeof definition === "function") {
-      definition = await definition(override)
+      definition = await definition()
     }
-    return create({ ...definition, ...override })
+    if (typeof override === "function") {
+      override = await override(definition)
+    }
+    override = { ...override }
+    if (typeof override.middlewares === "function") {
+      override.middlewares = await override.middlewares(definition)
+    }
+
+    const path = callerPath
+    return create({ path, ...definition, ...override })
   }
+}
