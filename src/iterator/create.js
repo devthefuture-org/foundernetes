@@ -56,7 +56,16 @@ module.exports = (params = {}) => {
             }
             collectionArgs[0] = collection
 
-            const collectionHookParam = { collection, methodName }
+            let collectionName
+            if (typeof collectionArgs[collectionArgs.length - 1] === "string") {
+              collectionName = collectionArgs.pop()
+            }
+
+            const collectionHookParam = {
+              collection,
+              methodName,
+              collectionName,
+            }
             for (const middleware of middlewares) {
               if (middleware.hook) {
                 await middleware.hook(collectionHookParam, "collection")
