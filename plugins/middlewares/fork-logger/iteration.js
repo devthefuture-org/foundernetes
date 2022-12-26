@@ -11,5 +11,6 @@ module.exports = ({ index }) => {
       getLoggerOptions()
     )
   )
-  logger.info(`↪️  iterating: ${index}`)
+  const iteratingLabel = index !== undefined ? index : "♾️ "
+  logger.info(`↪️  iterating: ${iteratingLabel}`)
 }

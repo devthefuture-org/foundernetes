@@ -5,8 +5,10 @@ const limitMethods = [
   "eachOfLimit",
   "everyLimit",
   "filterLimit",
+  "filterOfLimit", // addon
   "groupByLimit",
   "mapLimit",
+  "mapOfLimit", // addon
   "mapValuesLimit",
   "rejectLimit",
   "someLimit",
@@ -24,11 +26,15 @@ const simpleMethods = [
   "every",
   "everySeries",
   "filter",
+  "filterOf", // addon
   "filterSeries",
+  "filterOfSeries", // addon
   "groupBy",
   "groupBySeries",
   "map",
+  "mapOf", // addon
   "mapSeries",
+  "mapOfSeries", // addon
   "mapValues",
   "mapValuesSeries",
   "reject",

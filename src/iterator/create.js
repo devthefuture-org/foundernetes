@@ -1,6 +1,5 @@
-const async = require("async")
-
 const ctx = require("~/ctx")
+const async = require("./async-addons")
 
 const collectionMethodsList = require("./collection-methods-list")
 
