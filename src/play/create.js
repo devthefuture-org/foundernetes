@@ -28,16 +28,18 @@ module.exports = async (definition) => {
 
   const play = async (vars) =>
     ctx.fork(async () => {
+      const contextPlay = {
+        name,
+      }
+
       ctx.assign({
-        play: {
-          name,
-        },
+        play: contextPlay,
       })
 
       const { middlewares } = play
       for (const middleware of middlewares) {
         if (middleware.hook) {
-          await middleware.hook(play, "play")
+          await middleware.hook(contextPlay, "play")
         }
       }
 

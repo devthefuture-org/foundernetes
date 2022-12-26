@@ -2663,12 +2663,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"direct-logger@npm:^2.3.0":
-  version: 2.3.0
-  resolution: "direct-logger@npm:2.3.0"
+"direct-logger@npm:^2.4.1":
+  version: 2.4.1
+  resolution: "direct-logger@npm:2.4.1"
   dependencies:
     chalk: ^4.1.0
-  checksum: 0a71a1b2176e2057e2047e9f70394e64032b5d8ff2c1b0e956f64eaaca4674fc2d802a869c77a70cb91716b596e12112a6b415755e5a9addfb7535fdb1ea48ca
+  checksum: 263aa092a221d90f75ad1c3e98a80fb5003eccf4d1d1cce695c39e20d37f2fae44b97ad8fc3be8e45a86b0286e9bbffdf972bb8d11896b55632fa767b3bdd64f
   languageName: node
   linkType: hard
 
@@ -3566,7 +3566,7 @@ __metadata:
     commit-and-tag-version: ^10.1.0
     compare-versions: ^5.0.1
     decompress: ^4.2.1
-    direct-logger: ^2.3.0
+    direct-logger: ^2.4.1
     docsify-cli: ^4.4.4
     dotenv: ^16.0.3
     enquirer: ^2.3.6
@@ -3590,7 +3590,7 @@ __metadata:
     lodash.mergewith: ^4.6.2
     lodash.pick: ^4.4.0
     micromatch: ^4.0.5
-    nctx: ^1.6.1
+    nctx: ^1.6.2
     parse-github-url: ^1.0.2
     prettier: ^2.8.0
     pretty-ms: ^8.0.0
@@ -5959,15 +5959,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nctx@npm:^1.6.1":
-  version: 1.6.1
-  resolution: "nctx@npm:1.6.1"
+"nctx@npm:^1.6.2":
+  version: 1.6.2
+  resolution: "nctx@npm:1.6.2"
   dependencies:
     lodash.defaultsdeep: ^4.6.1
     lodash.get: ^4.4.2
     lodash.merge: ^4.6.2
     lodash.set: ^4.3.2
-  checksum: e94445fe1f6f9dc789158fe0fd2a3c1b1359591d93cf23bebd87167bb9f17dac4d9805c1cb612fff1ecc6cdfe745012b5c5a0a98916898f5d429134ecbaef88f
+  checksum: b77130cc853467f27ad5a55f00c9e8719f95cab37eee6f4c91550717239e79e2681030c4a2b8cdbeff8f85259958d5c3039273473ca564057a3076aa076c1965
   languageName: node
   linkType: hard
 

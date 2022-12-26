@@ -22,11 +22,13 @@ module.exports = async (definition) => {
         iterator = defaultIterator
       }
 
+      const contextPlaybook = {
+        name: playbookName,
+        counter,
+      }
+
       ctx.assign({
-        playbook: {
-          name: playbookName,
-          counter,
-        },
+        playbook: contextPlaybook,
         iterators,
         iterator,
       })
@@ -34,7 +36,7 @@ module.exports = async (definition) => {
       try {
         for (const middleware of middlewares) {
           if (middleware.hook) {
-            await middleware.hook(playbook, "playbook")
+            await middleware.hook(contextPlaybook, "playbook")
           }
         }
         await playbook()

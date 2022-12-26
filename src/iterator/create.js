@@ -57,7 +57,7 @@ module.exports = (params = {}) => {
             }
             collectionArgs[0] = collection
 
-            const collectionHookParam = { collection }
+            const collectionHookParam = { collection, methodName }
             for (const middleware of middlewares) {
               if (middleware.hook) {
                 await middleware.hook(collectionHookParam, "collection")
@@ -85,7 +85,8 @@ module.exports = (params = {}) => {
                 const [, index] = iteratorArgs
                 const iterationHookParam = {
                   item,
-                  ...(index !== undefined ? { index } : {}),
+                  index,
+                  methodName,
                 }
                 for (const middleware of middlewares) {
                   if (middleware.hook) {
