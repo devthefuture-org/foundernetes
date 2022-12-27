@@ -39,7 +39,7 @@ module.exports = (params = {}) => {
 
       if (inCollectionMethods) {
         let iteratorIndex
-        if (collectionSimpleMethods) {
+        if (inCollectionSimpleMethods) {
           iteratorIndex = 0
         } else {
           iteratorIndex = 1
