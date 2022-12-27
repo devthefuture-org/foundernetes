@@ -3591,6 +3591,7 @@ __metadata:
     lodash.pick: ^4.4.0
     micromatch: ^4.0.5
     nctx: ^1.6.2
+    parse-duration: ^1.0.2
     parse-github-url: ^1.0.2
     prettier: ^2.8.0
     pretty-ms: ^8.0.0
@@ -6419,6 +6420,13 @@ __metadata:
   version: 1.0.0
   resolution: "parent-require@npm:1.0.0"
   checksum: 91ecef2c8e0ecc06a7d68ebdfccec9cb8b34a7144cccda0141273c8871d4dd05856fe13b17ae1e1a32bfd769143671a6dbd2ad7ee72f55d1cb8e588dc60a8f4c
+  languageName: node
+  linkType: hard
+
+"parse-duration@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "parse-duration@npm:1.0.2"
+  checksum: d103ca9c3b630cc6169a89039349b735af796b94d9dc810750b16f79285ce5df20669ef0d02b23eda5832dc51aee88316857f3695584e88ba0ae5d77743134ef
   languageName: node
   linkType: hard
 

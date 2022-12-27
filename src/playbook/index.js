@@ -1,16 +1,31 @@
 const path = require("path")
+const { EventEmitter } = require("node:events")
 
 const async = require("async")
 const fs = require("fs-extra")
 
 const ctx = require("~/ctx")
 const playbookKey = require("~/utils/playbook-key")
+const isAborted = require("~/utils/is-aborted")
+const commandAbortController = require("~/cli/abort-controller")
+
+const { exitCodes } = require("~/error/constants")
 
 const exts = [".js"]
 
 module.exports = async (options, targets = []) => {
   const config = ctx.require("config")
   const logger = ctx.require("logger")
+
+  const events = new EventEmitter()
+  ctx.set("events", events)
+
+  const abortController = commandAbortController()
+  const abortSignal = abortController.signal
+  ctx.assign({
+    abortController,
+    abortSignal,
+  })
 
   const { cwd, playbooksDir } = config
   const playbooksPath = `${cwd}/${playbooksDir}`
@@ -48,6 +63,7 @@ module.exports = async (options, targets = []) => {
 
   const definedTarget = targets.length > 0
 
+  let exitCode
   try {
     const playbookFactories =
       !definedTarget && rootPlaybook
@@ -78,8 +94,16 @@ module.exports = async (options, targets = []) => {
     const parallel = options.P
     const method = parallel ? async.parallel : async.series
     await method(playbooks)
+    exitCode = exitCodes.SUCCESS
   } catch (error) {
-    logger.error(error)
-    process.exit(1)
+    console.log("HELLO")
+    if (isAborted(error)) {
+      exitCode = exitCodes.INTERRUPTED_GRACEFULLY
+    } else {
+      logger.error(error)
+      exitCode = exitCodes.FAILED
+    }
   }
+  events.emit("finish", { exitCode })
+  process.exit(exitCode)
 }

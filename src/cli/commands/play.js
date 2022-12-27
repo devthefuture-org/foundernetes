@@ -7,6 +7,7 @@ module.exports = (program) =>
     .command("play")
     .description("run playbooks")
     .addOption(options.cwd)
+    .addOption(options.gracefullShutdownTimeout)
     .option("--parallel, -p", "run playbooks in parallel")
     .argument("[target...]", "playbook name or tags")
     .action(async (targets, opts, _command) => {

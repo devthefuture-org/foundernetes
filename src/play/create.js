@@ -28,6 +28,8 @@ module.exports = async (definition) => {
 
   const play = async (vars) =>
     ctx.fork(async () => {
+      const abortSignal = ctx.require("abortSignal")
+
       const contextPlay = {
         name,
       }
@@ -90,6 +92,8 @@ module.exports = async (definition) => {
           await onOK(vars)
         }
       }
+
+      abortSignal.throwIfAborted()
     })
 
   play.middlewares = definition.middlewares || []

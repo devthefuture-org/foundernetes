@@ -1,3 +1,4 @@
+const parseDuration = require("parse-duration")
 const loadStructuredConfig = require("~/utils/load-structured-config")
 
 module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
@@ -20,6 +21,15 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
     playbooksDir: {
       env: "F10S_PLAYBOOKS_DIR",
       default: "playbooks",
+    },
+    gracefullShutdownTimeout: {
+      option: "gracefull-shutdown-timeout",
+      env: "GRACEFULL_SHUTDOWN_TIMEOUT",
+      default: "30s",
+    },
+    gracefullShutdownTimeoutMs: {
+      defaultFunction: (config) =>
+        parseDuration(config.gracefullShutdownTimeout),
     },
   }
 
