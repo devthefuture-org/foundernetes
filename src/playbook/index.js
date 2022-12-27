@@ -96,7 +96,6 @@ module.exports = async (options, targets = []) => {
     await method(playbooks)
     exitCode = exitCodes.SUCCESS
   } catch (error) {
-    console.log("HELLO")
     if (isAborted(error)) {
       exitCode = exitCodes.INTERRUPTED_GRACEFULLY
     } else {
