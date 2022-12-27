@@ -28,11 +28,6 @@ module.exports = async (definition) => {
 
   const play = async (vars) =>
     ctx.fork(async () => {
-      // const abortSignal = ctx.require("abortSignal")
-      // if (abortSignal.aborted) {
-      //   return
-      // }
-
       const contextPlay = {
         name,
       }
