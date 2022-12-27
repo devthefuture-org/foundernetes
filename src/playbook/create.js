@@ -42,6 +42,7 @@ module.exports = async (definition) => {
         await playbook()
       } catch (error) {
         logError(error)
+        throw Error
       }
 
       const msg = `report: ${chalk.green(

@@ -21,7 +21,7 @@ module.exports = () => {
       logger.info(`${signal} received, aborting...`, {
         gracefullShutdownTimeout,
       })
-      abortController.abort(signal)
+      abortController.abort() // if we pass argument, we can't detect AbortError anymore, so we have to let it empty
       const shutdownTimeout = setTimeout(() => {
         logger.info(`shutdown timeout reached, killing now`, {
           gracefullShutdownTimeout,

@@ -6,7 +6,7 @@ const fs = require("fs-extra")
 
 const ctx = require("~/ctx")
 const playbookKey = require("~/utils/playbook-key")
-const isAborted = require("~/utils/is-aborted")
+const isAbortError = require("~/utils/is-abort-error")
 const commandAbortController = require("~/cli/abort-controller")
 
 const { exitCodes } = require("~/error/constants")
@@ -96,13 +96,27 @@ module.exports = async (options, targets = []) => {
     await method(playbooks)
     exitCode = exitCodes.SUCCESS
   } catch (error) {
-    if (isAborted(error)) {
+    if (isAbortError(error)) {
       exitCode = exitCodes.INTERRUPTED_GRACEFULLY
     } else {
       logger.error(error)
       exitCode = exitCodes.FAILED
     }
   }
+  if (abortSignal.aborted && !exitCode) {
+    exitCode = exitCodes.INTERRUPTED_GRACEFULLY
+  }
   events.emit("finish", { exitCode })
+  switch (exitCode) {
+    case exitCodes.INTERRUPTED_GRACEFULLY: {
+      logger.warn("process was interrupted: exited gracefully")
+      break
+    }
+    case exitCodes.INTERRUPTED_KILL: {
+      logger.warn("process was interrupted: killed")
+      break
+    }
+    default:
+  }
   process.exit(exitCode)
 }

@@ -2663,12 +2663,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"direct-logger@npm:^2.4.1":
-  version: 2.4.1
-  resolution: "direct-logger@npm:2.4.1"
+"direct-logger@npm:^2.5.0":
+  version: 2.5.0
+  resolution: "direct-logger@npm:2.5.0"
   dependencies:
     chalk: ^4.1.0
-  checksum: 263aa092a221d90f75ad1c3e98a80fb5003eccf4d1d1cce695c39e20d37f2fae44b97ad8fc3be8e45a86b0286e9bbffdf972bb8d11896b55632fa767b3bdd64f
+  checksum: b1b131bc15952f06ce69ec8e55d9607749d1c623ff5c832b2f87cf4093ced733d42627edc3d1af6968a72e607e4b43dcc537a8c55c50157b71c5f8ddfdc97d36
   languageName: node
   linkType: hard
 
@@ -3566,7 +3566,7 @@ __metadata:
     commit-and-tag-version: ^10.1.0
     compare-versions: ^5.0.1
     decompress: ^4.2.1
-    direct-logger: ^2.4.1
+    direct-logger: ^2.5.0
     docsify-cli: ^4.4.4
     dotenv: ^16.0.3
     enquirer: ^2.3.6
