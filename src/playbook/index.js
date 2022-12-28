@@ -107,16 +107,8 @@ module.exports = async (options, targets = []) => {
     exitCode = exitCodes.INTERRUPTED_GRACEFULLY
   }
   events.emit("finish", { exitCode })
-  switch (exitCode) {
-    case exitCodes.INTERRUPTED_GRACEFULLY: {
-      logger.warn("process was interrupted: exited gracefully")
-      break
-    }
-    case exitCodes.INTERRUPTED_KILL: {
-      logger.warn("process was interrupted: killed")
-      break
-    }
-    default:
+  if (exitCode === exitCodes.INTERRUPTED_GRACEFULLY) {
+    logger.warn("process was interrupted: exited gracefully")
   }
   process.exit(exitCode)
 }
