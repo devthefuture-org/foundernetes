@@ -4,6 +4,7 @@ const logError = require("~/error/log-error")
 const ctx = require("~/ctx")
 
 const defaultIterator = require("~/iterator/default-iterator")
+const isAbortError = require("~/utils/is-abort-error")
 
 module.exports = async (definition) => {
   const counter = { ok: 0, changed: 0, failed: 0, total: 0 }
@@ -42,7 +43,9 @@ module.exports = async (definition) => {
         await playbook()
       } catch (error) {
         logError(error)
-        throw Error
+        if (!isAbortError(error)) {
+          throw Error
+        }
       }
 
       const msg = `report: ${chalk.green(

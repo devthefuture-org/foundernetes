@@ -58,7 +58,9 @@ module.exports = (params = {}) => {
             }
           }
 
-          return func(...collectionArgs)
+          const result = await func(...collectionArgs)
+          abortSignal.throwIfAborted()
+          return result
         }
 
         return ctx.fork(async () => {
