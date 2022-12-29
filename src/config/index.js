@@ -1,5 +1,6 @@
 const parseDuration = require("parse-duration")
 const loadStructuredConfig = require("~/utils/load-structured-config")
+const envParserYaml = require("./env-parsers/yaml")
 
 module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
   const rootConfigStructure = {
@@ -24,12 +25,18 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
     },
     gracefullShutdownTimeout: {
       option: "gracefull-shutdown-timeout",
-      env: "GRACEFULL_SHUTDOWN_TIMEOUT",
+      env: "F10S_GRACEFULL_SHUTDOWN_TIMEOUT",
       default: "30s",
     },
     gracefullShutdownTimeoutMs: {
       defaultFunction: (config) =>
         parseDuration(config.gracefullShutdownTimeout),
+    },
+    defaultPlayRetry: {
+      option: "default-play-retry",
+      env: "F10S_DEFAULT_PLAY_RETRY",
+      envParser: envParserYaml,
+      default: 0,
     },
   }
 

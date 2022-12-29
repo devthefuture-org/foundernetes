@@ -1,3 +1,5 @@
+const asyncRetry = require("async-retry")
+
 const createValidator = require("~/vars/create-validator")
 
 const FoundernetesPlayPostCheckError = require("~/error/play-post-check")
@@ -26,7 +28,9 @@ module.exports = async (definition) => {
 
   const name = getPluginName(definition, "play")
 
-  const play = async (vars) =>
+  const config = ctx.require("config")
+
+  const execPlay = async (vars, play) =>
     ctx.fork(async () => {
       const contextPlay = {
         name,
@@ -92,7 +96,19 @@ module.exports = async (definition) => {
       }
     })
 
-  play.middlewares = definition.middlewares || []
+  let { retry } = definition
+  if (retry === undefined || retry === null) {
+    retry = config.defaultRetry
+  }
+  if (typeof retry !== "object") {
+    retry = {
+      retries: retry,
+    }
+  }
+  const play = async (vars) =>
+    asyncRetry(async () => execPlay(vars, play), retry)
+
+  play.middlewares = [...definition.middlewares] || []
   play.use = (middleware) => {
     play.middlewares.push(middleware)
   }

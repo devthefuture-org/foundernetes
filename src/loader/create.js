@@ -1,3 +1,4 @@
+const asyncRetry = require("async-retry")
 const pick = require("lodash.pick")
 
 const createValidator = require("~/vars/create-validator")
@@ -22,7 +23,9 @@ module.exports = async (definition) => {
 
   const name = getPluginName(definition, "loader")
 
-  const loader = async (vars = {}) =>
+  const config = ctx.require("config")
+
+  const execLoader = async (vars, loader) =>
     ctx.fork(async () => {
       const contextLoader = {
         name,
@@ -93,7 +96,19 @@ module.exports = async (definition) => {
       return data
     })
 
-  loader.middlewares = definition.middlewares || []
+  let { retry } = definition
+  if (retry === undefined || retry === null) {
+    retry = config.defaultRetry
+  }
+  if (typeof retry !== "object") {
+    retry = {
+      retries: retry,
+    }
+  }
+  const loader = async (vars = {}) =>
+    asyncRetry(async () => execLoader(vars, loader), retry)
+
+  loader.middlewares = [...definition.middlewares] || []
   loader.use = (middleware) => {
     loader.middlewares.push(middleware)
   }

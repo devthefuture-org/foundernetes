@@ -15,6 +15,11 @@ module.exports.gracefullShutdownTimeout = new Option(
   "gracefull shutdown timeout, default 30s"
 )
 
+module.exports.defaultPlayRetry = new Option(
+  "--default-play-retry <retry>",
+  "default play retry, default 0"
+)
+
 module.exports.cwd = new Option("--cwd <path>", "set current working directory")
 
 module.exports.debug = new Option("--debug, -d", "enable debugging loglevel")
