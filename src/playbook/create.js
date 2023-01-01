@@ -6,6 +6,8 @@ const ctx = require("~/ctx")
 const defaultIterator = require("~/iterator/default-iterator")
 const isAbortError = require("~/utils/is-abort-error")
 
+const FoundernetesPlayPostCheckError = require("~/error/play-post-check")
+
 module.exports = async (definition) => {
   const counter = { ok: 0, changed: 0, failed: 0, retried: 0, total: 0 }
 
@@ -42,9 +44,11 @@ module.exports = async (definition) => {
         }
         await playbook()
       } catch (error) {
-        logError(error)
-        if (!isAbortError(error)) {
-          throw Error
+        if (!(error instanceof FoundernetesPlayPostCheckError)) {
+          logError(error)
+          if (!isAbortError(error)) {
+            throw Error
+          }
         }
       }
 

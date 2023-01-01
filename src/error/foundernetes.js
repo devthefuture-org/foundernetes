@@ -1,4 +1,8 @@
 module.exports = class FoundernetesError extends Error {
+  constructor(msg = "FoundernetesError") {
+    super(msg)
+  }
+
   getErrorLoggerParams() {
     let output
     if (typeof this.output === "function") {

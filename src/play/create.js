@@ -91,9 +91,25 @@ module.exports = async (definition) => {
         onNewTimeout,
         ...retry,
       }
-      const { catchRunErrorAsFalse = true } = definition
+      const {
+        catchRunErrorAsFalse = true,
+        catchCheckErrorAsFalse = true,
+        continueOnRunError = false,
+      } = definition
 
-      const preCheckResult = await preCheck(vars)
+      let preCheckResult
+      try {
+        preCheckResult = await preCheck(vars)
+      } catch (error) {
+        if (catchCheckErrorAsFalse) {
+          preCheckResult = false
+          const logger = ctx.require("logger")
+          logger.error(error)
+        } else {
+          throw error
+        }
+      }
+
       if (preCheckResult === false) {
         const retryer = async () => {
           const operation = yaRetry.operation(retry)
@@ -103,22 +119,21 @@ module.exports = async (definition) => {
               const logger = ctx.require("logger")
               if (currentAttempt > 1) {
                 logger.debug(`try #${currentAttempt}`)
+                counter.retried++
               }
               try {
                 results = await run(vars)
               } catch (err) {
                 if (catchRunErrorAsFalse) {
                   results = false
+                  logger.warn(err)
                 } else {
                   reject(err)
                   return
                 }
               }
-              const err = results === false ? null : true
+              const err = results === false ? true : null
               if (operation.retry(err)) {
-                if (currentAttempt > 1) {
-                  counter.retried++
-                }
                 return
               }
 
@@ -131,13 +146,27 @@ module.exports = async (definition) => {
           counter.failed++
           throw new FoundernetesPlayRunError()
         }
-        const postCheckResult = await postCheck(vars)
+
+        let postCheckResult
+        try {
+          postCheckResult = await postCheck(vars)
+        } catch (error) {
+          if (catchCheckErrorAsFalse) {
+            postCheckResult = false
+            const logger = ctx.require("logger")
+            logger.error(error)
+          } else {
+            throw error
+          }
+        }
         if (postCheckResult === false) {
           counter.failed++
           if (onFailed) {
             await onFailed(vars)
           }
-          throw new FoundernetesPlayPostCheckError()
+          if (!continueOnRunError) {
+            throw new FoundernetesPlayPostCheckError()
+          }
         } else {
           counter.changed++
           if (onChanged) {
