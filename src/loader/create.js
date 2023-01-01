@@ -1,4 +1,4 @@
-const asyncRetry = require("async-retry")
+const yaRetry = require("ya-retry")
 const pick = require("lodash.pick")
 
 const createValidator = require("~/vars/create-validator")
@@ -106,7 +106,7 @@ module.exports = async (definition) => {
     }
   }
   const loader = async (vars = {}) =>
-    asyncRetry(async () => execLoader(vars, loader), retry)
+    yaRetry(async () => execLoader(vars, loader), retry)
 
   loader.middlewares = [...definition.middlewares] || []
   loader.use = (middleware) => {

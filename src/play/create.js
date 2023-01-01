@@ -1,4 +1,6 @@
-const asyncRetry = require("async-retry")
+const yaRetry = require("ya-retry")
+
+const humanizeDuration = require("~/lib/humanize-duration")
 
 const createValidator = require("~/vars/create-validator")
 
@@ -30,7 +32,7 @@ module.exports = async (definition) => {
 
   const config = ctx.require("config")
 
-  const execPlay = async (vars, play) =>
+  const play = async (vars) =>
     ctx.fork(async () => {
       const contextPlay = {
         name,
@@ -68,15 +70,69 @@ module.exports = async (definition) => {
         }
       }
 
+      let { retry } = definition
+      if (retry === undefined || retry === null) {
+        retry = config.defaultRetry
+      }
+      if (typeof retry !== "object") {
+        retry = {
+          retries: retry,
+        }
+      }
+      const onNewTimeout = ({ timeout, attempts }) => {
+        const logger = ctx.require("logger")
+        logger.warn(
+          `try #${attempts} failed, will try again in ${humanizeDuration(
+            timeout
+          )}`
+        )
+      }
+      retry = {
+        onNewTimeout,
+        ...retry,
+      }
+      const { catchRunErrorAsFalse = true } = definition
+
       const preCheckResult = await preCheck(vars)
-      if (!preCheckResult) {
-        const runResult = await run(vars)
-        if (!runResult) {
+      if (preCheckResult === false) {
+        const retryer = async () => {
+          const operation = yaRetry.operation(retry)
+          return new Promise((resolve, reject) => {
+            operation.attempt(async (currentAttempt) => {
+              let results
+              const logger = ctx.require("logger")
+              if (currentAttempt > 1) {
+                logger.debug(`try #${currentAttempt}`)
+              }
+              try {
+                results = await run(vars)
+              } catch (err) {
+                if (catchRunErrorAsFalse) {
+                  results = false
+                } else {
+                  reject(err)
+                  return
+                }
+              }
+              const err = results === false ? null : true
+              if (operation.retry(err)) {
+                if (currentAttempt > 1) {
+                  counter.retried++
+                }
+                return
+              }
+
+              resolve(results)
+            })
+          })
+        }
+        const runResult = await retryer()
+        if (runResult === false) {
           counter.failed++
           throw new FoundernetesPlayRunError()
         }
         const postCheckResult = await postCheck(vars)
-        if (!postCheckResult) {
+        if (postCheckResult === false) {
           counter.failed++
           if (onFailed) {
             await onFailed(vars)
@@ -95,18 +151,6 @@ module.exports = async (definition) => {
         }
       }
     })
-
-  let { retry } = definition
-  if (retry === undefined || retry === null) {
-    retry = config.defaultRetry
-  }
-  if (typeof retry !== "object") {
-    retry = {
-      retries: retry,
-    }
-  }
-  const play = async (vars) =>
-    asyncRetry(async () => execPlay(vars, play), retry)
 
   play.middlewares = [...definition.middlewares] || []
   play.use = (middleware) => {
