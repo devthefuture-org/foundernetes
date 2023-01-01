@@ -70,36 +70,106 @@ module.exports = async (definition) => {
         }
       }
 
-      let { retry } = definition
-      if (retry === undefined || retry === null) {
-        retry = config.defaultRetry
-      }
-      if (typeof retry !== "object") {
-        retry = {
-          retries: retry,
+      const onNewTimeoutCreate =
+        (type) =>
+        ({ timeout, attempts }) => {
+          const logger = ctx.require("logger")
+          logger.warn(
+            `${type} try #${attempts} failed, will try again in ${humanizeDuration(
+              timeout
+            )}`
+          )
         }
+
+      const castRetry = (retry, type) => {
+        if (retry === undefined || retry === null) {
+          retry = config.defaultRetry
+        }
+        if (typeof retry !== "object") {
+          retry = {
+            retries: retry,
+          }
+        }
+        retry = {
+          onNewTimeout: onNewTimeoutCreate(type),
+          ...retry,
+        }
+        return retry
       }
-      const onNewTimeout = ({ timeout, attempts }) => {
-        const logger = ctx.require("logger")
-        logger.warn(
-          `try #${attempts} failed, will try again in ${humanizeDuration(
-            timeout
-          )}`
-        )
-      }
-      retry = {
-        onNewTimeout,
-        ...retry,
-      }
+
+      const retryerCreate =
+        ({ type, retry, retryOnFalse, catchErrorAsFalse, func }) =>
+        async () => {
+          const operation = yaRetry.operation(retry)
+          return new Promise((resolve, reject) => {
+            operation.attempt(async (currentAttempt) => {
+              let results
+              const logger = ctx.require("logger")
+              if (currentAttempt > 1) {
+                logger.debug(`${type} try #${currentAttempt}`)
+                counter.retried++
+              }
+              let hasError
+              try {
+                results = await func()
+                hasError = false
+              } catch (err) {
+                if (catchErrorAsFalse) {
+                  hasError = true
+                  results = false
+                  logger.warn(err)
+                } else {
+                  reject(err)
+                  return
+                }
+              }
+              let err
+              if (retryOnFalse) {
+                err = results === false ? true : null
+              } else {
+                err = hasError === true ? true : null
+              }
+              if (operation.retry(err)) {
+                return
+              }
+
+              resolve(results)
+            })
+          })
+        }
+
+      let { retry, checkRetry, preCheckRetry, postCheckRetry } = definition
+      retry = castRetry(retry, "run")
+      checkRetry = castRetry(checkRetry, "check")
+      preCheckRetry = castRetry(preCheckRetry, "preCheck")
+      postCheckRetry = castRetry(postCheckRetry, "postCheck")
+      preCheckRetry = { ...retry, ...checkRetry, ...preCheckRetry }
+      postCheckRetry = { ...retry, ...checkRetry, ...postCheckRetry }
+
+      const {
+        runRetryOnFalse = true,
+        preCheckRetryOnFalse = false,
+        postCheckRetryOnFalse = false,
+      } = definition
+
       const {
         catchRunErrorAsFalse = true,
         catchCheckErrorAsFalse = true,
+        catchPreCheckErrorAsFalse = catchCheckErrorAsFalse,
+        catchPostCheckErrorAsFalse = catchCheckErrorAsFalse,
         continueOnRunError = false,
       } = definition
 
       let preCheckResult
       try {
-        preCheckResult = await preCheck(vars)
+        const preCheckRetryer = retryerCreate({
+          type: "preCheck",
+          catchErrorAsFalse: catchPreCheckErrorAsFalse,
+          retry: preCheckRetry,
+          retryOnFalse: preCheckRetryOnFalse,
+          func: async () => preCheck(vars),
+        })
+        preCheckResult = await preCheckRetryer()
       } catch (error) {
         if (catchCheckErrorAsFalse) {
           preCheckResult = false
@@ -111,37 +181,14 @@ module.exports = async (definition) => {
       }
 
       if (preCheckResult === false) {
-        const retryer = async () => {
-          const operation = yaRetry.operation(retry)
-          return new Promise((resolve, reject) => {
-            operation.attempt(async (currentAttempt) => {
-              let results
-              const logger = ctx.require("logger")
-              if (currentAttempt > 1) {
-                logger.debug(`try #${currentAttempt}`)
-                counter.retried++
-              }
-              try {
-                results = await run(vars)
-              } catch (err) {
-                if (catchRunErrorAsFalse) {
-                  results = false
-                  logger.warn(err)
-                } else {
-                  reject(err)
-                  return
-                }
-              }
-              const err = results === false ? true : null
-              if (operation.retry(err)) {
-                return
-              }
-
-              resolve(results)
-            })
-          })
-        }
-        const runResult = await retryer()
+        const runRetryer = retryerCreate({
+          type: "run",
+          catchErrorAsFalse: catchRunErrorAsFalse,
+          retry,
+          retryOnFalse: runRetryOnFalse,
+          func: async () => run(vars),
+        })
+        const runResult = await runRetryer()
         if (runResult === false) {
           counter.failed++
           throw new FoundernetesPlayRunError()
@@ -149,7 +196,14 @@ module.exports = async (definition) => {
 
         let postCheckResult
         try {
-          postCheckResult = await postCheck(vars)
+          const postCheckRetryer = retryerCreate({
+            type: "postCheck",
+            catchErrorAsFalse: catchPostCheckErrorAsFalse,
+            retry: postCheckRetry,
+            retryOnFalse: postCheckRetryOnFalse,
+            func: async () => postCheck(vars),
+          })
+          postCheckResult = await postCheckRetryer
         } catch (error) {
           if (catchCheckErrorAsFalse) {
             postCheckResult = false
