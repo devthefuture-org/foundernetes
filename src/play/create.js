@@ -1,7 +1,5 @@
 const yaRetry = require("ya-retry")
 
-const humanizeDuration = require("~/lib/humanize-duration")
-
 const createValidator = require("~/vars/create-validator")
 
 const FoundernetesPlayPostCheckError = require("~/error/play-post-check")
@@ -9,6 +7,7 @@ const FoundernetesPlayRunError = require("~/error/play-run")
 const FoundernetesValidateVarsError = require("~/error/validate-vars")
 
 const getPluginName = require("~/std/get-plugin-name")
+const castRetry = require("~/lib/cast-retry")
 
 const ctx = require("~/ctx")
 
@@ -29,8 +28,6 @@ module.exports = async (definition) => {
   }
 
   const name = getPluginName(definition, "play")
-
-  const config = ctx.require("config")
 
   const play = async (vars) =>
     ctx.fork(async () => {
@@ -68,33 +65,6 @@ module.exports = async (definition) => {
         if (!isValid) {
           throw new FoundernetesValidateVarsError({ vars, validate })
         }
-      }
-
-      const onNewTimeoutCreate =
-        (type) =>
-        ({ timeout, attempts }) => {
-          const logger = ctx.require("logger")
-          logger.warn(
-            `${type} try #${attempts} failed, will try again in ${humanizeDuration(
-              timeout
-            )}`
-          )
-        }
-
-      const castRetry = (retry, type) => {
-        if (retry === undefined || retry === null) {
-          retry = config.defaultRetry
-        }
-        if (typeof retry !== "object") {
-          retry = {
-            retries: retry,
-          }
-        }
-        retry = {
-          onNewTimeout: onNewTimeoutCreate(type),
-          ...retry,
-        }
-        return retry
       }
 
       const retryerCreate =
@@ -138,13 +108,16 @@ module.exports = async (definition) => {
           })
         }
 
-      let { retry, checkRetry, preCheckRetry, postCheckRetry } = definition
-      retry = castRetry(retry, "run")
-      checkRetry = castRetry(checkRetry, "check")
-      preCheckRetry = castRetry(preCheckRetry, "preCheck")
-      postCheckRetry = castRetry(postCheckRetry, "postCheck")
-      preCheckRetry = { ...retry, ...checkRetry, ...preCheckRetry }
-      postCheckRetry = { ...retry, ...checkRetry, ...postCheckRetry }
+      const retry = castRetry(definition.retry, "run")
+      const checkRetry = castRetry(definition.checkRetry, "check")
+      const postCheckRetry = castRetry(definition.postCheckRetry, "postCheck", [
+        retry,
+        checkRetry,
+      ])
+      const preCheckRetry = castRetry(definition.preCheckRetry, "preCheck", [
+        retry,
+        checkRetry,
+      ])
 
       const {
         runRetryOnFalse = true,

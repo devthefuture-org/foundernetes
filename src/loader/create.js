@@ -6,6 +6,8 @@ const FoundernetesValidateVarsError = require("~/error/validate-vars")
 const FoundernetesValidateDataError = require("~/error/validate-data")
 const ctx = require("~/ctx")
 
+const castRetry = require("~/lib/cast-retry")
+
 const getPluginName = require("~/std/get-plugin-name")
 
 module.exports = async (definition) => {
@@ -23,9 +25,11 @@ module.exports = async (definition) => {
 
   const name = getPluginName(definition, "loader")
 
-  const config = ctx.require("config")
+  const retry = castRetry(definition.retry, "loader")
 
-  const execLoader = async (vars, loader) =>
+  const { retryOnUndefined = true, catchErrorAsUndefined = false } = definition
+
+  const loader = async (vars) =>
     ctx.fork(async () => {
       const contextLoader = {
         name,
@@ -77,7 +81,44 @@ module.exports = async (definition) => {
         return memoizationRegistry.get(memoizeVars)
       }
 
-      const data = await load(vars)
+      const operation = yaRetry.operation(retry)
+      const counter = ctx.require("playbook.counter")
+      const data = await new Promise((resolve, reject) => {
+        operation.attempt(async (currentAttempt) => {
+          let results
+          const logger = ctx.require("logger")
+          if (currentAttempt > 1) {
+            logger.debug(`loader try #${currentAttempt}`)
+            counter.retried++
+          }
+          let hasError
+          try {
+            results = await load(vars)
+            hasError = false
+          } catch (err) {
+            if (catchErrorAsUndefined) {
+              hasError = true
+              results = false
+              logger.warn(err)
+            } else {
+              reject(err)
+              return
+            }
+            reject(err)
+            return
+          }
+          let err
+          if (retryOnUndefined) {
+            err = results === undefined ? true : null
+          } else {
+            err = hasError === true ? true : null
+          }
+          if (operation.retry(err)) {
+            return
+          }
+          resolve(results)
+        })
+      })
 
       if (validateData) {
         const isValid = await validateData(data)
@@ -95,18 +136,6 @@ module.exports = async (definition) => {
 
       return data
     })
-
-  let { retry } = definition
-  if (retry === undefined || retry === null) {
-    retry = config.defaultRetry
-  }
-  if (typeof retry !== "object") {
-    retry = {
-      retries: retry,
-    }
-  }
-  const loader = async (vars = {}) =>
-    yaRetry(async () => execLoader(vars, loader), retry)
 
   loader.middlewares = [...definition.middlewares] || []
   loader.use = (middleware) => {
