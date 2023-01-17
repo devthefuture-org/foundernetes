@@ -67,10 +67,16 @@ module.exports = async (definition) => {
         }
       }
 
+      const events = ctx.require("events")
+      const abortSignal = ctx.require("abortSignal")
+
       const retryerCreate =
         ({ type, retry, retryOnFalse, catchErrorAsFalse, func }) =>
         async () => {
           const operation = yaRetry.operation(retry)
+          events.on("stop", () => {
+            operation.stop()
+          })
           return new Promise((resolve, reject) => {
             operation.attempt(async (currentAttempt) => {
               let results
@@ -100,6 +106,9 @@ module.exports = async (definition) => {
                 err = hasError === true ? true : null
               }
               if (operation.retry(err)) {
+                if (abortSignal.aborted) {
+                  operation.stop()
+                }
                 return
               }
 
@@ -176,7 +185,7 @@ module.exports = async (definition) => {
             retryOnFalse: postCheckRetryOnFalse,
             func: async () => postCheck(vars),
           })
-          postCheckResult = await postCheckRetryer
+          postCheckResult = await postCheckRetryer()
         } catch (error) {
           if (catchCheckErrorAsFalse) {
             postCheckResult = false

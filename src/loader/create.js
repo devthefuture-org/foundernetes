@@ -83,6 +83,14 @@ module.exports = async (definition) => {
 
       const operation = yaRetry.operation(retry)
       const counter = ctx.require("playbook.counter")
+
+      const events = ctx.require("events")
+      const abortSignal = ctx.require("abortSignal")
+
+      events.on("stop", () => {
+        operation.stop()
+      })
+
       const data = await new Promise((resolve, reject) => {
         operation.attempt(async (currentAttempt) => {
           let results
@@ -114,6 +122,9 @@ module.exports = async (definition) => {
             err = hasError === true ? true : null
           }
           if (operation.retry(err)) {
+            if (abortSignal.aborted) {
+              operation.stop()
+            }
             return
           }
           resolve(results)

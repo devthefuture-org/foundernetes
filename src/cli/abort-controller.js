@@ -18,6 +18,7 @@ module.exports = () => {
         }
         return
       }
+      events.emit("stop")
       logger.info(`${signal} received, aborting...`, {
         gracefullShutdownTimeout,
       })
