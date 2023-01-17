@@ -9,6 +9,8 @@ const playbookKey = require("~/utils/playbook-key")
 const isAbortError = require("~/utils/is-abort-error")
 const commandAbortController = require("~/cli/abort-controller")
 
+const FoundernetesPlayPostCheckError = require("~/error/play-post-check")
+
 const { exitCodes } = require("~/error/constants")
 
 const exts = [".js"]
@@ -98,6 +100,8 @@ module.exports = async (options, targets = []) => {
   } catch (error) {
     if (isAbortError(error)) {
       exitCode = exitCodes.INTERRUPTED_GRACEFULLY
+    } else if (error instanceof FoundernetesPlayPostCheckError) {
+      exitCode = exitCodes.FAILED_POST_CHECK
     } else {
       logger.error(error)
       exitCode = exitCodes.FAILED

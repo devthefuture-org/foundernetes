@@ -36,6 +36,7 @@ module.exports = async (definition) => {
         iterator,
       })
 
+      let failedError
       try {
         for (const middleware of middlewares) {
           if (middleware.hook) {
@@ -49,6 +50,8 @@ module.exports = async (definition) => {
           if (!isAbortError(error)) {
             throw Error
           }
+        } else {
+          failedError = error
         }
       }
 
@@ -61,5 +64,9 @@ module.exports = async (definition) => {
       }`
       const logger = ctx.require("logger")
       logger.info(msg)
+
+      if (failedError) {
+        throw failedError
+      }
     })
 }
