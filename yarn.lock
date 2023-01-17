@@ -3588,6 +3588,7 @@ __metadata:
     lint-staged: ^13.0.4
     lodash: ^4.17.21
     lodash.camelcase: ^4.3.0
+    lodash.defaults: ^4.2.0
     lodash.mergewith: ^4.6.2
     lodash.pick: ^4.4.0
     micromatch: ^4.0.5
@@ -5509,6 +5510,13 @@ __metadata:
   version: 4.3.0
   resolution: "lodash.camelcase@npm:4.3.0"
   checksum: cb9227612f71b83e42de93eccf1232feeb25e705bdb19ba26c04f91e885bfd3dd5c517c4a97137658190581d3493ea3973072ca010aab7e301046d90740393d1
+  languageName: node
+  linkType: hard
+
+"lodash.defaults@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "lodash.defaults@npm:4.2.0"
+  checksum: 84923258235592c8886e29de5491946ff8c2ae5c82a7ac5cddd2e3cb697e6fbdfbbb6efcca015795c86eec2bb953a5a2ee4016e3735a3f02720428a40efbb8f1
   languageName: node
   linkType: hard
 

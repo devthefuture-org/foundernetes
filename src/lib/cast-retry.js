@@ -1,3 +1,4 @@
+const defaults = require("lodash.defaults")
 const humanizeDuration = require("~/lib/humanize-duration")
 
 const ctx = require("~/ctx")
@@ -13,7 +14,7 @@ const onNewTimeoutCreate =
     )
   }
 
-module.exports = (retry, type, defaults = []) => {
+module.exports = (retry, type, defaultsProps = []) => {
   const config = ctx.require("config")
   if (retry === undefined || retry === null) {
     retry = config.defaultRetry
@@ -23,9 +24,10 @@ module.exports = (retry, type, defaults = []) => {
       retries: retry,
     }
   }
-  return {
-    ...defaults,
+  const props = {
     onNewTimeout: onNewTimeoutCreate(type),
     ...retry,
   }
+  defaults(props, ...defaultsProps)
+  return props
 }

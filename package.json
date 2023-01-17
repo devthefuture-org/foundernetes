@@ -28,6 +28,7 @@
     "link-module-alias": "^1.2.0",
     "lodash": "^4.17.21",
     "lodash.camelcase": "^4.3.0",
+    "lodash.defaults": "^4.2.0",
     "lodash.mergewith": "^4.6.2",
     "lodash.pick": "^4.4.0",
     "micromatch": "^4.0.5",
