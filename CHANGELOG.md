@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+### [1.1.1](https://github.com/devthejo/foundernetes/compare/v1.1.0...v1.1.1) (2023-01-17)
+
+
+### Bug Fixes
+
+* cast retry ([9eb2a84](https://github.com/devthejo/foundernetes/commit/9eb2a847409def4eb0393b88e4b6f398cc23560d))
+* stop cancel try ([5e31e14](https://github.com/devthejo/foundernetes/commit/5e31e141b1d105cbbd032d2938c5491608230e0c))
+
 ## 1.1.0 (2023-01-17)
 
 
