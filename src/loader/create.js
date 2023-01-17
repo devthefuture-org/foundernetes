@@ -2,11 +2,16 @@ const yaRetry = require("ya-retry")
 const pick = require("lodash.pick")
 
 const createValidator = require("~/vars/create-validator")
+
 const FoundernetesValidateVarsError = require("~/error/validate-vars")
 const FoundernetesValidateDataError = require("~/error/validate-data")
+const FoundernetesStopError = require("~/error/stop")
+
 const ctx = require("~/ctx")
 
 const castRetry = require("~/lib/cast-retry")
+
+const isAbortError = require("~/utils/is-abort-error")
 
 const getPluginName = require("~/std/get-plugin-name")
 
@@ -87,11 +92,14 @@ module.exports = async (definition) => {
       const events = ctx.require("events")
       const abortSignal = ctx.require("abortSignal")
 
-      events.on("stop", () => {
-        operation.stop()
-      })
-
       const data = await new Promise((resolve, reject) => {
+        const stopSignal = () => {
+          // const logger = ctx.require("logger")
+          // logger.debug(`loader cancel next try`)
+          operation.stop()
+          reject(new FoundernetesStopError())
+        }
+        events.on("stop", stopSignal)
         operation.attempt(async (currentAttempt) => {
           let results
           const logger = ctx.require("logger")
@@ -104,14 +112,19 @@ module.exports = async (definition) => {
             results = await load(vars)
             hasError = false
           } catch (err) {
+            if (isAbortError(err)) {
+              throw err
+            }
             if (catchErrorAsUndefined) {
               hasError = true
               results = false
               logger.warn(err)
             } else {
+              events.off("stop", stopSignal)
               reject(err)
               return
             }
+            events.off("stop", stopSignal)
             reject(err)
             return
           }
@@ -123,10 +136,12 @@ module.exports = async (definition) => {
           }
           if (operation.retry(err)) {
             if (abortSignal.aborted) {
+              events.off("stop", stopSignal)
               operation.stop()
             }
             return
           }
+          events.off("stop", stopSignal)
           resolve(results)
         })
       })

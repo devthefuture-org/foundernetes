@@ -5,9 +5,12 @@ const createValidator = require("~/vars/create-validator")
 const FoundernetesPlayPostCheckError = require("~/error/play-post-check")
 const FoundernetesPlayRunError = require("~/error/play-run")
 const FoundernetesValidateVarsError = require("~/error/validate-vars")
+const FoundernetesStopError = require("~/error/stop")
 
 const getPluginName = require("~/std/get-plugin-name")
 const castRetry = require("~/lib/cast-retry")
+
+const isAbortError = require("~/utils/is-abort-error")
 
 const ctx = require("~/ctx")
 
@@ -72,12 +75,16 @@ module.exports = async (definition) => {
 
       const retryerCreate =
         ({ type, retry, retryOnFalse, catchErrorAsFalse, func }) =>
-        async () => {
-          const operation = yaRetry.operation(retry)
-          events.on("stop", () => {
-            operation.stop()
-          })
-          return new Promise((resolve, reject) => {
+        async () =>
+          new Promise((resolve, reject) => {
+            const operation = yaRetry.operation(retry)
+            const stopSignal = () => {
+              // const logger = ctx.require("logger")
+              // logger.debug(`${type} cancel next try`)
+              operation.stop()
+              reject(new FoundernetesStopError())
+            }
+            events.on("stop", stopSignal)
             operation.attempt(async (currentAttempt) => {
               let results
               const logger = ctx.require("logger")
@@ -90,11 +97,15 @@ module.exports = async (definition) => {
                 results = await func()
                 hasError = false
               } catch (err) {
+                if (isAbortError(err)) {
+                  throw err
+                }
                 if (catchErrorAsFalse) {
                   hasError = true
                   results = false
                   logger.warn(err)
                 } else {
+                  events.off("stop", stopSignal)
                   reject(err)
                   return
                 }
@@ -107,15 +118,15 @@ module.exports = async (definition) => {
               }
               if (operation.retry(err)) {
                 if (abortSignal.aborted) {
+                  events.off("stop", stopSignal)
                   operation.stop()
                 }
                 return
               }
-
+              events.off("stop", stopSignal)
               resolve(results)
             })
           })
-        }
 
       const retry = castRetry(definition.retry, "run")
       const checkRetry = castRetry(definition.checkRetry, "check")
@@ -153,6 +164,9 @@ module.exports = async (definition) => {
         })
         preCheckResult = await preCheckRetryer()
       } catch (error) {
+        if (isAbortError(error)) {
+          throw error
+        }
         if (catchCheckErrorAsFalse) {
           preCheckResult = false
           const logger = ctx.require("logger")
@@ -187,6 +201,9 @@ module.exports = async (definition) => {
           })
           postCheckResult = await postCheckRetryer()
         } catch (error) {
+          if (isAbortError(error)) {
+            throw error
+          }
           if (catchCheckErrorAsFalse) {
             postCheckResult = false
             const logger = ctx.require("logger")
