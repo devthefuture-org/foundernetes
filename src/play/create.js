@@ -6,6 +6,7 @@ const FoundernetesPlayPostCheckError = require("~/error/play-post-check")
 const FoundernetesPlayRunError = require("~/error/play-run")
 const FoundernetesValidateVarsError = require("~/error/validate-vars")
 const FoundernetesStopError = require("~/error/stop")
+const FoundernetesPlayCheckError = require("~/error/play-check")
 
 const getPluginName = require("~/std/get-plugin-name")
 const castRetry = require("~/lib/cast-retry")
@@ -100,10 +101,19 @@ module.exports = async (definition) => {
                 if (isAbortError(err)) {
                   throw err
                 }
-                if (catchErrorAsFalse) {
-                  hasError = true
+                if (
+                  catchErrorAsFalse ||
+                  err instanceof FoundernetesPlayCheckError
+                ) {
+                  if (!(err instanceof FoundernetesPlayCheckError)) {
+                    hasError = true
+                  }
                   results = false
-                  logger.warn(err)
+                  if (type === "preCheck") {
+                    logger.info(`🔀 not-ready: ${err.message}`)
+                  } else {
+                    logger.warn(err)
+                  }
                 } else {
                   events.off("stop", stopSignal)
                   reject(err)

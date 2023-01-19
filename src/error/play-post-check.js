@@ -1,7 +1,7 @@
-const FoundernetesError = require("./foundernetes")
+const FoundernetesPlayCheckError = require("./play-check")
 
 module.exports = class FoundernetesPlayPostCheckError extends (
-  FoundernetesError
+  FoundernetesPlayCheckError
 ) {
   constructor(msg = "FoundernetesPlayPostCheckError") {
     super(msg)
