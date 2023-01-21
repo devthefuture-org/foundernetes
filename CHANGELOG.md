@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+### [1.1.3](https://github.com/devthejo/foundernetes/compare/v1.1.2...v1.1.3) (2023-01-21)
+
+
+### Bug Fixes
+
+* add plugins to release ([88d153b](https://github.com/devthejo/foundernetes/commit/88d153b4ea74884e5723fe54c1991a7f5c9621cc))
+
 ### [1.1.2](https://github.com/devthejo/foundernetes/compare/v1.1.1...v1.1.2) (2023-01-21)
 
 
