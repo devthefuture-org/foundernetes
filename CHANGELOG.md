@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+### [1.1.2](https://github.com/devthejo/foundernetes/compare/v1.1.1...v1.1.2) (2023-01-21)
+
+
+### Bug Fixes
+
+* exit code on failed post check ([258cd33](https://github.com/devthejo/foundernetes/commit/258cd332af776b3617d7fefcc382d10490cbb0c2))
+* not-ready notice and expose check error ([fe96f52](https://github.com/devthejo/foundernetes/commit/fe96f52e12ac3efd807ead7692a06bdeed8baccf))
+
 ### [1.1.1](https://github.com/devthejo/foundernetes/compare/v1.1.0...v1.1.1) (2023-01-17)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "foundernetes",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Infra Idempotence As A Framework",
   "main": "src/index.js",
   "repository": "https://github.com/devthejo/foundernetes.git",
