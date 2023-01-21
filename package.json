@@ -92,6 +92,7 @@
   "files": [
     "bin",
     "src",
+    "plugins",
     "package.json",
     "README.md",
     "LICENSE"
