@@ -16,7 +16,7 @@ const isAbortError = require("~/utils/is-abort-error")
 const ctx = require("~/ctx")
 
 module.exports = async (definition) => {
-  const { check, run, onOK, onChanged, onFailed } = definition
+  const { check, run, before, after, onOK, onChanged, onFailed } = definition
 
   let { preCheck, postCheck } = definition
   if (!preCheck) {
@@ -148,6 +148,8 @@ module.exports = async (definition) => {
         retry,
         checkRetry,
       ])
+      const beforeRetry = castRetry(definition.beforeRetry, "before", [retry])
+      const afterRetry = castRetry(definition.afterRetry, "after", [retry])
 
       const {
         runRetryOnFalse = true,
@@ -163,6 +165,15 @@ module.exports = async (definition) => {
         continueOnRunError = false,
       } = definition
 
+      const beforeRetryer = retryerCreate({
+        type: "before",
+        catchErrorAsFalse: false,
+        retry: beforeRetry,
+        retryOnFalse: true,
+        func: async () => (before ? before(vars) : {}),
+      })
+      const extraContext = await beforeRetryer()
+
       let preCheckResult
       try {
         const preCheckRetryer = retryerCreate({
@@ -170,7 +181,7 @@ module.exports = async (definition) => {
           catchErrorAsFalse: catchPreCheckErrorAsFalse,
           retry: preCheckRetry,
           retryOnFalse: preCheckRetryOnFalse,
-          func: async () => preCheck(vars),
+          func: async () => preCheck(vars, extraContext),
         })
         preCheckResult = await preCheckRetryer()
       } catch (error) {
@@ -242,11 +253,20 @@ module.exports = async (definition) => {
           await onOK(vars)
         }
       }
+
+      const afterRetryer = retryerCreate({
+        type: "after",
+        catchErrorAsFalse: false,
+        retry: afterRetry,
+        retryOnFalse: true,
+        func: async () => (after ? after(vars, extraContext) : null),
+      })
+      await afterRetryer()
     })
 
   play.middlewares = [...definition.middlewares] || []
-  play.use = (middleware) => {
-    play.middlewares.push(middleware)
+  play.use = (...middlewares) => {
+    play.middlewares.push(...middlewares)
   }
 
   return play
