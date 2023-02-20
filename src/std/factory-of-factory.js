@@ -2,9 +2,12 @@ const getCallerPath = require("~/utils/get-caller-path")
 
 module.exports = (create) => (definition) => {
   const callerPath = getCallerPath()
-  return async (override = {}) => {
+  return async (config = {}, override = {}) => {
     if (typeof definition === "function") {
-      definition = await definition()
+      if (typeof config === "function") {
+        config = await config()
+      }
+      definition = await definition(config)
     }
     if (typeof override === "function") {
       override = await override(definition)
