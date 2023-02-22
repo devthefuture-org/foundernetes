@@ -24,7 +24,9 @@ const loadAll = (input, retroCompat = true) => {
     const doc = arr.join("\n").trim()
     if (doc.length > 0) {
       const obj = load(doc, retroCompat)
-      documents.push(obj)
+      if (obj !== null) {
+        documents.push(obj)
+      }
     }
   }
 
