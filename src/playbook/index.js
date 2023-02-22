@@ -5,6 +5,9 @@ const async = require("async")
 const fs = require("fs-extra")
 
 const ctx = require("~/ctx")
+
+const sudoFactory = require("~/lib/sudo-factory")
+
 const playbookKey = require("~/utils/playbook-key")
 const isAbortError = require("~/utils/is-abort-error")
 const commandAbortController = require("~/cli/abort-controller")
@@ -28,6 +31,11 @@ module.exports = async (options, targets = []) => {
     abortController,
     abortSignal,
   })
+
+  const { sudo } = config
+  if (sudo) {
+    ctx.set("sudo", await sudoFactory())
+  }
 
   const { cwd, playbooksDir } = config
   const playbooksPath = `${cwd}/${playbooksDir}`

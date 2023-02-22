@@ -17,6 +17,8 @@ const createValidator = require("~/vars/create-validator")
 
 const yaml = require("~/utils/yaml")
 
+const sudoFactory = require("~/lib/sudo-factory")
+
 const ctx = require("~/ctx")
 
 const FoundernetesPlayCheckError = require("~/error/play-check")
@@ -25,6 +27,8 @@ const FoundernetesPlayPostCheckError = require("~/error/play-post-check")
 
 module.exports = {
   cli,
+
+  // factories
   createIterator,
   iteratorFactory,
   createPlay,
@@ -33,11 +37,22 @@ module.exports = {
   loaderFactory,
   createPlaybook,
   playbookFactory,
-  yaml,
+
+  // vars
   createValidator,
   validate,
+
+  // context
   ctx,
+
+  // errors
   FoundernetesPlayCheckError,
   FoundernetesPlayPreCheckError,
   FoundernetesPlayPostCheckError,
+
+  // utils
+  yaml,
+
+  // lib
+  sudoFactory,
 }

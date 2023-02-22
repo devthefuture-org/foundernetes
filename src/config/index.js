@@ -38,6 +38,14 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
       envParser: envParserYaml,
       default: 0,
     },
+    sudoPassword: {
+      env: "F10S_SUDO_PASSWORD",
+    },
+    sudo: {
+      env: "F10S_SUDO",
+      envParser: envParserYaml,
+      defaultFunction: (config) => !!config.sudoPassword,
+    },
   }
 
   const { cwd } = rootConfig

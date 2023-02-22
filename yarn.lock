@@ -434,6 +434,76 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@esm2cjs/execa@npm:^6.1.1-cjs.1":
+  version: 6.1.1-cjs.1
+  resolution: "@esm2cjs/execa@npm:6.1.1-cjs.1"
+  dependencies:
+    "@esm2cjs/human-signals": ^3.0.1
+    "@esm2cjs/is-stream": ^3.0.0
+    "@esm2cjs/npm-run-path": ^5.1.1-cjs.0
+    "@esm2cjs/onetime": ^6.0.1-cjs.0
+    "@esm2cjs/strip-final-newline": ^3.0.1-cjs.0
+    cross-spawn: ^7.0.3
+    get-stream: ^6.0.1
+    merge-stream: ^2.0.0
+    signal-exit: ^3.0.7
+  checksum: 7ae9c0b86f9a924c13f5ab258f07234424a0e33655d3f3c47b0e277adbf0281121586780484b02d09b724d9e753c3d4315a40683c15ff948d72fb12464cfd376
+  languageName: node
+  linkType: hard
+
+"@esm2cjs/human-signals@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "@esm2cjs/human-signals@npm:3.0.1"
+  checksum: b3943f331a039b2cce835306b67fb2a11aba2416ab93e58c6787028cf5a2bcb4aeef40a3df741c4e8196c4c85f0b84bee807a7dd3681f60cbedc0c04a43ed040
+  languageName: node
+  linkType: hard
+
+"@esm2cjs/is-stream@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@esm2cjs/is-stream@npm:3.0.0"
+  checksum: b122aac5cd8e9b3c258af42007e4fa08bed34abb8b69062b7e756d14cc09a230cee2816a5ef7403695390ace7ce2d8ccdcdc3e06f92023bb6d50aabc34c73681
+  languageName: node
+  linkType: hard
+
+"@esm2cjs/mimic-fn@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@esm2cjs/mimic-fn@npm:4.0.0"
+  checksum: 1a6027769d61273bd4ba0e7dee9fd20969eb87b1b76974f82ada3f2f97ba2ed0ed1ecda26293cb867f62f28b1b90363dc7804f31c26cf6f76243f730f8d181d4
+  languageName: node
+  linkType: hard
+
+"@esm2cjs/npm-run-path@npm:^5.1.1-cjs.0":
+  version: 5.1.1-cjs.0
+  resolution: "@esm2cjs/npm-run-path@npm:5.1.1-cjs.0"
+  dependencies:
+    "@esm2cjs/path-key": ^4.0.0
+  checksum: 3ec07c58aa27072fb0992166774fbe1b7e9b8e9ff5fe70e9cc1042b4048f7e1abd50bc63a30d3de79143a72887a0ed2d1bc82d3ca80bcbd4bcdefc6b48b4bc93
+  languageName: node
+  linkType: hard
+
+"@esm2cjs/onetime@npm:^6.0.1-cjs.0":
+  version: 6.0.1-cjs.0
+  resolution: "@esm2cjs/onetime@npm:6.0.1-cjs.0"
+  dependencies:
+    "@esm2cjs/mimic-fn": ^4.0.0
+  checksum: 341e04f8ce1737cc1569f6fedb1d462559be7b67c762a2c862f39f08b1bf0cb13824941f0af87578d74e54ed6845b779d2af35999abb1c184ae555a1701bca7c
+  languageName: node
+  linkType: hard
+
+"@esm2cjs/path-key@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@esm2cjs/path-key@npm:4.0.0"
+  checksum: f5207b14c33d8bf09aa3028ddee088d471a58763280e2c78ec14ca7910f07285cb53069c2ef7b1319f2d74ff2685c49267a65658dfac66e225cd614f8e4193ff
+  languageName: node
+  linkType: hard
+
+"@esm2cjs/strip-final-newline@npm:^3.0.1-cjs.0":
+  version: 3.0.1-cjs.0
+  resolution: "@esm2cjs/strip-final-newline@npm:3.0.1-cjs.0"
+  checksum: b840bc29339b4c62372e9d40c0ef9f319859fce9db35a5c49fd9e1d0ba75e560df475a00aa19504793dd5da39a7db1c3e4b9f60d191075a94029ea33e3aaa394
+  languageName: node
+  linkType: hard
+
 "@gar/promisify@npm:^1.1.3":
   version: 1.1.3
   resolution: "@gar/promisify@npm:1.1.3"
@@ -2663,12 +2733,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"direct-logger@npm:^2.5.1":
-  version: 2.5.1
-  resolution: "direct-logger@npm:2.5.1"
+"direct-logger@npm:^2.8.0":
+  version: 2.8.0
+  resolution: "direct-logger@npm:2.8.0"
   dependencies:
     chalk: ^4.1.0
-  checksum: f236c0e6942e0b1ead8c9d4ab79a9be5722658922e00e2316a2225763d4d790f902221a42788891ea9a015185726c7f5876d4455d0384257f68c90813303c9dd
+  checksum: c97e3c97af875e0aba928067e8c4347580309ea3f3f34fd113b8cb9965d26bd29f12d28cf2107a6cda6528e985e2ea858671d7d1bbc91298d6bdd06f2df2e649
   languageName: node
   linkType: hard
 
@@ -3556,6 +3626,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "foundernetes@workspace:."
   dependencies:
+    "@esm2cjs/execa": ^6.1.1-cjs.1
     ajv: ^8.11.2
     async: ^3.2.4
     async-retry: ^1.3.3
@@ -3566,7 +3637,7 @@ __metadata:
     commit-and-tag-version: ^10.1.0
     compare-versions: ^5.0.1
     decompress: ^4.2.1
-    direct-logger: ^2.5.1
+    direct-logger: ^2.8.0
     docsify-cli: ^4.4.4
     dotenv: ^16.0.3
     enquirer: ^2.3.6
@@ -3598,6 +3669,7 @@ __metadata:
     prettier: ^2.8.0
     pretty-ms: ^8.0.0
     qs: ^6.11.0
+    read: ^2.0.0
     replace: ^1.2.2
     slugify: ^1.6.5
     sonic-boom: ^3.2.0
@@ -5970,6 +6042,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mute-stream@npm:~1.0.0":
+  version: 1.0.0
+  resolution: "mute-stream@npm:1.0.0"
+  checksum: 36fc968b0e9c9c63029d4f9dc63911950a3bdf55c9a87f58d3a266289b67180201cade911e7699f8b2fa596b34c9db43dad37649e3f7fdd13c3bb9edb0017ee7
+  languageName: node
+  linkType: hard
+
 "natural-compare@npm:^1.4.0":
   version: 1.4.0
   resolution: "natural-compare@npm:1.4.0"
@@ -6871,6 +6950,15 @@ __metadata:
     parse-json: ^5.0.0
     type-fest: ^0.6.0
   checksum: eb696e60528b29aebe10e499ba93f44991908c57d70f2d26f369e46b8b9afc208ef11b4ba64f67630f31df8b6872129e0a8933c8c53b7b4daf0eace536901222
+  languageName: node
+  linkType: hard
+
+"read@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "read@npm:2.0.0"
+  dependencies:
+    mute-stream: ~1.0.0
+  checksum: 740273db4c2da3e345e7c444a8cf6de43822b04bf7102adeaa7d77d3a83fdc57e6d58ed4f6e90ba32dd5b8797de033c56daaba37aa76923829c32374f19dfd3b
   languageName: node
   linkType: hard
 

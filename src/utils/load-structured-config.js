@@ -49,7 +49,7 @@ module.exports = async ({
   if (await fs.pathExists(`${cwd}/.${name}rc.js`)) {
     let rcConfig = require(`${cwd}/.${name}rc.js`)
     if (typeof rcConfig === "function") {
-      rcConfig = rcConfig(config)
+      rcConfig = await rcConfig(config)
     }
     extendsConfig(rcConfig)
   }
