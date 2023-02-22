@@ -163,7 +163,7 @@ module.exports = async (definition) => {
       return data
     })
 
-  loader.middlewares = [...definition.middlewares] || []
+  loader.middlewares = [...(definition.middlewares || [])]
   loader.use = (middleware) => {
     loader.middlewares.push(middleware)
   }

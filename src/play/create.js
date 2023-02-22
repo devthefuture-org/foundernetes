@@ -264,7 +264,7 @@ module.exports = async (definition) => {
       await afterRetryer()
     })
 
-  play.middlewares = [...definition.middlewares] || []
+  play.middlewares = [...(definition.middlewares || [])]
   play.use = (...middlewares) => {
     play.middlewares.push(...middlewares)
   }
