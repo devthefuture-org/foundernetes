@@ -89,7 +89,7 @@ module.exports = async (options, targets = []) => {
 
     const playbooks = await Promise.all(
       Object.entries(playbookFactories).map(([name, playbookFactory]) =>
-        playbookFactory({ name })
+        playbookFactory({}, { name })
       )
     )
 
