@@ -118,7 +118,7 @@ module.exports = async (definition) => {
             if (catchErrorAsUndefined) {
               hasError = true
               results = false
-              logger.warn(err)
+              logger.warn(err, err.stack)
             } else {
               events.off("stop", stopSignal)
               reject(err)

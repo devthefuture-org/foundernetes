@@ -50,6 +50,16 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
       envParser: envParserYaml,
       defaultFunction: (config) => !!config.sudoPassword,
     },
+    logCommands: {
+      env: "F10S_LOG_COMMANDS",
+      envParser: envParserYaml,
+      default: true,
+    },
+    logStd: {
+      env: "F10S_LOG_STD",
+      envParser: envParserYaml,
+      default: true,
+    },
   }
 
   const { cwd } = rootConfig

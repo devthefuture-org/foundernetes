@@ -112,7 +112,7 @@ module.exports = async (definition) => {
                   if (type === "preCheck") {
                     logger.info(`🔀 not-ready: ${err.message}`)
                   } else {
-                    logger.warn(err)
+                    logger.warn(err, err.stack)
                   }
                 } else {
                   events.off("stop", stopSignal)
@@ -181,7 +181,12 @@ module.exports = async (definition) => {
           catchErrorAsFalse: catchPreCheckErrorAsFalse,
           retry: preCheckRetry,
           retryOnFalse: preCheckRetryOnFalse,
-          func: async () => preCheck(vars, extraContext),
+          func: async () =>
+            preCheck(vars, extraContext, {
+              isPreCheck: true,
+              isPostCheck: false,
+              event: "preCheck",
+            }),
         })
         preCheckResult = await preCheckRetryer()
       } catch (error) {
@@ -218,7 +223,12 @@ module.exports = async (definition) => {
             catchErrorAsFalse: catchPostCheckErrorAsFalse,
             retry: postCheckRetry,
             retryOnFalse: postCheckRetryOnFalse,
-            func: async () => postCheck(vars),
+            func: async () =>
+              postCheck(vars, extraContext, {
+                isPostCheck: true,
+                isPreCheck: false,
+                event: "postCheck",
+              }),
           })
           postCheckResult = await postCheckRetryer()
         } catch (error) {

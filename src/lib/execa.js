@@ -7,7 +7,16 @@ const { execa } = require("@esm2cjs/execa")
 const ctx = require("~/ctx")
 const sudoFactory = require("./sudo-factory")
 
-const f10sExecaOptions = ["sudo", "logger", "callbacks"]
+const f10sExecaOptions = [
+  "sudo",
+  "logger",
+  "callbacks",
+  "logger",
+  "logStd",
+  "logStdOut",
+  "logStdErr",
+  "logCommand",
+]
 
 module.exports = (command, args, options) => {
   if (args && !Array.isArray(args)) {
@@ -23,6 +32,7 @@ module.exports = (command, args, options) => {
   execaOptions.all = true
 
   const signal = ctx.require("abortSignal")
+  const config = ctx.require("config")
 
   const { callbacks = [] } = extraOptions
 
@@ -35,26 +45,31 @@ module.exports = (command, args, options) => {
     }
   }
 
-  if (extraOptions.logger) {
-    let { logger } = extraOptions
-    let { loggerLevel = "info" } = extraOptions
-    if (execaOptions.all !== false) {
+  const {
+    logger = ctx.require("logger"),
+    logStd = config.logStd,
+    logStdout = logStd,
+    logStderr = logStd,
+    logStdLevel = "info",
+    logCommand = config.logCommands,
+  } = extraOptions
+
+  if (logStdout || logStderr) {
+    if (logStd && execaOptions.all !== false) {
       execaOptions.all = true
     }
-    if (logger === true) {
-      logger = ctx.require("logger")
-    } else if (typeof logger === "string") {
-      loggerLevel = logger
-      logger = ctx.require("logger")
-    }
-    const logStream = logger.getStream(loggerLevel)
+    const logStream = logger.getStream(logStdLevel)
 
     callbacks.unshift((child) => {
-      if (execaOptions.all) {
+      if (logStd && execaOptions.all) {
         child.all.pipe(logStream)
       } else {
-        child.stdout.pipe(logStream)
-        child.stderr.pipe(logStream)
+        if (logStdout) {
+          child.stdout.pipe(logStream)
+        }
+        if (logStderr) {
+          child.stderr.pipe(logStream)
+        }
       }
     })
   }
@@ -62,6 +77,10 @@ module.exports = (command, args, options) => {
   const defaultOptions = { signal }
 
   defaults(execaOptions, defaultOptions)
+
+  if (logCommand) {
+    logger[logStdLevel]([command, ...args].join(" "))
+  }
 
   const child = commandFunction(command, args, execaOptions)
 
