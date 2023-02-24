@@ -13,8 +13,7 @@ const {
 const createMiddlewareComposition = require("./create-middleware-composition")
 
 module.exports = (params = {}) => {
-  const { middlewares = [] } = params
-  const iterator = { middlewares }
+  const iterator = {}
   const abortSignal = ctx.require("abortSignal")
 
   const collectionMethodNames = [
@@ -57,7 +56,7 @@ module.exports = (params = {}) => {
           methodName,
           collectionName,
         }
-        for (const middleware of middlewares) {
+        for (const middleware of iterator.middlewares) {
           if (middleware.hook) {
             await middleware.hook(collectionHookParam, "collection")
           }
@@ -93,7 +92,7 @@ module.exports = (params = {}) => {
               index,
               methodName,
             }
-            for (const middleware of middlewares) {
+            for (const middleware of iterator.middlewares) {
               if (middleware.hook) {
                 await middleware.hook(iterationHookParam, "iteration")
               }
@@ -111,6 +110,13 @@ module.exports = (params = {}) => {
     acc[methodName] = method
     return acc
   }, {})
+
   Object.assign(iterator, collectionMethods)
+
+  iterator.middlewares = [...(params.middlewares || [])]
+  iterator.use = (...middlewares) => {
+    iterator.middlewares.push(...middlewares)
+  }
+
   return iterator
 }
