@@ -3660,7 +3660,9 @@ __metadata:
     lodash: ^4.17.21
     lodash.camelcase: ^4.3.0
     lodash.defaults: ^4.2.0
+    lodash.defaultsdeep: ^4.6.1
     lodash.mergewith: ^4.6.2
+    lodash.omit: ^4.5.0
     lodash.pick: ^4.4.0
     micromatch: ^4.0.5
     nctx: ^1.6.2
@@ -5624,6 +5626,13 @@ __metadata:
   version: 4.6.2
   resolution: "lodash.mergewith@npm:4.6.2"
   checksum: a6db2a9339752411f21b956908c404ec1e088e783a65c8b29e30ae5b3b6384f82517662d6f425cc97c2070b546cc2c7daaa8d33f78db7b6e9be06cd834abdeb8
+  languageName: node
+  linkType: hard
+
+"lodash.omit@npm:^4.5.0":
+  version: 4.5.0
+  resolution: "lodash.omit@npm:4.5.0"
+  checksum: 434645e49fe84ab315719bd5a9a3a585a0f624aa4160bc09157dd041a414bcc287c15840365c1379476a3f3eda41fbe838976c3f7bdecbbf4c5478e86c471a30
   languageName: node
   linkType: hard
 

@@ -7,6 +7,7 @@ const fs = require("fs-extra")
 const ctx = require("~/ctx")
 
 const sudoFactory = require("~/lib/sudo-factory")
+const sudoAskPassword = require("~/lib/sudo-ask-password")
 
 const playbookKey = require("~/utils/playbook-key")
 const isAbortError = require("~/utils/is-abort-error")
@@ -34,7 +35,12 @@ module.exports = async (options, targets = []) => {
 
   const { sudo } = config
   if (sudo) {
-    ctx.set("sudo", await sudoFactory())
+    const sudoOptions = {}
+    if (config.sudoAskPassword) {
+      const password = await sudoAskPassword()
+      sudoOptions.password = password
+    }
+    ctx.set("sudo", await sudoFactory(sudoOptions))
   }
 
   const { cwd, playbooksDir } = config

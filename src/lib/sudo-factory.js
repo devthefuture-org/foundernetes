@@ -1,30 +1,20 @@
-const read = require("read")
 const { execa } = require("@esm2cjs/execa")
 
 const ctx = require("~/ctx")
 
-module.exports = async (options = {}) => {
+module.exports = (options = {}) => {
   const config = ctx.require("config")
-  const {
-    askPassword = true,
-    execaOptions = {},
-    prompt = "sudo requires your password: ",
-  } = options
-  let { password = config.sudoPassword } = options
-  if (!password && askPassword) {
-    password = await read({
-      prompt,
-      silent: true,
-    })
-  }
+  const { execaOptions: execaDefaultOptions = {} } = options
+  const { password = config.sudoPassword } = options
 
-  return (command, args = []) => {
+  return (command, args = [], execaOptions = {}) => {
     const sudoPrompt = "#node-sudo-passwd#"
     const sudoArgs = ["-S", "-p", sudoPrompt, command, ...args]
 
     const input = `${password}\n`
 
     const child = execa("sudo", sudoArgs, {
+      ...execaDefaultOptions,
       ...execaOptions,
       ...(input ? { input } : {}),
     })

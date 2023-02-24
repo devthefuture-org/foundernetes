@@ -41,6 +41,10 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
     sudoPassword: {
       env: "F10S_SUDO_PASSWORD",
     },
+    sudoAskPassword: {
+      env: "F10S_SUDO_ASK_PASSWORD",
+      defaultFunction: (config) => !!config.sudo && !config.sudoPassword,
+    },
     sudo: {
       env: "F10S_SUDO",
       envParser: envParserYaml,

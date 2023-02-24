@@ -18,6 +18,8 @@ const createValidator = require("~/vars/create-validator")
 const yaml = require("~/utils/yaml")
 
 const sudoFactory = require("~/lib/sudo-factory")
+const sudoAskPassword = require("~/lib/sudo-ask-password")
+const execa = require("~/lib/execa")
 
 const ctx = require("~/ctx")
 
@@ -55,4 +57,7 @@ module.exports = {
 
   // lib
   sudoFactory,
+  sudoAskPassword,
+  execa,
+  $: execa,
 }
