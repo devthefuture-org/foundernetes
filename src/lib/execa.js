@@ -79,9 +79,8 @@ module.exports = (command, args, options) => {
   defaults(execaOptions, defaultOptions)
 
   if (logCommand) {
-    logger[logStdLevel]([command, ...args].join(" "))
+    logger[logStdLevel]([command, ...(args || [])].join(" "))
   }
-
   const child = commandFunction(command, args, execaOptions)
 
   for (const callback of callbacks) {

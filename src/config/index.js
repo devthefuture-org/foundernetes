@@ -1,5 +1,13 @@
+const os = require("os")
+const path = require("path")
+const { mkdtemp } = require("fs/promises")
+
+const fs = require("fs-extra")
+
 const parseDuration = require("parse-duration")
+
 const loadStructuredConfig = require("~/utils/load-structured-config")
+
 const envParserYaml = require("./env-parsers/yaml")
 
 module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
@@ -8,6 +16,9 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
       env: "F10S_CWD",
       option: "cwd",
       default: process.cwd(),
+    },
+    projectName: {
+      defaultFunction: (config) => path.basename(config.cwd),
     },
   }
 
@@ -59,6 +70,19 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
       env: "F10S_LOG_STD",
       envParser: envParserYaml,
       default: true,
+    },
+    tmpRootPath: {
+      env: "F10S_TMP_ROOT_PATH",
+      defaultFunction: () => path.join(os.tmpdir(), "foundernetes"),
+      sideEffect: async (tmpRootPath) => {
+        await fs.ensureDir(tmpRootPath)
+      },
+    },
+    tmpDir: {
+      env: "F10S_TMP_PATH",
+      defaultFunction: (config) =>
+        mkdtemp(path.join(config.tmpRootPath, `${config.projectName}-`)),
+      keepDefault: true,
     },
   }
 

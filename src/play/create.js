@@ -110,7 +110,7 @@ module.exports = async (definition) => {
                   }
                   results = false
                   if (type === "preCheck") {
-                    logger.info(`🔀 not-ready: ${err.message}`)
+                    logger.info(`🔀 not-ready: ${err.message}`, err.stack)
                   } else {
                     logger.warn(err, err.stack)
                   }
@@ -208,7 +208,7 @@ module.exports = async (definition) => {
           catchErrorAsFalse: catchRunErrorAsFalse,
           retry,
           retryOnFalse: runRetryOnFalse,
-          func: async () => run(vars),
+          func: async () => run(vars, extraContext),
         })
         const runResult = await runRetryer()
         if (runResult === false) {

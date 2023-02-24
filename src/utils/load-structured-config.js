@@ -71,6 +71,7 @@ module.exports = async ({
       defaultFunction,
       emptyAsUndefined = defaultEmptyAsUndefined,
       transform,
+      sideEffect,
     } = def
 
     const optionKey =
@@ -112,6 +113,9 @@ module.exports = async ({
     }
     if (transform) {
       config[key] = await transform(config[key], config)
+    }
+    if (sideEffect) {
+      await sideEffect(config[key], config)
     }
   }
 
