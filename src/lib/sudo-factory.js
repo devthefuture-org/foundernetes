@@ -8,8 +8,7 @@ module.exports = (options = {}) => {
   const { password = config.sudoPassword } = options
 
   return (command, args = [], execaOptions = {}) => {
-    const sudoPrompt = "#node-sudo-passwd#"
-    const sudoArgs = ["-S", "-p", sudoPrompt, command, ...args]
+    const sudoArgs = ["-S", "-p", "", command, ...args]
 
     const input = `${password}\n`
 
@@ -22,13 +21,10 @@ module.exports = (options = {}) => {
     let prompts = 0
     child.stderr.on("data", (data) => {
       const lines = data.toString().trim().split("\n")
-      lines.forEach((line) => {
-        if (line === sudoPrompt) {
-          if (++prompts > 1) {
-            throw new Error("incorrect password")
-          }
-        }
-      })
+      prompts += lines.length
+      if (prompts > 1) {
+        throw new Error("incorrect password")
+      }
     })
 
     return child

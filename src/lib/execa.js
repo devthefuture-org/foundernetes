@@ -20,6 +20,8 @@ module.exports = (command, args, options) => {
   const execaOptions = omit(options, f10sExecaOptions)
   const extraOptions = pick(options, f10sExecaOptions)
 
+  execaOptions.all = true
+
   const signal = ctx.require("abortSignal")
 
   const { callbacks = [] } = extraOptions
@@ -36,6 +38,9 @@ module.exports = (command, args, options) => {
   if (extraOptions.logger) {
     let { logger } = extraOptions
     let { loggerLevel = "info" } = extraOptions
+    if (execaOptions.all !== false) {
+      execaOptions.all = true
+    }
     if (logger === true) {
       logger = ctx.require("logger")
     } else if (typeof logger === "string") {
@@ -45,7 +50,12 @@ module.exports = (command, args, options) => {
     const logStream = logger.getStream(loggerLevel)
 
     callbacks.unshift((child) => {
-      child.stdout.pipe(logStream)
+      if (execaOptions.all) {
+        child.all.pipe(logStream)
+      } else {
+        child.stdout.pipe(logStream)
+        child.stderr.pipe(logStream)
+      }
     })
   }
 
