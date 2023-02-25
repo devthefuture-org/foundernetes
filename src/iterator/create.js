@@ -73,6 +73,8 @@ module.exports = (params = {}) => {
           iterator.middlewares
         )
 
+        ctx.set("iteratorSerie", methodName.endsWith("Series"))
+
         const iteratorCallback = args[iterateeIndex]
         args[iterateeIndex] = async.ensureAsync(async (...iteratorArgs) =>
           ctx.fork(async () => {

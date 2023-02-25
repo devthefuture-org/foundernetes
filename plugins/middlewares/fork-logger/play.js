@@ -13,5 +13,10 @@ module.exports = ({ name }) => {
   )
 
   logger.info(`▶️  playing: ${name}`)
-  logger.setPrefix("├─── ")
+  const iteratorSerie = ctx.get("iteratorSerie")
+  if (iteratorSerie) {
+    logger.setPrefix("├─── ")
+  } else {
+    logger.setPrefix("──── ")
+  }
 }

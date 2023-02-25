@@ -1,4 +1,5 @@
 const yaRetry = require("ya-retry")
+const chalk = require("chalk")
 
 const createValidator = require("~/vars/create-validator")
 
@@ -64,6 +65,12 @@ module.exports = async (definition) => {
         vars = await vars()
       }
 
+      const {
+        itemKey = "name",
+        itemName: itemNameOption = (itemVars) => itemVars[itemKey],
+      } = play
+      const itemName = itemNameOption(vars)
+
       if (validate) {
         const isValid = await validate(vars)
         if (!isValid) {
@@ -109,9 +116,7 @@ module.exports = async (definition) => {
                     hasError = true
                   }
                   results = false
-                  if (type === "preCheck") {
-                    logger.info(`🔀 not-ready: ${err.message}`, err.stack)
-                  } else {
+                  if (type !== "preCheck") {
                     logger.warn(err, err.stack)
                   }
                 } else {
@@ -174,6 +179,8 @@ module.exports = async (definition) => {
       })
       const extraContext = await beforeRetryer()
 
+      const logger = ctx.require("logger")
+
       let preCheckResult
       try {
         const preCheckRetryer = retryerCreate({
@@ -195,7 +202,6 @@ module.exports = async (definition) => {
         }
         if (catchCheckErrorAsFalse) {
           preCheckResult = false
-          const logger = ctx.require("logger")
           logger.error(error)
         } else {
           throw error
@@ -203,6 +209,7 @@ module.exports = async (definition) => {
       }
 
       if (preCheckResult === false) {
+        logger.info(`🙀 ${chalk.cyanBright(`[${itemName}] not-ready`)}`)
         const runRetryer = retryerCreate({
           type: "run",
           catchErrorAsFalse: catchRunErrorAsFalse,
@@ -210,6 +217,7 @@ module.exports = async (definition) => {
           retryOnFalse: runRetryOnFalse,
           func: async () => run(vars, extraContext),
         })
+        logger.info(`🔀 ${chalk.cyanBright(`[${itemName}] run ...`)}`)
         const runResult = await runRetryer()
         if (runResult === false) {
           counter.failed++
@@ -237,13 +245,13 @@ module.exports = async (definition) => {
           }
           if (catchCheckErrorAsFalse) {
             postCheckResult = false
-            const logger = ctx.require("logger")
             logger.error(error)
           } else {
             throw error
           }
         }
         if (postCheckResult === false) {
+          logger.info(`❌ ${chalk.red(`[${itemName}] failed`)}`)
           counter.failed++
           if (onFailed) {
             await onFailed(vars)
@@ -252,12 +260,14 @@ module.exports = async (definition) => {
             throw new FoundernetesPlayPostCheckError()
           }
         } else {
+          logger.info(`✅ ${chalk.cyanBright(`[${itemName}] ready`)}`)
           counter.changed++
           if (onChanged) {
             await onChanged(vars)
           }
         }
       } else {
+        logger.info(`✅ ${chalk.green(`[${itemName}] ready`)}`)
         counter.ok++
         if (onOK) {
           await onOK(vars)
