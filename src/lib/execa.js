@@ -18,7 +18,7 @@ const f10sExecaOptions = [
   "logCommand",
 ]
 
-module.exports = (command, args, options) => {
+module.exports = async (command, args, options) => {
   if (args && !Array.isArray(args)) {
     options = args
     args = null
@@ -55,21 +55,14 @@ module.exports = (command, args, options) => {
   } = extraOptions
 
   if (logStdout || logStderr) {
-    if (logStd && execaOptions.all !== false) {
-      execaOptions.all = true
-    }
     const logStream = logger.getStream(logStdLevel)
 
     callbacks.unshift((child) => {
-      if (logStd && execaOptions.all) {
-        child.all.pipe(logStream)
-      } else {
-        if (logStdout) {
-          child.stdout.pipe(logStream)
-        }
-        if (logStderr) {
-          child.stderr.pipe(logStream)
-        }
+      if (logStdout) {
+        child.stdout.pipe(logStream)
+      }
+      if (logStderr) {
+        child.stderr.pipe(logStream)
       }
     })
   }
@@ -81,6 +74,7 @@ module.exports = (command, args, options) => {
   if (logCommand) {
     logger[logStdLevel]([command, ...(args || [])].join(" "))
   }
+
   const child = commandFunction(command, args, execaOptions)
 
   for (const callback of callbacks) {

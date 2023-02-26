@@ -195,6 +195,7 @@ module.exports = async (definition) => {
               event: "preCheck",
             }),
         })
+        logger.info(`🕵️  ${chalk.blueBright(`[${itemName}] pre-checking ...`)}`)
         preCheckResult = await preCheckRetryer()
       } catch (error) {
         if (isAbortError(error)) {
@@ -209,7 +210,7 @@ module.exports = async (definition) => {
       }
 
       if (preCheckResult === false) {
-        logger.info(`🙀 ${chalk.cyanBright(`[${itemName}] not-ready`)}`)
+        logger.info(`🙀 ${chalk.cyanBright(`[${itemName}] checked not-ready`)}`)
         const runRetryer = retryerCreate({
           type: "run",
           catchErrorAsFalse: catchRunErrorAsFalse,
@@ -217,8 +218,9 @@ module.exports = async (definition) => {
           retryOnFalse: runRetryOnFalse,
           func: async () => run(vars, extraContext),
         })
-        logger.info(`🔀 ${chalk.cyanBright(`[${itemName}] run ...`)}`)
+        logger.info(`🏃 ${chalk.cyanBright(`[${itemName}] running ...`)}`)
         const runResult = await runRetryer()
+        logger.info(`🔚 ${chalk.cyanBright(`[${itemName}] ran`)}`)
         if (runResult === false) {
           counter.failed++
           throw new FoundernetesPlayRunError()
@@ -238,6 +240,9 @@ module.exports = async (definition) => {
                 event: "postCheck",
               }),
           })
+          logger.info(
+            `🕵️  ${chalk.cyanBright(`[${itemName}] post-checking ...`)}`
+          )
           postCheckResult = await postCheckRetryer()
         } catch (error) {
           if (isAbortError(error)) {
@@ -260,14 +265,14 @@ module.exports = async (definition) => {
             throw new FoundernetesPlayPostCheckError()
           }
         } else {
-          logger.info(`✅ ${chalk.cyanBright(`[${itemName}] ready`)}`)
+          logger.info(`✅ ${chalk.cyanBright(`[${itemName}] checked ready`)}`)
           counter.changed++
           if (onChanged) {
             await onChanged(vars)
           }
         }
       } else {
-        logger.info(`✅ ${chalk.green(`[${itemName}] ready`)}`)
+        logger.info(`✅ ${chalk.green(`[${itemName}] checked ready`)}`)
         counter.ok++
         if (onOK) {
           await onOK(vars)
