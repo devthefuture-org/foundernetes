@@ -1,13 +1,18 @@
 const os = require("os")
 
-const read = require("read")
+const { Password } = require("enquirer")
 
 module.exports = async (options = {}) => {
   const { username } = os.userInfo()
+
   const { prompt = `[sudo] password for ${username}: ` } = options
-  const password = await read({
-    prompt,
-    silent: true,
+
+  const promptPassword = new Password({
+    name: "password",
+    message: prompt,
   })
+
+  const password = await promptPassword.run()
+
   return password
 }

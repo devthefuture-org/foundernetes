@@ -12,5 +12,12 @@ module.exports = (program) =>
     .option("--parallel, -p", "run playbooks in parallel")
     .argument("[target...]", "playbook name or tags")
     .action(async (targets, opts, _command) => {
-      await playbook(opts, targets)
+      try {
+        await playbook(opts, targets)
+      } catch (err) {
+        if (err === "") {
+          return
+        }
+        throw err
+      }
     })
