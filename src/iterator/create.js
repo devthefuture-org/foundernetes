@@ -14,7 +14,6 @@ const createMiddlewareComposition = require("./create-middleware-composition")
 
 module.exports = (params = {}) => {
   const iterator = {}
-  const abortSignal = ctx.require("abortSignal")
 
   const collectionMethodNames = [
     ...collectionSimpleMethods,
@@ -63,6 +62,7 @@ module.exports = (params = {}) => {
         }
 
         const result = await func(...collectionArgs)
+        const abortSignal = ctx.require("abortSignal")
         abortSignal.throwIfAborted()
         return result
       }
@@ -78,6 +78,7 @@ module.exports = (params = {}) => {
         const iteratorCallback = args[iterateeIndex]
         args[iterateeIndex] = async.ensureAsync(async (...iteratorArgs) =>
           ctx.fork(async () => {
+            const abortSignal = ctx.require("abortSignal")
             if (abortSignal.aborted) {
               return
             }

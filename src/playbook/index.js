@@ -1,15 +1,12 @@
-const path = require("path")
 const { EventEmitter } = require("node:events")
 
 const async = require("async")
-const fs = require("fs-extra")
 
 const ctx = require("~/ctx")
 
 const sudoFactory = require("~/lib/sudo-factory")
 const sudoAskPassword = require("~/lib/sudo-ask-password")
 
-const playbookKey = require("~/utils/playbook-key")
 const isAbortError = require("~/utils/is-abort-error")
 const commandAbortController = require("~/cli/abort-controller")
 
@@ -17,11 +14,12 @@ const FoundernetesPlayPostCheckError = require("~/error/play-post-check")
 
 const { exitCodes } = require("~/error/constants")
 
-const exts = [".js"]
+const { getPlaybookSet } = require("./load-cwd")
 
 module.exports = async (options, targets = []) => {
   const config = ctx.require("config")
   const logger = ctx.require("logger")
+  const staticDefinitions = ctx.require("staticDefinitions")
 
   const events = new EventEmitter()
   ctx.set("events", events)
@@ -43,47 +41,19 @@ module.exports = async (options, targets = []) => {
     ctx.set("sudo", await sudoFactory(sudoOptions))
   }
 
-  const { cwd, playbooksDir } = config
-  const playbooksPath = `${cwd}/${playbooksDir}`
-
-  let ls = await fs.readdir(playbooksPath)
-  ls = ls.sort()
-
-  const existingPlaybooks = {}
-
-  let rootPlaybook
-
-  for (const f of ls) {
-    let key
-    const inc = `${playbooksPath}/${f}`
-    if ((await fs.stat(inc)).isDirectory()) {
-      if (!(await fs.pathExists(`${inc}/index.js`))) {
-        continue
-      }
-      key = f
-    } else {
-      const ext = path.extname(f)
-      if (!exts.includes(ext)) {
-        continue
-      }
-      key = f.substring(0, f.length - ext.length)
-    }
-    const playbookCallback = require(inc)
-    if (key === "index") {
-      rootPlaybook = playbookCallback
-      continue
-    }
-    key = playbookKey(key)
-    existingPlaybooks[key] = playbookCallback
+  let { playbookSet } = staticDefinitions
+  if (!playbookSet) {
+    playbookSet = await getPlaybookSet()
   }
+  const { playbooks: existingPlaybooks, index: playbooksIndex } = playbookSet
 
   const definedTarget = targets.length > 0
 
   let exitCode
   try {
     const playbookFactories =
-      !definedTarget && rootPlaybook
-        ? { index: rootPlaybook }
+      !definedTarget && playbooksIndex
+        ? { index: playbooksIndex }
         : Object.entries(existingPlaybooks).reduce(
             (acc, [key, playbookFactory]) => {
               if (!playbookFactory) {

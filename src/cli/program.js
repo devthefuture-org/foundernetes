@@ -12,14 +12,17 @@ module.exports = () => {
   program
     .name("foundernetes")
     .description("Infra Idempotence As A Framework ☀️")
-    .version(require(`${__dirname}/../../package.json`).version)
+    .version(require(`../../package.json`).version)
     .addOption(options.debug)
     .addOption(options.inlineConfig)
     .addOption(options.configSet)
     .hook("preAction", async (_thisCommand, actionCommand) => {
       const opts = actionCommand.optsWithGlobals()
 
-      const config = await loadConfig(opts)
+      const staticDefinitions = ctx.require("staticDefinitions")
+      const { inlineConfigs = [] } = staticDefinitions
+
+      const config = await loadConfig(opts, inlineConfigs)
       ctx.set("config", config)
 
       const loggerOverride = ctx.get("loggerOverride")
