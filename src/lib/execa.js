@@ -55,7 +55,7 @@ module.exports = async (command, args, options) => {
   } = extraOptions
 
   if (logStdout || logStderr) {
-    const logStream = logger.getStream(logStdLevel)
+    const logStream = logger.createStream(logStdLevel)
 
     callbacks.unshift((child) => {
       if (logStdout) {
