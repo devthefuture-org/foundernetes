@@ -2666,12 +2666,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"direct-logger@npm:^2.8.1":
-  version: 2.8.1
-  resolution: "direct-logger@npm:2.8.1"
+"direct-logger@npm:^2.10.1":
+  version: 2.10.1
+  resolution: "direct-logger@npm:2.10.1"
   dependencies:
     chalk: ^4.1.0
-  checksum: 6c969235cac2f4992e7070490e3d1b4eabe7f466ce955b9442ea375b1b5de2baa51d163974d96f2089e68bba8d85e4955409c89f1c7d1fb6ffec5d96cf6fac82
+  checksum: 710d8f256c8c1f8cc41230786fd9e9bbd3d9d8f2e2044d307fe0cde40e1f9c94e7232578436f728cafc1f5fdc95b3fc58e53d2581fd43956a1780ee847ebfc34
   languageName: node
   linkType: hard
 
@@ -3517,7 +3517,7 @@ __metadata:
     commit-and-tag-version: ^10.1.0
     compare-versions: ^5.0.1
     decompress: ^4.2.1
-    direct-logger: ^2.8.1
+    direct-logger: ^2.10.1
     docsify-cli: ^4.4.4
     dotenv: ^16.0.3
     enquirer: ^2.3.6
@@ -3552,6 +3552,7 @@ __metadata:
     pretty-ms: ^8.0.0
     qs: ^6.11.0
     replace: ^1.2.2
+    shell-quote: ^1.8.0
     slugify: ^1.6.5
     sonic-boom: ^3.2.0
     tiged: ^2.12.3
@@ -7162,6 +7163,13 @@ __metadata:
   version: 3.0.0
   resolution: "shebang-regex@npm:3.0.0"
   checksum: 1a2bcae50de99034fcd92ad4212d8e01eedf52c7ec7830eedcf886622804fe36884278f2be8be0ea5fde3fd1c23911643a4e0f726c8685b61871c8908af01222
+  languageName: node
+  linkType: hard
+
+"shell-quote@npm:^1.8.0":
+  version: 1.8.0
+  resolution: "shell-quote@npm:1.8.0"
+  checksum: 6ef7c5e308b9c77eedded882653a132214fa98b4a1512bb507588cf6cd2fc78bfee73e945d0c3211af028a1eabe09c6a19b96edd8977dc149810797e93809749
   languageName: node
   linkType: hard
 
