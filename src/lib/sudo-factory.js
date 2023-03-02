@@ -1,3 +1,5 @@
+const os = require("os")
+
 const { execa } = require("@esm2cjs/execa")
 
 const ctx = require("~/ctx")
@@ -7,8 +9,11 @@ module.exports = (options = {}) => {
   const { execaOptions: execaDefaultOptions = {} } = options
   const { password = config.sudoPassword } = options
 
+  const { username } = os.userInfo()
+  const { prompt = `[sudo] password for ${username}: ` } = options
+
   return (command, args = [], execaOptions = {}) => {
-    const sudoArgs = ["-S", "-p", "", command, ...args]
+    const sudoArgs = ["-S", "-k", "-p", prompt, command, ...args]
 
     const input = `${password}\n`
 
@@ -18,11 +23,9 @@ module.exports = (options = {}) => {
       ...(input ? { input } : {}),
     })
 
-    let prompts = 0
     child.stderr.on("data", (data) => {
       const lines = data.toString().trim().split("\n")
-      prompts += lines.length
-      if (prompts > 1) {
+      if (lines.some((line) => line === prompt)) {
         throw new Error("incorrect password")
       }
     })
