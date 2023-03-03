@@ -4,7 +4,7 @@ const options = require("../options")
 
 module.exports = (program) =>
   program
-    .command("play")
+    .command("play", { isDefault: true })
     .description("run playbooks")
     .addOption(options.cwd)
     .addOption(options.gracefullShutdownTimeout)
