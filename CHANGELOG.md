@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.2.0](https://github.com/devthejo/foundernetes/compare/v1.1.3...v1.2.0) (2023-03-03)
+
+
+### Features
+
+* add before and after ([24234ba](https://github.com/devthejo/foundernetes/commit/24234ba4c1eb2fb14164674d45df83983ba1a419))
+* compat with pkg + cleanup ([a55c60f](https://github.com/devthejo/foundernetes/commit/a55c60f5a5b9a1a292e287219435547f9b87f43a))
+* execa deep integration ([6b3b154](https://github.com/devthejo/foundernetes/commit/6b3b154b7a8d99a3813cc1c9623b5a280b0d1659))
+* factory param, then override ([1e302bf](https://github.com/devthejo/foundernetes/commit/1e302bf54b150ae4f9b9437ab540abd442f7a73d))
+* improve commands ([6472505](https://github.com/devthejo/foundernetes/commit/64725052d624bf436e9f597f38c35f62d16bcd61))
+* replace read by enquirer ([939e138](https://github.com/devthejo/foundernetes/commit/939e138ebd1893fac24505e46ae9b73db2c10efb))
+* sudo ([f2867c2](https://github.com/devthejo/foundernetes/commit/f2867c298be4e76f8ce3e62afca5930da956bc6f))
+
+
+### Bug Fixes
+
+* fixs and wip ([2b9eea0](https://github.com/devthejo/foundernetes/commit/2b9eea083b7098925313207b480d2c98321231fc))
+* improve debug + fix issue with merge-stream ([3f2c4bc](https://github.com/devthejo/foundernetes/commit/3f2c4bc4320584541095d24a670eae0a7f86da4b))
+* improve execa ([7766f4b](https://github.com/devthejo/foundernetes/commit/7766f4b029291c74f6c960d76d34cb20bebc39d4))
+* improve execa and sudo ([17fba7c](https://github.com/devthejo/foundernetes/commit/17fba7c3dcb70f743dc9b869736809e3f9386f8c))
+* logger stream ([ad86c39](https://github.com/devthejo/foundernetes/commit/ad86c3978d779006816b463365b9eced0f4629c8))
+* middlewares set in factories ([3cd4803](https://github.com/devthejo/foundernetes/commit/3cd4803f82ef2bc846156db3f200a48591823967))
+* playbook factory name ([f5b3e13](https://github.com/devthejo/foundernetes/commit/f5b3e13dc34db7ca2dc888f790431c94385e00d8))
+* sudo detect error ([b187fd4](https://github.com/devthejo/foundernetes/commit/b187fd446a1b68de8735367b4d3306d0a5832f43))
+* up ([d323120](https://github.com/devthejo/foundernetes/commit/d3231204714a3e0af6c46a27414fd24c0066e71f))
+* up direct-logger ([5ee9c52](https://github.com/devthejo/foundernetes/commit/5ee9c527dd4839b47a033ac64d9c712a7ca258b9))
+* wip ([c6027da](https://github.com/devthejo/foundernetes/commit/c6027daca9ce69e1f52987fd8f39adfc58da0a21))
+* wip ([7d88a81](https://github.com/devthejo/foundernetes/commit/7d88a81bf9efb5b6c2c402d9c0c4faf517c45777))
+* yaml avoid null object ([ef3398b](https://github.com/devthejo/foundernetes/commit/ef3398ba3aaeadf1829ebf398e2d34529ba33eb8))
+
 ### [1.1.3](https://github.com/devthejo/foundernetes/compare/v1.1.2...v1.1.3) (2023-01-21)
 
 
