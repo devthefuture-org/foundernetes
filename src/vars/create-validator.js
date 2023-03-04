@@ -4,6 +4,8 @@ module.exports = async (schema, options = {}) => {
   const ajv = new Ajv({
     verbose: true,
     allErrors: true,
+    useDefaults: true,
+    coerceTypes: true,
     // logger: {
     //   log: console.log.bind(console),
     //   warn: function warn(...arguments) {
