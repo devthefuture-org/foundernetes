@@ -34,7 +34,7 @@ module.exports = async (definition) => {
 
   const { retryOnUndefined = true, catchErrorAsUndefined = false } = definition
 
-  const loader = async (vars) =>
+  const loader = async (vars = {}) =>
     ctx.fork(async () => {
       const contextLoader = {
         name,
@@ -48,18 +48,6 @@ module.exports = async (definition) => {
         if (middleware.hook) {
           await middleware.hook(contextLoader, "loader")
         }
-      }
-
-      for (const middleware of middlewares) {
-        if (middleware.vars) {
-          const result = middleware.vars(vars)
-          if (result) {
-            vars = result
-          }
-        }
-      }
-      if (typeof vars === "function") {
-        vars = await vars()
       }
 
       if (validateVars) {
@@ -164,8 +152,13 @@ module.exports = async (definition) => {
     })
 
   loader.middlewares = [...(definition.middlewares || [])]
-  loader.use = (middleware) => {
-    loader.middlewares.push(middleware)
+  loader.use = (...middlewares) => {
+    for (let middleware of middlewares) {
+      if (!Array.isArray(middleware)) {
+        middleware = [middleware]
+      }
+      loader.middlewares.push(...middleware)
+    }
   }
 
   return loader

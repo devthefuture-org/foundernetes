@@ -118,7 +118,12 @@ module.exports = (params = {}) => {
 
   iterator.middlewares = [...(params.middlewares || [])]
   iterator.use = (...middlewares) => {
-    iterator.middlewares.push(...middlewares)
+    for (let middleware of middlewares) {
+      if (!Array.isArray(middleware)) {
+        middleware = [middleware]
+      }
+      iterator.middlewares.push(...middleware)
+    }
   }
 
   return iterator

@@ -34,7 +34,7 @@ module.exports = async (definition) => {
 
   const name = getPluginName(definition, "play")
 
-  const play = async (vars) =>
+  const play = async (vars = {}) =>
     ctx.fork(async () => {
       const contextPlay = {
         name,
@@ -45,25 +45,14 @@ module.exports = async (definition) => {
       })
 
       const { middlewares } = play
+
       for (const middleware of middlewares) {
         if (middleware.hook) {
           await middleware.hook(contextPlay, "play")
         }
       }
 
-      for (const middleware of middlewares) {
-        if (middleware.vars) {
-          const result = middleware.vars(vars)
-          if (result) {
-            vars = result
-          }
-        }
-      }
       const counter = ctx.require("playbook.counter")
-
-      if (typeof vars === "function") {
-        vars = await vars()
-      }
 
       const {
         itemKey = "name",
@@ -188,12 +177,25 @@ module.exports = async (definition) => {
           catchErrorAsFalse: catchPreCheckErrorAsFalse,
           retry: preCheckRetry,
           retryOnFalse: preCheckRetryOnFalse,
-          func: async () =>
-            preCheck(vars, extraContext, {
+          func: async () => {
+            const event = {
               isPreCheck: true,
               isPostCheck: false,
               event: "preCheck",
-            }),
+            }
+            for (const middleware of middlewares) {
+              if (middleware.beforeCheck) {
+                await middleware.beforeCheck(extraContext, event)
+              }
+            }
+            const result = await preCheck(vars, extraContext, event)
+            for (const middleware of middlewares) {
+              if (middleware.afterCheck) {
+                await middleware.afterCheck(extraContext, event)
+              }
+            }
+            return result
+          },
         })
         logger.info(`🕵️  ${chalk.blueBright(`[${itemName}] pre-checking ...`)}`)
         preCheckResult = await preCheckRetryer()
@@ -216,7 +218,20 @@ module.exports = async (definition) => {
           catchErrorAsFalse: catchRunErrorAsFalse,
           retry,
           retryOnFalse: runRetryOnFalse,
-          func: async () => run(vars, extraContext),
+          func: async () => {
+            for (const middleware of middlewares) {
+              if (middleware.beforeRun) {
+                await middleware.beforeRun(extraContext)
+              }
+            }
+            const result = await run(vars, extraContext)
+            for (const middleware of middlewares) {
+              if (middleware.afterRun) {
+                await middleware.afterRun(extraContext)
+              }
+            }
+            return result
+          },
         })
         logger.info(`🏃 ${chalk.cyanBright(`[${itemName}] running ...`)}`)
         const runResult = await runRetryer()
@@ -233,12 +248,25 @@ module.exports = async (definition) => {
             catchErrorAsFalse: catchPostCheckErrorAsFalse,
             retry: postCheckRetry,
             retryOnFalse: postCheckRetryOnFalse,
-            func: async () =>
-              postCheck(vars, extraContext, {
+            func: async () => {
+              const event = {
                 isPostCheck: true,
                 isPreCheck: false,
                 event: "postCheck",
-              }),
+              }
+              for (const middleware of middlewares) {
+                if (middleware.beforeCheck) {
+                  await middleware.beforeCheck(extraContext, event)
+                }
+              }
+              const result = await postCheck(vars, extraContext, event)
+              for (const middleware of middlewares) {
+                if (middleware.afterCheck) {
+                  await middleware.afterCheck(extraContext, event)
+                }
+              }
+              return result
+            },
           })
           logger.info(
             `🕵️  ${chalk.cyanBright(`[${itemName}] post-checking ...`)}`
@@ -291,7 +319,12 @@ module.exports = async (definition) => {
 
   play.middlewares = [...(definition.middlewares || [])]
   play.use = (...middlewares) => {
-    play.middlewares.push(...middlewares)
+    for (let middleware of middlewares) {
+      if (!Array.isArray(middleware)) {
+        middleware = [middleware]
+      }
+      play.middlewares.push(...middleware)
+    }
   }
 
   return play
