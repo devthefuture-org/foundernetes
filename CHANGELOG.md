@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+### [1.2.1](https://github.com/devthejo/foundernetes/compare/v1.2.0...v1.2.1) (2023-03-08)
+
+
+### Bug Fixes
+
+* big refacto rm middlewares +log integration ([9822781](https://github.com/devthejo/foundernetes/commit/9822781e7dba72c98ef1eb8310398fff853ba5a1))
+* set play as default command ([419629a](https://github.com/devthejo/foundernetes/commit/419629a94c81d5b3e856978895d2fb293cb7f0cb))
+
 ## [1.2.0](https://github.com/devthejo/foundernetes/compare/v1.1.3...v1.2.0) (2023-03-03)
 
 
