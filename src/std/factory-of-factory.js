@@ -12,10 +12,6 @@ module.exports = (create) => (definition) => {
     if (typeof override === "function") {
       override = await override(definition)
     }
-    override = { ...override }
-    if (typeof override.middlewares === "function") {
-      override.middlewares = await override.middlewares(definition)
-    }
 
     const path = callerPath
     return create({ path, ...definition, ...override })

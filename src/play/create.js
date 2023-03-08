@@ -15,9 +15,22 @@ const castRetry = require("~/lib/cast-retry")
 const isAbortError = require("~/utils/is-abort-error")
 
 const ctx = require("~/ctx")
+const logPlay = require("./log-play")
+
+const castArrayAsFunction = require("./cast-array-as-function")
 
 module.exports = async (definition) => {
-  const { check, run, before, after, onOK, onChanged, onFailed } = definition
+  const {
+    check,
+    before,
+    after,
+    onOK,
+    onChanged,
+    onFailed,
+    log: logEnabled = true,
+  } = definition
+
+  let { run } = definition
 
   let { preCheck, postCheck } = definition
   if (!preCheck) {
@@ -26,6 +39,10 @@ module.exports = async (definition) => {
   if (!postCheck) {
     postCheck = check
   }
+
+  preCheck = castArrayAsFunction(preCheck)
+  postCheck = castArrayAsFunction(postCheck)
+  run = castArrayAsFunction(run)
 
   let { validate } = definition
   if (validate && typeof validate === "object") {
@@ -44,13 +61,7 @@ module.exports = async (definition) => {
         play: contextPlay,
       })
 
-      const { middlewares } = play
-
-      for (const middleware of middlewares) {
-        if (middleware.hook) {
-          await middleware.hook(contextPlay, "play")
-        }
-      }
+      logPlay.start({ logEnabled, name })
 
       const counter = ctx.require("playbook.counter")
 
@@ -183,18 +194,7 @@ module.exports = async (definition) => {
               isPostCheck: false,
               event: "preCheck",
             }
-            for (const middleware of middlewares) {
-              if (middleware.beforeCheck) {
-                await middleware.beforeCheck(extraContext, event)
-              }
-            }
-            const result = await preCheck(vars, extraContext, event)
-            for (const middleware of middlewares) {
-              if (middleware.afterCheck) {
-                await middleware.afterCheck(extraContext, event)
-              }
-            }
-            return result
+            return preCheck(vars, extraContext, event)
           },
         })
         logger.info(`🕵️  ${chalk.blueBright(`[${itemName}] pre-checking ...`)}`)
@@ -218,20 +218,7 @@ module.exports = async (definition) => {
           catchErrorAsFalse: catchRunErrorAsFalse,
           retry,
           retryOnFalse: runRetryOnFalse,
-          func: async () => {
-            for (const middleware of middlewares) {
-              if (middleware.beforeRun) {
-                await middleware.beforeRun(extraContext)
-              }
-            }
-            const result = await run(vars, extraContext)
-            for (const middleware of middlewares) {
-              if (middleware.afterRun) {
-                await middleware.afterRun(extraContext)
-              }
-            }
-            return result
-          },
+          func: async () => run(vars, extraContext),
         })
         logger.info(`🏃 ${chalk.cyanBright(`[${itemName}] running ...`)}`)
         const runResult = await runRetryer()
@@ -254,18 +241,7 @@ module.exports = async (definition) => {
                 isPreCheck: false,
                 event: "postCheck",
               }
-              for (const middleware of middlewares) {
-                if (middleware.beforeCheck) {
-                  await middleware.beforeCheck(extraContext, event)
-                }
-              }
-              const result = await postCheck(vars, extraContext, event)
-              for (const middleware of middlewares) {
-                if (middleware.afterCheck) {
-                  await middleware.afterCheck(extraContext, event)
-                }
-              }
-              return result
+              return postCheck(vars, extraContext, event)
             },
           })
           logger.info(
@@ -316,16 +292,6 @@ module.exports = async (definition) => {
       })
       await afterRetryer()
     })
-
-  play.middlewares = [...(definition.middlewares || [])]
-  play.use = (...middlewares) => {
-    for (let middleware of middlewares) {
-      if (!Array.isArray(middleware)) {
-        middleware = [middleware]
-      }
-      play.middlewares.push(...middleware)
-    }
-  }
 
   return play
 }

@@ -28,7 +28,12 @@ module.exports = async (command, args, options) => {
 
   let commandFunction = execa
 
-  const defaultExecaOptions = {}
+  const defaultExecaOptions = {
+    // stripFinalNewline: true,
+    // extendEnv: true,
+    // stdio: "pipe",
+    detached: true,
+  }
 
   const execaOptions = {
     ...defaultExecaOptions,

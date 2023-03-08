@@ -15,6 +15,8 @@ const isAbortError = require("~/utils/is-abort-error")
 
 const getPluginName = require("~/std/get-plugin-name")
 
+const logLoader = require("./log-loader")
+
 module.exports = async (definition) => {
   const memoizationRegistry = new Map()
   const { load } = definition
@@ -34,6 +36,8 @@ module.exports = async (definition) => {
 
   const { retryOnUndefined = true, catchErrorAsUndefined = false } = definition
 
+  const { log: logEnabled = true } = definition
+
   const loader = async (vars = {}) =>
     ctx.fork(async () => {
       const contextLoader = {
@@ -43,12 +47,7 @@ module.exports = async (definition) => {
         loader: contextLoader,
       })
 
-      const { middlewares } = loader
-      for (const middleware of middlewares) {
-        if (middleware.hook) {
-          await middleware.hook(contextLoader, "loader")
-        }
-      }
+      logLoader.start({ logEnabled, name })
 
       if (validateVars) {
         const isValid = await validateVars(vars)
@@ -150,16 +149,5 @@ module.exports = async (definition) => {
 
       return data
     })
-
-  loader.middlewares = [...(definition.middlewares || [])]
-  loader.use = (...middlewares) => {
-    for (let middleware of middlewares) {
-      if (!Array.isArray(middleware)) {
-        middleware = [middleware]
-      }
-      loader.middlewares.push(...middleware)
-    }
-  }
-
   return loader
 }

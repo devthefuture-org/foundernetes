@@ -1,4 +1,4 @@
-module.exports = (() => {
+module.exports = () => {
   let currentId = 0
   const map = new WeakMap()
   return (object) => {
@@ -7,4 +7,4 @@ module.exports = (() => {
     }
     return map.get(object)
   }
-})()
+}

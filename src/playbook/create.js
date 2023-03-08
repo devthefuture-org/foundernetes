@@ -8,14 +8,16 @@ const isAbortError = require("~/utils/is-abort-error")
 
 const FoundernetesPlayPostCheckError = require("~/error/play-post-check")
 
+const logPlaybook = require("./log-playbook")
+
 module.exports = async (definition) => {
   const counter = { ok: 0, changed: 0, failed: 0, retried: 0, total: 0 }
 
   const {
     playbook,
-    middlewares = [],
     name: playbookName,
     iterators = {},
+    log: logEnabled = true,
   } = definition
 
   return async () =>
@@ -36,13 +38,10 @@ module.exports = async (definition) => {
         iterator,
       })
 
+      logPlaybook.start({ logEnabled, name: playbookName })
+
       let failedError
       try {
-        for (const middleware of middlewares) {
-          if (middleware.hook) {
-            await middleware.hook(contextPlaybook, "playbook")
-          }
-        }
         await playbook()
       } catch (error) {
         if (!(error instanceof FoundernetesPlayPostCheckError)) {

@@ -35,6 +35,17 @@ module.exports = (params = {}) => {
     }
     const method = async (coll, ...args) => {
       const collectionFunc = async (...collectionArgs) => {
+        let collectionName
+        if (typeof collectionArgs[collectionArgs.length - 1] === "string") {
+          collectionName = collectionArgs.pop()
+        }
+
+        ctx.set("collection", {
+          collection: collectionArgs[0],
+          methodName,
+          collectionName,
+        })
+
         const collectionComposition = createMiddlewareComposition(
           "collection",
           iterator.middlewares
@@ -44,22 +55,6 @@ module.exports = (params = {}) => {
           ;[collection] = collectionArgs
         }
         collectionArgs[0] = collection
-
-        let collectionName
-        if (typeof collectionArgs[collectionArgs.length - 1] === "string") {
-          collectionName = collectionArgs.pop()
-        }
-
-        const collectionHookParam = {
-          collection,
-          methodName,
-          collectionName,
-        }
-        for (const middleware of iterator.middlewares) {
-          if (middleware.hook) {
-            await middleware.hook(collectionHookParam, "collection")
-          }
-        }
 
         const result = await func(...collectionArgs)
         const abortSignal = ctx.require("abortSignal")
@@ -83,23 +78,19 @@ module.exports = (params = {}) => {
               return
             }
 
-            let item = await iterationComposition(...iteratorArgs)
+            const [, index] = iteratorArgs
+            let [item] = iteratorArgs
+            ctx.set("iteration", {
+              item,
+              index,
+              methodName,
+            })
+
+            item = await iterationComposition(...iteratorArgs)
             if (item === undefined) {
               ;[item] = iteratorArgs
             }
             iteratorArgs[0] = item
-
-            const [, index] = iteratorArgs
-            const iterationHookParam = {
-              item,
-              index,
-              methodName,
-            }
-            for (const middleware of iterator.middlewares) {
-              if (middleware.hook) {
-                await middleware.hook(iterationHookParam, "iteration")
-              }
-            }
 
             const result = await iteratorCallback(...iteratorArgs)
             return result
