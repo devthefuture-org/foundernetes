@@ -36,7 +36,7 @@ module.exports = async (definition) => {
 
   const { retryOnUndefined = true, catchErrorAsUndefined = false } = definition
 
-  const { log: logEnabled = true } = definition
+  definition = { ...definition, name }
 
   const loader = async (vars = {}) =>
     ctx.fork(async () => {
@@ -47,7 +47,7 @@ module.exports = async (definition) => {
         loader: contextLoader,
       })
 
-      logLoader.start({ logEnabled, name })
+      logLoader.start(definition)
 
       if (validateVars) {
         const isValid = await validateVars(vars)
@@ -146,6 +146,8 @@ module.exports = async (definition) => {
       if (useMemoization) {
         memoizationRegistry.set(memoizeVars, data)
       }
+
+      logLoader.end(definition)
 
       return data
     })

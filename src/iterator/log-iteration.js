@@ -1,13 +1,13 @@
 const ctx = require("~/ctx")
 
 const getContextLoggerOptions = require("~/log/get-context-logger-options")
-const addIndentation = require("~/log/add-indentation")
+const setIndentationContext = require("~/log/set-context-indentation")
 
 module.exports = () => {
   const iterationContext = ctx.require("iteration")
   const { index } = iterationContext
 
-  addIndentation()
+  setIndentationContext.incr()
   const logger = ctx.replace("logger", (log) =>
     log.child(
       {

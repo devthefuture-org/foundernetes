@@ -1,5 +1,3 @@
-const chalk = require("chalk")
-
 const logError = require("~/error/log-error")
 const ctx = require("~/ctx")
 
@@ -13,12 +11,7 @@ const logPlaybook = require("./log-playbook")
 module.exports = async (definition) => {
   const counter = { ok: 0, changed: 0, failed: 0, retried: 0, total: 0 }
 
-  const {
-    playbook,
-    name: playbookName,
-    iterators = {},
-    log: logEnabled = true,
-  } = definition
+  const { playbook, name: playbookName, iterators = {} } = definition
 
   return async () =>
     ctx.fork(async () => {
@@ -38,7 +31,7 @@ module.exports = async (definition) => {
         iterator,
       })
 
-      logPlaybook.start({ logEnabled, name: playbookName })
+      logPlaybook.start(definition)
 
       let failedError
       try {
@@ -54,18 +47,12 @@ module.exports = async (definition) => {
         }
       }
 
-      const msg = `report: ${chalk.green(
-        `OK=${counter.ok}`
-      )} ${chalk.cyanBright(`Changed=${counter.changed}`)} ${chalk.red(
-        `Failed=${counter.failed}`
-      )} ${
-        counter.retried > 0 ? chalk.yellow(`Retried=${counter.retried}`) : ""
-      }`
-      const logger = ctx.require("logger")
-      logger.info(msg)
+      logPlaybook.report(definition)
 
       if (failedError) {
         throw failedError
       }
+
+      logPlaybook.end(definition)
     })
 }

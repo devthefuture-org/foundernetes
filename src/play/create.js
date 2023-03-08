@@ -20,15 +20,7 @@ const logPlay = require("./log-play")
 const castArrayAsFunction = require("./cast-array-as-function")
 
 module.exports = async (definition) => {
-  const {
-    check,
-    before,
-    after,
-    onOK,
-    onChanged,
-    onFailed,
-    log: logEnabled = true,
-  } = definition
+  const { check, before, after, onOK, onChanged, onFailed } = definition
 
   let { run } = definition
 
@@ -51,6 +43,8 @@ module.exports = async (definition) => {
 
   const name = getPluginName(definition, "play")
 
+  definition = { ...definition, name }
+
   const play = async (vars = {}) =>
     ctx.fork(async () => {
       const contextPlay = {
@@ -61,7 +55,7 @@ module.exports = async (definition) => {
         play: contextPlay,
       })
 
-      logPlay.start({ logEnabled, name })
+      logPlay.start(definition)
 
       const counter = ctx.require("playbook.counter")
 
@@ -291,6 +285,8 @@ module.exports = async (definition) => {
         func: async () => (after ? after(vars, extraContext) : null),
       })
       await afterRetryer()
+
+      logPlay.end(definition)
     })
 
   return play

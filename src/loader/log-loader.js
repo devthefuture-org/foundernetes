@@ -1,31 +1,33 @@
 const ctx = require("~/ctx")
 
 const getContextLoggerOptions = require("~/log/get-context-logger-options")
-const addIndentation = require("~/log/add-indentation")
+const setIndentationContext = require("~/log/set-context-indentation")
 
-const start = ({ logEnabled, name }) => {
-  if (!logEnabled) {
+const start = ({ log = true, name }) => {
+  ctx.set("parentLogger", ctx.require("logger"))
+  if (!log) {
     return
   }
-  addIndentation()
-  const logger = ctx.replace("logger", (log) =>
-    log.child(
+  setIndentationContext.incr()
+  const logger = ctx.replace("logger", (l) =>
+    l.child(
       {
         play: name,
       },
       getContextLoggerOptions()
     )
   )
-  logger.info(`⏬ loading: ${name}`)
+  logger.info(`🔻  loading: ${name}`)
   logger.setPrefix("├─── ")
 }
 
-const end = ({ logEnabled, name }) => {
-  if (!logEnabled) {
+const end = ({ log = true, name }) => {
+  if (!log) {
     return false
   }
   const logger = ctx.require("logger")
-  logger.info(`⤵️ loaded: ${name}`)
+  logger.setPrefix("")
+  logger.info(`🔺  loaded: ${name}`)
 }
 
 module.exports = { start, end }
