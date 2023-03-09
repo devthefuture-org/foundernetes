@@ -26,5 +26,9 @@ module.exports = () => {
       getContextLoggerOptions()
     )
   )
-  logger.info(`🔁 looping ${methodName}: ${collectionName}`)
+  logger.info(
+    `🔁 looping ${methodName}: ${collectionName}(${
+      collection.length !== undefined ? collection.length : "*"
+    })`
+  )
 }

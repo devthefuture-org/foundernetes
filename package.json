@@ -34,6 +34,7 @@
     "lodash.pick": "^4.4.0",
     "micromatch": "^4.0.5",
     "nctx": "^1.6.2",
+    "object-hash": "^3.0.0",
     "parse-duration": "^1.0.2",
     "parse-github-url": "^1.0.2",
     "pretty-ms": "^8.0.0",

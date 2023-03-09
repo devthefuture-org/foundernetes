@@ -1,5 +1,6 @@
 const yaRetry = require("ya-retry")
 const chalk = require("chalk")
+const objectHash = require("object-hash")
 
 const createValidator = require("~/vars/create-validator")
 
@@ -15,6 +16,7 @@ const castRetry = require("~/lib/cast-retry")
 const isAbortError = require("~/utils/is-abort-error")
 
 const ctx = require("~/ctx")
+const unsecureRandomUid = require("~/utils/unsecure-random-uid")
 const logPlay = require("./log-play")
 
 const castArrayAsFunction = require("./cast-array-as-function")
@@ -61,7 +63,28 @@ module.exports = async (definition) => {
 
       const {
         itemKey = "name",
-        itemName: itemNameOption = (itemVars) => itemVars[itemKey],
+        itemNameFallback = "hash",
+        itemNameFallbackTruncLength = 7,
+        itemName: itemNameOption = (itemVars) => {
+          let itemName = itemVars[itemKey]
+          if (itemName === undefined) {
+            switch (itemNameFallback) {
+              case "random": {
+                itemName = unsecureRandomUid()
+                break
+              }
+              case "hash": {
+                itemName = objectHash(vars)
+                break
+              }
+              default:
+            }
+            if (typeof itemName === "string") {
+              itemName = itemName.slice(0, itemNameFallbackTruncLength)
+            }
+          }
+          return itemName
+        },
       } = play
       const itemName = itemNameOption(vars)
 
