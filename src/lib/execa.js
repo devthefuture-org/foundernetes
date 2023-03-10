@@ -8,9 +8,12 @@ const chalk = require("chalk")
 const ctx = require("~/ctx")
 
 const sudoFactory = require("./sudo-factory")
+const gosuFactory = require("./gosu-factory")
 
 const f10sExecaOptions = [
   "sudo",
+  "enforceLeastPrivilege",
+  "enforceLeastPrivilegeUseGoSu",
   "logger",
   "callbacks",
   "logger",
@@ -47,9 +50,27 @@ module.exports = async (command, args, options) => {
 
   const callbacks = [...(extraOptions.callbacks || [])]
 
-  const { sudo } = extraOptions
+  let { sudo } = extraOptions
+  const {
+    enforceLeastPrivilege = config.execEnforceLeastPrivilege,
+    enforceLeastPrivilegeUseGoSu = config.execEnforceLeastPrivilegeUseGoSu,
+  } = extraOptions
 
-  if (extraOptions.sudo) {
+  if (!sudo && enforceLeastPrivilege && process.env.SUDO_USER) {
+    if (enforceLeastPrivilegeUseGoSu) {
+      commandFunction = gosuFactory({
+        execaOptions,
+        user: process.env.SUDO_USER,
+        group: process.env.SUDO_USER,
+      })
+    } else {
+      sudo = {
+        user: process.env.SUDO_USER,
+        group: process.env.SUDO_USER,
+      }
+    }
+  }
+  if (sudo) {
     if (sudo === true) {
       commandFunction = ctx.require("sudo")
     } else {

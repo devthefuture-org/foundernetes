@@ -69,6 +69,18 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
     execEnv: {
       default: {},
     },
+    execEnforceLeastPrivilege: {
+      default: true,
+    },
+    execEnforceLeastPrivilegeUseGoSu: {
+      default: false,
+    },
+    extraPaths: {
+      default: [],
+      sideEffect: (extraPaths) => {
+        process.env.PATH = [extraPaths, process.env.PATH].join(path.delimiter)
+      },
+    },
     logStd: {
       env: "F10S_LOG_STD",
       envParser: envParserYaml,
