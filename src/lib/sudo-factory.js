@@ -1,4 +1,6 @@
 const os = require("os")
+const { randomUUID } = require("node:crypto")
+const through2 = require("through2")
 
 const { execa } = require("@esm2cjs/execa")
 
@@ -10,25 +12,38 @@ module.exports = (options = {}) => {
   const { password = config.sudoPassword } = options
 
   const { username } = os.userInfo()
-  const { prompt = `[sudo] password for ${username}: ` } = options
+  let { prompt = `[sudo][${randomUUID()}] password for ${username}: ` } =
+    options
+  prompt = prompt.trim()
 
   return (command, args = [], execaOptions = {}) => {
     const sudoArgs = ["-S", "-k", "-p", prompt, command, ...args]
 
-    const input = `${password}\n`
+    const inputPassword = `${password}\n`
+
+    execaOptions = { ...execaOptions }
+    execaOptions.input = `${inputPassword}${execaOptions.input || ""}`
 
     const child = execa("sudo", sudoArgs, {
       ...execaDefaultOptions,
       ...execaOptions,
-      ...(input ? { input } : {}),
     })
 
-    child.stderr.on("data", (data) => {
-      const lines = data.toString().trim().split("\n")
-      if (lines.some((line) => line === prompt)) {
-        throw new Error("incorrect password")
-      }
-    })
+    let prompted = 0
+    child.stderr = child.stderr.pipe(
+      through2(function (chunk, _enc, callback) {
+        const lines = chunk.toString().trim().split("\n")
+        if (lines.some((line) => line === prompt)) {
+          if (prompted > 0) {
+            throw new Error("incorrect password")
+          }
+          prompted += 1
+        } else {
+          this.push(chunk)
+        }
+        callback()
+      })
+    )
 
     return child
   }

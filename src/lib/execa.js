@@ -18,6 +18,7 @@ const f10sExecaOptions = [
   "logStdOut",
   "logStdErr",
   "logCommand",
+  "extendEnvFromConfig",
 ]
 
 module.exports = async (command, args, options) => {
@@ -62,7 +63,8 @@ module.exports = async (command, args, options) => {
     logStdout = logStd,
     logStderr = logStd,
     logStdLevel = "info",
-    logCommand = config.logCommands,
+    logCommand = config.execLogCommands,
+    defaultEnv = config.execEnv,
   } = extraOptions
 
   const prefix = `${logger.getPrefix()} ${chalk.grey(sudo ? "#" : "$")} `
@@ -85,6 +87,14 @@ module.exports = async (command, args, options) => {
   const defaultOptions = { signal }
 
   defaults(execaOptions, defaultOptions)
+
+  if (!execaOptions.env) {
+    execaOptions.env = {}
+  }
+  const { extendEnvFromConfig = true } = extraOptions
+  if (extendEnvFromConfig) {
+    execaOptions.env = { ...defaultEnv, ...execaOptions.env }
+  }
 
   if (logCommand) {
     log[logStdLevel]([command, ...args].join(" "))
