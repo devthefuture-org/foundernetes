@@ -10,6 +10,7 @@ module.exports = (options = {}) => {
   const config = ctx.require("config")
   const { execaOptions: execaDefaultOptions = {} } = options
   const { password = config.sudoPassword } = options
+  const { user, group, preserveEnv = true } = options
 
   const { username } = os.userInfo()
   let { prompt = `[sudo][${randomUUID()}] password for ${username}: ` } =
@@ -17,7 +18,17 @@ module.exports = (options = {}) => {
   prompt = prompt.trim()
 
   return (command, args = [], execaOptions = {}) => {
-    const sudoArgs = ["-S", "-k", "-p", prompt, command, ...args]
+    const sudoArgs = [
+      "-S",
+      ...(preserveEnv ? ["-E"] : []),
+      ...(user !== undefined ? ["-u", user] : []),
+      ...(group !== undefined ? ["-g", group] : []),
+      "-k",
+      "-p",
+      prompt,
+      command,
+      ...args,
+    ]
 
     const inputPassword = `${password}\n`
 
