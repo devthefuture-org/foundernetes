@@ -22,7 +22,9 @@ module.exports = (options = {}) => {
     const inputPassword = `${password}\n`
 
     execaOptions = { ...execaOptions }
-    execaOptions.input = `${inputPassword}${execaOptions.input || ""}`
+    if (execaOptions.input) {
+      execaOptions.input = `${inputPassword}${execaOptions.input}`
+    }
 
     const child = execa("sudo", sudoArgs, {
       ...execaDefaultOptions,
@@ -36,6 +38,9 @@ module.exports = (options = {}) => {
         if (lines.some((line) => line === prompt)) {
           if (prompted > 0) {
             throw new Error("incorrect password")
+          }
+          if (!execaOptions.input) {
+            child.stdin.write(inputPassword)
           }
           prompted += 1
         } else {
