@@ -1,16 +1,25 @@
 const os = require("os")
 const { randomUUID } = require("node:crypto")
+const { setTimeout } = require("timers/promises")
 const through2 = require("through2")
-
 const { execa } = require("@esm2cjs/execa")
+const Deferred = require("~/utils/deferred")
 
 const ctx = require("~/ctx")
+const sudoDetectPasswordNeeded = require("./sudo-detect-password-needed")
 
 module.exports = (options = {}) => {
   const config = ctx.require("config")
   const { execaOptions: execaDefaultOptions = {} } = options
   const { password = config.sudoPassword } = options
-  const { user, group, preserveEnv = true } = options
+  const { passwordNeeded: passwordNeededDefault } = options
+  const {
+    user,
+    group,
+    preserveEnv = true,
+    passwordDetectNeeded = true,
+    passwordLessAfterTimeout = true,
+  } = options
 
   const { username } = os.userInfo()
   let { prompt = `[sudo][${randomUUID()}] password for ${username}: ` } =
@@ -30,11 +39,12 @@ module.exports = (options = {}) => {
       ...args,
     ]
 
-    const inputPassword = `${password}\n`
+    const inputPassword = `${password || ""}\n`
 
     execaOptions = { ...execaOptions }
-    if (execaOptions.input) {
-      execaOptions.input = `${inputPassword}${execaOptions.input}`
+    const { input } = execaOptions
+    if (input) {
+      delete execaOptions.input
     }
 
     const child = execa("sudo", sudoArgs, {
@@ -43,6 +53,7 @@ module.exports = (options = {}) => {
     })
 
     let prompted = 0
+    const passwordTyped = new Deferred()
     child.stderr = child.stderr.pipe(
       through2(function (chunk, _enc, callback) {
         const lines = chunk.toString().trim().split("\n")
@@ -50,9 +61,8 @@ module.exports = (options = {}) => {
           if (prompted > 0) {
             throw new Error("incorrect password")
           }
-          if (!execaOptions.input) {
-            child.stdin.write(inputPassword)
-          }
+          child.stdin.write(inputPassword)
+          passwordTyped.resolve()
           prompted += 1
         } else {
           this.push(chunk)
@@ -60,6 +70,28 @@ module.exports = (options = {}) => {
         callback()
       })
     )
+
+    if (input) {
+      ;(async () => {
+        let passwordNeeded = passwordNeededDefault
+        if (passwordNeeded === undefined) {
+          if (passwordDetectNeeded) {
+            passwordNeeded = await sudoDetectPasswordNeeded()
+          } else {
+            passwordNeeded = !!password
+          }
+        }
+        if (passwordNeeded) {
+          if (passwordLessAfterTimeout) {
+            Promise.race([passwordTyped.promise, setTimeout(2000)])
+          } else {
+            await passwordTyped.promise
+          }
+        }
+        child.stdin.write(input)
+        child.stdin.end()
+      })()
+    }
 
     return child
   }
