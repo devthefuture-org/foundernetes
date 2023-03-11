@@ -180,8 +180,8 @@ module.exports = async (definition) => {
       } = definition
 
       const {
-        catchRunErrorAsFalse = true,
-        catchCheckErrorAsFalse = true,
+        catchRunErrorAsFalse = false,
+        catchCheckErrorAsFalse = false,
         catchPreCheckErrorAsFalse = catchCheckErrorAsFalse,
         catchPostCheckErrorAsFalse = catchCheckErrorAsFalse,
         continueOnRunError = false,
