@@ -99,7 +99,14 @@ module.exports = async (definition) => {
       const abortSignal = ctx.require("abortSignal")
 
       const retryerCreate =
-        ({ type, retry, retryOnFalse, catchErrorAsFalse, func }) =>
+        ({
+          type,
+          retry,
+          retryOnFalse,
+          retryOnError,
+          catchErrorAsFalse,
+          func,
+        }) =>
         async () =>
           new Promise((resolve, reject) => {
             const operation = yaRetry.operation(retry)
@@ -146,7 +153,7 @@ module.exports = async (definition) => {
               if (retryOnFalse) {
                 err = results === false ? true : null
               } else {
-                err = hasError === true ? true : null
+                err = hasError === true && retryOnError ? true : null
               }
               if (operation.retry(err)) {
                 if (abortSignal.aborted) {
@@ -174,9 +181,18 @@ module.exports = async (definition) => {
       const afterRetry = castRetry(definition.afterRetry, "after", [retry])
 
       const {
-        runRetryOnFalse = true,
-        preCheckRetryOnFalse = false,
-        postCheckRetryOnFalse = false,
+        retryOnFalse = true,
+        runRetryOnFalse = retryOnFalse,
+        preCheckRetryOnFalse = retryOnFalse,
+        postCheckRetryOnFalse = retryOnFalse,
+        beforeRetryOnFalse = retryOnFalse,
+        afterRetryOnFalse = retryOnFalse,
+        retryOnError = false,
+        runRetryOnError = retryOnError,
+        preCheckRetryOnError = retryOnError,
+        postCheckRetryOnError = retryOnError,
+        beforeRetryOnError = retryOnError,
+        afterRetryOnError = retryOnError,
       } = definition
 
       const {
@@ -191,7 +207,8 @@ module.exports = async (definition) => {
         type: "before",
         catchErrorAsFalse: false,
         retry: beforeRetry,
-        retryOnFalse: true,
+        retryOnFalse: beforeRetryOnFalse,
+        retryOnError: beforeRetryOnError,
         func: async () => (before ? before(vars) : {}),
       })
       const extraContext = await beforeRetryer()
@@ -205,6 +222,7 @@ module.exports = async (definition) => {
           catchErrorAsFalse: catchPreCheckErrorAsFalse,
           retry: preCheckRetry,
           retryOnFalse: preCheckRetryOnFalse,
+          retryOnError: preCheckRetryOnError,
           func: async () => {
             const event = {
               isPreCheck: true,
@@ -235,6 +253,7 @@ module.exports = async (definition) => {
           catchErrorAsFalse: catchRunErrorAsFalse,
           retry,
           retryOnFalse: runRetryOnFalse,
+          retryOnError: runRetryOnError,
           func: async () => run(vars, extraContext),
         })
         logger.info(`🏃 ${chalk.cyanBright(`[${itemName}] running ...`)}`)
@@ -252,6 +271,7 @@ module.exports = async (definition) => {
             catchErrorAsFalse: catchPostCheckErrorAsFalse,
             retry: postCheckRetry,
             retryOnFalse: postCheckRetryOnFalse,
+            retryOnError: postCheckRetryOnError,
             func: async () => {
               const event = {
                 isPostCheck: true,
@@ -304,7 +324,8 @@ module.exports = async (definition) => {
         type: "after",
         catchErrorAsFalse: false,
         retry: afterRetry,
-        retryOnFalse: true,
+        retryOnFalse: afterRetryOnFalse,
+        retryOnError: afterRetryOnError,
         func: async () => (after ? after(vars, extraContext) : null),
       })
       await afterRetryer()
