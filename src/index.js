@@ -1,5 +1,6 @@
 const cli = require("~/cli")
 
+const async = require("~/lib/async")
 const createIterator = require("~/iterator/create")
 const iteratorFactory = require("~/iterator/factory")
 
@@ -60,4 +61,5 @@ module.exports = {
   sudoAskPassword,
   execa,
   $: execa,
+  async,
 }
