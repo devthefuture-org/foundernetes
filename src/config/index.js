@@ -8,6 +8,7 @@ const parseDuration = require("parse-duration")
 
 const loadStructuredConfig = require("~/utils/load-structured-config")
 
+const envParserCastArray = require("./env-parsers/cast-array")
 const envParserYaml = require("./env-parsers/yaml")
 
 module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
@@ -98,6 +99,13 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
       defaultFunction: (config) =>
         mkdtemp(path.join(config.tmpRootPath, `${config.projectName}-`)),
       keepDefault: true,
+    },
+    tags: {
+      env: "F10S_TAGS",
+      option: "T",
+      optionParser: envParserCastArray,
+      envParser: envParserCastArray,
+      default: null,
     },
   }
 

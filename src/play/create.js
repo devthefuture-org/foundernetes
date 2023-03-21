@@ -47,8 +47,17 @@ module.exports = async (definition) => {
 
   definition = { ...definition, name }
 
-  const play = async (vars = {}) =>
+  const play = async (vars = {}, options = {}) =>
     ctx.fork(async () => {
+      const { tags = [] } = options
+      const config = ctx.require("config")
+      const { tags: runTags } = config
+      if (runTags && !runTags.some((t) => tags.includes(t))) {
+        const logger = ctx.require("logger")
+        logger.debug("tags doesn't match, skipping...")
+        return
+      }
+
       const contextPlay = {
         name,
       }

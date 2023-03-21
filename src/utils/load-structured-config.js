@@ -67,6 +67,7 @@ module.exports = async ({
   for (const [key, def] of Object.entries(configStructure)) {
     const {
       envParser,
+      optionParser,
       default: defaultValue,
       defaultFunction,
       emptyAsUndefined = defaultEmptyAsUndefined,
@@ -103,7 +104,11 @@ module.exports = async ({
       optionKeys.includes(optionKey) &&
       !isUndefined(options[optionKey])
     ) {
-      config[key] = options[optionKey]
+      let optionValue = options[optionKey]
+      if (optionParser) {
+        optionValue = optionParser(optionValue)
+      }
+      config[key] = optionValue
     }
     if (defaultFunction && isUndefined(config[key])) {
       config[key] = await defaultFunction(config, { options, env })

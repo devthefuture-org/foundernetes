@@ -1,5 +1,11 @@
-module.exports = (mixed, options = {}) => {
+const castArray = (mixed, options = {}) => {
   if (Array.isArray(mixed)) {
+    const { recursive = false } = options
+    if (recursive) {
+      for (let i = 0; i < mixed.length; i++) {
+        mixed.splice(i, 1, ...castArray(mixed[i], options))
+      }
+    }
     return mixed
   }
   if (mixed === undefined || mixed === null || mixed === "") {
@@ -22,3 +28,4 @@ module.exports = (mixed, options = {}) => {
   }
   return [mixed]
 }
+module.exports = castArray

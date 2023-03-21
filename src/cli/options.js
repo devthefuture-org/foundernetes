@@ -23,3 +23,8 @@ module.exports.defaultPlayRetry = new Option(
 module.exports.cwd = new Option("--cwd <path>", "set current working directory")
 
 module.exports.debug = new Option("--debug, -d", "enable debugging loglevel")
+
+module.exports.tags = new Option(
+  "--tags, -t <tag...>",
+  "plays tags to run, skipping others"
+)
