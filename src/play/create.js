@@ -22,7 +22,15 @@ const logPlay = require("./log-play")
 const castArrayAsFunction = require("./cast-array-as-function")
 
 module.exports = async (definition) => {
-  const { check, before, after, onOK, onChanged, onFailed } = definition
+  const {
+    check,
+    before,
+    after,
+    onOK,
+    onChanged,
+    onFailed,
+    tags: createTags = [],
+  } = definition
 
   let { run } = definition
 
@@ -49,7 +57,8 @@ module.exports = async (definition) => {
 
   const play = async (vars = {}, options = {}) =>
     ctx.fork(async () => {
-      const { tags = [] } = options
+      const { tags: playTags = [] } = options
+      const tags = [...createTags, ...playTags]
       const config = ctx.require("config")
       const { tags: runTags } = config
       if (runTags && !runTags.some((t) => tags.includes(t))) {
