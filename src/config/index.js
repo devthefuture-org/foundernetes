@@ -107,6 +107,13 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
       envParser: envParserCastArray,
       default: null,
     },
+    skipTags: {
+      env: "F10S_SKIP_TAGS",
+      option: "E",
+      optionParser: envParserCastArray,
+      envParser: envParserCastArray,
+      default: null,
+    },
   }
 
   const { cwd } = rootConfig

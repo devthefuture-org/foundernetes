@@ -28,3 +28,8 @@ module.exports.tags = new Option(
   "--tags, -t <tag...>",
   "plays tags to run, skipping others"
 )
+
+module.exports.skipTags = new Option(
+  "--skip-tags, -e <tag...>",
+  "plays tags to exclude, take precedence on --tags option"
+)

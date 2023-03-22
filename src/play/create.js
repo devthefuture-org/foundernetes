@@ -60,10 +60,14 @@ module.exports = async (definition) => {
       const { tags: playTags = [] } = options
       const tags = [...createTags, ...playTags]
       const config = ctx.require("config")
-      const { tags: runTags } = config
+      const { tags: runTags, skipTags } = config
+      const log = ctx.require("logger")
       if (runTags && !runTags.some((t) => tags.includes(t))) {
-        const logger = ctx.require("logger")
-        logger.debug("tags doesn't match, skipping...")
+        log.debug("tags doesn't match, skipping...")
+        return
+      }
+      if (skipTags && skipTags.some((t) => tags.includes(t))) {
+        log.debug("tags explicitly skipped, skipping...")
         return
       }
 
