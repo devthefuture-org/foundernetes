@@ -21,6 +21,7 @@ const yaml = require("~/utils/yaml")
 const sudoFactory = require("~/lib/sudo-factory")
 const sudoAskPassword = require("~/lib/sudo-ask-password")
 const execa = require("~/lib/execa")
+const treeFactory = require("~/lib/tree-factory")
 
 const ctx = require("~/ctx")
 
@@ -62,4 +63,5 @@ module.exports = {
   execa,
   $: execa,
   async,
+  treeFactory,
 }
