@@ -106,6 +106,23 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
       optionParser: envParserCastArray,
       envParser: envParserCastArray,
       default: null,
+      transform: (tags) => {
+        if (!tags) {
+          return tags
+        }
+        return [
+          ...tags.flatMap((tag) => {
+            const parts = tag.split(":")
+            const newTags = []
+            newTags.push([...parts, "*"].join(":"))
+            while (parts.length) {
+              newTags.push([...parts].join(":"))
+              parts.pop()
+            }
+            return newTags
+          }),
+        ]
+      },
     },
     skipTags: {
       env: "F10S_SKIP_TAGS",
@@ -113,6 +130,12 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
       optionParser: envParserCastArray,
       envParser: envParserCastArray,
       default: null,
+      transform: (tags) => {
+        if (!tags) {
+          return tags
+        }
+        return [...tags, ...tags.map((tag) => `${tag}:*`)]
+      },
     },
   }
 
