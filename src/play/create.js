@@ -1,6 +1,7 @@
 const yaRetry = require("ya-retry")
 const chalk = require("chalk")
 const objectHash = require("object-hash")
+const wildstring = require("wildstring")
 
 const createValidator = require("~/vars/create-validator")
 
@@ -62,11 +63,25 @@ module.exports = async (definition) => {
       const config = ctx.require("config")
       const { tags: runTags, skipTags } = config
       const log = ctx.require("logger")
-      if (runTags && !runTags.some((t) => tags.includes(t))) {
+      if (
+        runTags &&
+        !runTags.some((runTag) =>
+          tags.some(
+            (t) => wildstring.match(t, runTag) || wildstring.match(runTag, t)
+          )
+        )
+      ) {
         log.debug("tags doesn't match, skipping...")
         return
       }
-      if (skipTags && skipTags.some((t) => tags.includes(t))) {
+      if (
+        skipTags &&
+        skipTags.some((skipTag) =>
+          tags.some(
+            (t) => wildstring.match(t, skipTag) || wildstring.match(skipTag, t)
+          )
+        )
+      ) {
         log.debug("tags explicitly skipped, skipping...")
         return
       }
