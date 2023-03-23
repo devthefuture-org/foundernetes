@@ -28,6 +28,12 @@ module.exports = async (command, args, options) => {
   if (!Array.isArray(args)) {
     options = args || {}
     ;[command, ...args] = parse(command)
+    args = args.map((arg) => {
+      if (typeof arg === "object") {
+        return arg.pattern || arg.op
+      }
+      return arg
+    })
   }
 
   let commandFunction = execa
