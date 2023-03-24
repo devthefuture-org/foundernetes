@@ -47,7 +47,7 @@ module.exports = async (definition) => {
         loader: contextLoader,
       })
 
-      logLoader.start(definition)
+      const loadLoaderContext = logLoader.start(definition)
 
       if (validateVars) {
         const isValid = await validateVars(vars)
@@ -147,7 +147,7 @@ module.exports = async (definition) => {
         memoizationRegistry.set(memoizeVars, data)
       }
 
-      logLoader.end(definition)
+      logLoader.end(loadLoaderContext)
 
       return data
     })

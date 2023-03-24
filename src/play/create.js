@@ -94,7 +94,7 @@ module.exports = async (definition) => {
         play: contextPlay,
       })
 
-      logPlay.start(definition)
+      const logPlayContext = logPlay.start(definition)
 
       const counter = ctx.require("playbook.counter")
 
@@ -367,7 +367,7 @@ module.exports = async (definition) => {
       })
       await afterRetryer()
 
-      logPlay.end(definition)
+      logPlay.end(logPlayContext)
     })
 
   return play

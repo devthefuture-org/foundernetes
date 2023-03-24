@@ -31,7 +31,7 @@ module.exports = async (definition, callback) => {
         iterator,
       })
 
-      logPlaybook.start(definition)
+      const logPlaybookContext = logPlaybook.start(definition)
 
       let failedError
       try {
@@ -47,13 +47,13 @@ module.exports = async (definition, callback) => {
         }
       }
 
-      logPlaybook.report(definition)
+      logPlaybook.report(logPlaybookContext)
 
       if (failedError) {
         throw failedError
       }
 
-      logPlaybook.end(definition)
+      logPlaybook.end(logPlaybookContext)
     })
 
   Object.assign(execPlaybook, {

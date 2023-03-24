@@ -4,11 +4,15 @@ const ctx = require("~/ctx")
 
 const getContextLoggerOptions = require("~/log/get-context-logger-options")
 const setIndentationContext = require("~/log/set-context-indentation")
+const timeLogger = require("~/utils/time-logger")
 
-const start = ({ log = true, name }) => {
+const start = (definition) => {
+  const elapsed = timeLogger()
+  const logPlaybookContext = { ...definition, elapsed }
+  const { log = true, name } = definition
   ctx.set("parentLogger", ctx.require("logger"))
   if (!log) {
-    return
+    return logPlaybookContext
   }
   setIndentationContext.incr()
   const logger = ctx.replace("logger", (l) =>
@@ -20,14 +24,20 @@ const start = ({ log = true, name }) => {
     )
   )
   logger.info(`📖 launching playbook: ${name}`)
+  return logPlaybookContext
 }
 
-const end = ({ log = true, name }) => {
+const end = ({ log = true, name, elapsed }) => {
   if (!log) {
     return false
   }
   const logger = ctx.require("parentLogger")
   logger.info(`📕 playbook done: ${name}`)
+  elapsed.end({
+    label: "🏁 playbook runned in",
+    logger: ctx.require("logger"),
+    logLevel: "trace",
+  })
 }
 const report = ({ log = true }) => {
   if (!log) {
