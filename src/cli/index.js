@@ -1,7 +1,12 @@
 const ctx = require("~/ctx")
 const createProgram = require("./program")
 
-const addCommands = [require("./commands/play"), require("./commands/init")]
+const addCommands = [
+  require("./commands/playbook"),
+  require("./commands/play"),
+  require("./commands/loader"),
+  require("./commands/init"),
+]
 
 module.exports = async (args = process.argv, staticDefinitions = {}) => {
   ctx.provide()

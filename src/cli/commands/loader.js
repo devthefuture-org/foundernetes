@@ -1,5 +1,7 @@
 const get = require("lodash.get")
 
+const yaml = require("~/utils/yaml")
+
 const runContextCommand = require("~/process/run-context-command")
 const loadInputPayload = require("~/process/load-input-payload")
 
@@ -9,8 +11,9 @@ const options = require("../options")
 
 module.exports = (program) =>
   program
-    .command("play")
-    .description("run play with payload")
+    .command("loader")
+    .alias("load")
+    .description("run loader with payload")
     .addOption(options.cwd)
     .addOption(options.gracefullShutdownTimeout)
     .addOption(options.defaultPlayRetry)
@@ -18,16 +21,31 @@ module.exports = (program) =>
     .addOption(options.skipTags)
     .addOption(options.playbook)
     .addOption(options.payload)
-    .argument("<playName>", "play name (support dot notation)")
-    .action(async (playName, opts, _command) => {
+    .addOption(options.output)
+    .argument("<loaderName>", "loader name (support dot notation)")
+    .action(async (loaderName, opts, _command) => {
       const input = await loadInputPayload(opts.I)
+      const format = opts.O || "yaml"
 
       const processCallback = async (playbooks) => {
         const [playbook] = playbooks
-        const { definition, plays } = playbook
+        const { definition, loaders } = playbook
         const playbookCallback = async () => {
-          const play = get(plays, playName)
-          await play(input)
+          const loader = get(loaders, loaderName)
+          const data = await loader(input)
+          let output
+          switch (format) {
+            case "json": {
+              output = JSON.stringify(data)
+              break
+            }
+            case "yaml": {
+              output = yaml.dump(data)
+              break
+            }
+            default:
+          }
+          process.stdout.write(output)
         }
         const runPlaybook = await createContextPlaybook(
           definition,

@@ -33,3 +33,18 @@ module.exports.skipTags = new Option(
   "--skip-tags, -e <tag...>",
   "plays tags to exclude, take precedence on --tags option"
 )
+
+module.exports.playbook = new Option(
+  "--playbook, -b <playbook>",
+  "playbook name or playbook tags"
+)
+
+module.exports.payload = new Option(
+  "--playload, -i <payload>",
+  "json input value or filename or - for stdin (yaml), default to -"
+)
+
+module.exports.output = new Option(
+  "--output, -o <format>",
+  "output format: yaml (default), json"
+).choices(["yaml", "json"])
