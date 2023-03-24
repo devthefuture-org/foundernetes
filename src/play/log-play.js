@@ -5,7 +5,7 @@ const setIndentationContext = require("~/log/set-context-indentation")
 
 const timeLogger = require("~/utils/time-logger")
 
-const start = (definition) => {
+const init = (definition) => {
   const { log = true, name } = definition
   const elapsed = timeLogger()
   const logPlayContext = { ...definition, elapsed }
@@ -13,7 +13,7 @@ const start = (definition) => {
     return logPlayContext
   }
   setIndentationContext.incr()
-  const logger = ctx.replace("logger", (l) =>
+  ctx.replace("logger", (l) =>
     l.child(
       {
         play: name,
@@ -21,7 +21,11 @@ const start = (definition) => {
       getContextLoggerOptions()
     )
   )
+  return logPlayContext
+}
 
+const start = ({ name }) => {
+  const logger = ctx.require("logger")
   logger.info(`▶️  playing: ${name}`)
   const iteratorSerie = ctx.get("iteratorSerie")
   if (iteratorSerie) {
@@ -29,7 +33,6 @@ const start = (definition) => {
   } else {
     logger.setPrefix("──── ")
   }
-  return logPlayContext
 }
 
 const end = ({ log = true, name, elapsed }) => {
@@ -47,6 +50,7 @@ const end = ({ log = true, name, elapsed }) => {
 }
 
 module.exports = {
+  init,
   start,
   end,
 }

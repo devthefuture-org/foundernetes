@@ -38,6 +38,7 @@ module.exports = async (definition) => {
   const {
     retryOnUndefined = true,
     catchErrorAsUndefined = false,
+    defaultTags: createDefaultTags = ["*"], // by default loaders are not filtered when using tags option
     tags: createTags = [],
   } = definition
 
@@ -52,16 +53,18 @@ module.exports = async (definition) => {
         loader: contextLoader,
       })
 
-      const loadLoaderContext = logLoader.start(definition)
+      const loadLoaderContext = logLoader.init(definition)
 
       const { tags: playTags = [] } = options
       const tags = [...createTags, ...playTags]
       if (tags.length === 0) {
-        tags.push("*") // by default loaders are not filtered when using tags option
+        tags.push(...createDefaultTags)
       }
-      if (!matchTags(tags)) {
+      if (!matchTags(tags, vars)) {
         return
       }
+
+      logLoader.start(loadLoaderContext)
 
       if (validateVars) {
         const isValid = await validateVars(vars)

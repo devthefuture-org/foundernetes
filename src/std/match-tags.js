@@ -2,10 +2,14 @@ const wildstring = require("wildstring")
 
 const ctx = require("~/ctx")
 
-module.exports = (tags) => {
+module.exports = (tags, vars) => {
   const config = ctx.require("config")
-  const { tags: runTags, skipTags } = config
   const log = ctx.require("logger")
+
+  const { tags: runTags, skipTags } = config
+
+  tags = tags.map((t) => (typeof t === "function" ? t(vars) : t))
+
   if (
     runTags &&
     !runTags.some((runTag) =>
@@ -17,16 +21,14 @@ module.exports = (tags) => {
     log.debug("tags doesn't match, skipping...")
     return false
   }
+
   if (
     skipTags &&
-    skipTags.some((skipTag) =>
-      tags.some(
-        (t) => wildstring.match(t, skipTag) || wildstring.match(skipTag, t)
-      )
-    )
+    skipTags.some((skipTag) => tags.some((t) => wildstring.match(skipTag, t)))
   ) {
     log.debug("tags explicitly skipped, skipping...")
     return false
   }
+
   return true
 }

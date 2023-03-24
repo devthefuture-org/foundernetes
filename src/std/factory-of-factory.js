@@ -13,7 +13,8 @@ module.exports = (create) => (definition) => {
       override = await override(definition)
     }
 
-    const path = callerPath
-    return create({ path, ...definition, ...override })
+    Object.assign(definition, { path: callerPath, ...override })
+
+    return create(definition)
   }
 }

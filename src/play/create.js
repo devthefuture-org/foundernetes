@@ -31,6 +31,7 @@ module.exports = async (definition) => {
     onOK,
     onChanged,
     onFailed,
+    defaultTags: createDefaultTags = [],
     tags: createTags = [],
   } = definition
 
@@ -67,13 +68,18 @@ module.exports = async (definition) => {
         play: contextPlay,
       })
 
-      const logPlayContext = logPlay.start(definition)
+      const logPlayContext = logPlay.init(definition)
 
       const { tags: playTags = [] } = options
       const tags = [...createTags, ...playTags]
-      if (!matchTags(tags)) {
+      if (tags.length === 0) {
+        tags.push(...createDefaultTags)
+      }
+      if (!matchTags(tags, vars)) {
         return
       }
+
+      logPlay.start(logPlayContext)
 
       const counter = ctx.require("playbook.counter")
 
