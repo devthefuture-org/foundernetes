@@ -14,6 +14,7 @@ const castRetry = require("~/lib/cast-retry")
 const isAbortError = require("~/utils/is-abort-error")
 
 const getPluginName = require("~/std/get-plugin-name")
+const matchTags = require("~/std/match-tags")
 
 const logLoader = require("./log-loader")
 
@@ -34,11 +35,15 @@ module.exports = async (definition) => {
 
   const retry = castRetry(definition.retry, "loader")
 
-  const { retryOnUndefined = true, catchErrorAsUndefined = false } = definition
+  const {
+    retryOnUndefined = true,
+    catchErrorAsUndefined = false,
+    tags: createTags = [],
+  } = definition
 
   definition = { ...definition, name }
 
-  const loader = async (vars = {}) =>
+  const loader = async (vars = {}, options = {}) =>
     ctx.fork(async () => {
       const contextLoader = {
         name,
@@ -48,6 +53,15 @@ module.exports = async (definition) => {
       })
 
       const loadLoaderContext = logLoader.start(definition)
+
+      const { tags: playTags = [] } = options
+      const tags = [...createTags, ...playTags]
+      if (tags.length === 0) {
+        tags.push("*") // by default loaders are not filtered when using tags option
+      }
+      if (!matchTags(tags)) {
+        return
+      }
 
       if (validateVars) {
         const isValid = await validateVars(vars)
