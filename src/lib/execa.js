@@ -2,11 +2,11 @@ const defaults = require("lodash.defaults")
 const pick = require("lodash.pick")
 const omit = require("lodash.omit")
 const { parse } = require("shell-quote")
-const { execa } = require("@esm2cjs/execa")
 const chalk = require("chalk")
 
 const ctx = require("~/ctx")
 
+const { execa } = require("~cjs/execa")
 const sudoFactory = require("./sudo-factory")
 const gosuFactory = require("./gosu-factory")
 

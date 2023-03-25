@@ -1,4 +1,4 @@
-const { execa } = require("@esm2cjs/execa")
+const { execa } = require("~cjs/execa")
 
 module.exports = async () => {
   const { exitCode } = await execa("sudo", ["-n", "true"], { reject: false })

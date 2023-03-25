@@ -2,7 +2,7 @@ const os = require("os")
 const { randomUUID } = require("node:crypto")
 const { setTimeout } = require("timers/promises")
 const through2 = require("through2")
-const { execa } = require("@esm2cjs/execa")
+const { execa } = require("~cjs/execa")
 const Deferred = require("~/utils/deferred")
 
 const ctx = require("~/ctx")

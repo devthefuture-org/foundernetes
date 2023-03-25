@@ -1,4 +1,4 @@
-const { execa } = require("@esm2cjs/execa")
+const { execa } = require("~cjs/execa")
 
 module.exports = (options = {}) => {
   const { execaOptions: execaDefaultOptions = {} } = options
