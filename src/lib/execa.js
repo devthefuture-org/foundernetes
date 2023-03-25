@@ -18,8 +18,8 @@ const f10sExecaOptions = [
   "callbacks",
   "logger",
   "logStd",
-  "logStdOut",
-  "logStdErr",
+  "logStdout",
+  "logStderr",
   "logCommand",
   "extendEnvFromConfig",
 ]
