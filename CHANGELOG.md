@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.3.0](https://github.com/devthejo/foundernetes/compare/v1.2.1...v1.3.0) (2023-03-25)
+
+
+### Features
+
+* call play and load from cli ([b03b7a9](https://github.com/devthejo/foundernetes/commit/b03b7a9347bc126fb4311c93cd3119d4e6d6b2a5))
+* expand tags ([a174e1a](https://github.com/devthejo/foundernetes/commit/a174e1afef574f8bc1cf861e76a8ecdc446258d2))
+* improve logs object-hash + random + length ([e5f93bf](https://github.com/devthejo/foundernetes/commit/e5f93bff7d2501ce6d25a9161d5389dec7d28be5))
+* improve tags + compose ([e4cf4f8](https://github.com/devthejo/foundernetes/commit/e4cf4f88364154988dd586c3e40f3dac677b3d70))
+* match-tag loaders ([1bccf5f](https://github.com/devthejo/foundernetes/commit/1bccf5f8929f6f5955ee1c08c6ff60fb802cdfb4))
+* plays tags ([c16fb8b](https://github.com/devthejo/foundernetes/commit/c16fb8b136f83b54bf277ca6e3dbc5d34754be35))
+* retry fine grained +no retryOnError default ([5b844cc](https://github.com/devthejo/foundernetes/commit/5b844cc1fc37ce8e04af15c69f47fae5569d782c))
+* skip-tags ([dbe14e3](https://github.com/devthejo/foundernetes/commit/dbe14e3793874fbaf1cfd3a985a931fecf3de7e5))
+* **sudo:** detect password needed ([4d4e4a8](https://github.com/devthejo/foundernetes/commit/4d4e4a8c26bec05f0fc92661448bbaf673097b18))
+* **sudo:** enforceLeastPrivilege + extraPaths ([3c66d22](https://github.com/devthejo/foundernetes/commit/3c66d22220e9d093c6ced18f52ef7019e3c2b020))
+* **sudo:** stdin + hide prompt output ([854a74c](https://github.com/devthejo/foundernetes/commit/854a74cdd4e7cb82aea5b5b0bc86990a6ad11a63))
+* **sudo:** stdin external control ([7089c6d](https://github.com/devthejo/foundernetes/commit/7089c6deb7d7ce2fac879d7fdadc2fa684ee201e))
+* **sudo:** user ([8f1ae64](https://github.com/devthejo/foundernetes/commit/8f1ae64bc38524b74b10820786f7c9e301d61dd0))
+* tag in def ([ee13637](https://github.com/devthejo/foundernetes/commit/ee13637dbc053eef53933ce62c9099a9d07862bd))
+* tags two way wildstring ([82100c8](https://github.com/devthejo/foundernetes/commit/82100c8d2b586a34f987caecf0da44cacff27154))
+* trace elapsed time ([afd32b5](https://github.com/devthejo/foundernetes/commit/afd32b57761b77433dc39e9b20b6bf1e2d6a7288))
+* tree-factory helper ([2c9f0dd](https://github.com/devthejo/foundernetes/commit/2c9f0ddc8b498a8adbd3abab6c84c3bb25539996))
+* yaml detect ([d0905dd](https://github.com/devthejo/foundernetes/commit/d0905dd38907e02248ed96369e2610801ce32fad))
+
+
+### Bug Fixes
+
+* default don't catch error as false ([8edf0e3](https://github.com/devthejo/foundernetes/commit/8edf0e34cb6da5e0c004028e8f498cce89548945))
+* execa ([a96953d](https://github.com/devthejo/foundernetes/commit/a96953d8dcf254b4689942a146622b528e70c999))
+* execa ([58bb3e0](https://github.com/devthejo/foundernetes/commit/58bb3e032e08ef0e3929683836173483b6b242d6))
+* execa cjs ([f92ed12](https://github.com/devthejo/foundernetes/commit/f92ed1287c482bd6d4f9b1182870b50c1c97b5d7))
+* execa parse ([c4caa13](https://github.com/devthejo/foundernetes/commit/c4caa134e931fb6c09e68312c6e59b342b1da213))
+* improve async ([655d9c0](https://github.com/devthejo/foundernetes/commit/655d9c0cf3e030deb89fc40d75e2f923b5a377c3))
+* improve logs ([58b6de7](https://github.com/devthejo/foundernetes/commit/58b6de7677d74650ba6ef7399d2e5f9a817ec7b9))
+
 ### [1.2.1](https://github.com/devthejo/foundernetes/compare/v1.2.0...v1.2.1) (2023-03-08)
 
 
