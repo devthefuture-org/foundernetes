@@ -86,16 +86,15 @@ module.exports = async (definition) => {
         memoizeVars = vars
       }
 
-      const { memoizeVarsHash = true } = definition
-      const memoizeVarsKey = memoizeVarsHash
-        ? objectHash(memoizeVars)
-        : memoizeVars
-
-      console.log({ memoizeVarsKey, memoizeVars })
-
       const useMemoization = memoizeVars !== undefined
-      if (useMemoization && memoizationRegistry.has(memoizeVarsKey)) {
-        return memoizationRegistry.get(memoizeVarsKey)
+      if (useMemoization) {
+        const { memoizeVarsHash = true } = definition
+        const memoizeVarsKey = memoizeVarsHash
+          ? objectHash(memoizeVars)
+          : memoizeVars
+        if (memoizationRegistry.has(memoizeVarsKey)) {
+          return memoizationRegistry.get(memoizeVarsKey)
+        }
       }
 
       const operation = yaRetry.operation(retry)
