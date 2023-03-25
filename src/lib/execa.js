@@ -24,7 +24,7 @@ const f10sExecaOptions = [
   "extendEnvFromConfig",
 ]
 
-module.exports = async (command, args, options) => {
+module.exports = (command, args, options) => {
   if (!Array.isArray(args)) {
     options = args || {}
     ;[command, ...args] = parse(command)
