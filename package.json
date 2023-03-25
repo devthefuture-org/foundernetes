@@ -85,7 +85,7 @@
     "test:update-snapshots": "yarn test -u",
     "postinstall": "[ -d '.husky' ] && husky install || true && yarn compile:cjs && link-module-alias",
     "compile:cjs": "yarn compile:cjs:execa",
-    "compile:cjs:execa": "mkdir -p .cjs/execa && ncc build node_modules/execa/index.js -e cross-spawn -e merge-stream -e signal-exit -o .cjs/execa/ncc-dist && rollup .cjs/execa/ncc-dist/index.js --file .cjs/execa/index.js --format cjs",
+    "compile:cjs:execa": "EXECA_PATH=\"$(node -e 'process.stdout.write(require.resolve(`execa`))')\" && mkdir -p .cjs/execa && ncc build \"$EXECA_PATH\" -e cross-spawn -e merge-stream -e signal-exit -o .cjs/execa/ncc-dist && rollup .cjs/execa/ncc-dist/index.js --file .cjs/execa/index.js --format cjs",
     "precommit": "lint-staged",
     "release": "commit-and-tag-version",
     "push": "git push -f --follow-tags origin master",
