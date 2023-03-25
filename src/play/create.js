@@ -336,7 +336,7 @@ module.exports = async (definition) => {
         }
       } else {
         logger.info(`✅ ${chalk.green(`[${itemName}] checked ready`)}`)
-        counter.ok++
+        counter.unchanged++
         if (onOK) {
           await onOK(vars)
         }

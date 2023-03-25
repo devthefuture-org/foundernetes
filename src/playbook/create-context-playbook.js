@@ -9,7 +9,7 @@ const FoundernetesPlayPostCheckError = require("~/error/play-post-check")
 const logPlaybook = require("./log-playbook")
 
 module.exports = async (definition, callback) => {
-  const counter = { ok: 0, changed: 0, failed: 0, retried: 0, total: 0 }
+  const counter = { unchanged: 0, changed: 0, failed: 0, retried: 0, total: 0 }
 
   const { name: playbookName, iterators = {} } = definition
 
