@@ -45,6 +45,13 @@ module.exports = async (definition) => {
 
   definition = { ...definition, name }
 
+  const {
+    memoizeVarsHash = true,
+    cache: defaultCache,
+    cacheable = defaultCache,
+    cacheKey = "cache",
+  } = definition
+
   const loader = async (vars = {}, options = {}) =>
     ctx.fork(async () => {
       const contextLoader = {
@@ -80,18 +87,32 @@ module.exports = async (definition) => {
       let { memoizeVars } = definition
       if (typeof memoizeVars === "function") {
         memoizeVars = await memoizeVars(vars)
-      } else if (Array.isArray(memoizeVars)) {
+      }
+      if (Array.isArray(memoizeVars)) {
         memoizeVars = pick(vars, memoizeVars)
       } else if (memoizeVars === true) {
         memoizeVars = vars
       }
 
+      if (cacheable) {
+        const cache =
+          cacheKey && vars[cacheKey] !== undefined
+            ? vars[cacheKey]
+            : defaultCache
+        if (cache) {
+          if (memoizeVars === undefined) {
+            memoizeVars = vars
+          }
+        }
+      }
+
       const useMemoization = memoizeVars !== undefined
-      if (useMemoization) {
-        const { memoizeVarsHash = true } = definition
-        const memoizeVarsKey = memoizeVarsHash
+      const memoizeVarsKey =
+        useMemoization && memoizeVarsHash
           ? objectHash(memoizeVars)
           : memoizeVars
+
+      if (useMemoization) {
         if (memoizationRegistry.has(memoizeVarsKey)) {
           return memoizationRegistry.get(memoizeVarsKey)
         }
@@ -168,12 +189,28 @@ module.exports = async (definition) => {
       }
 
       if (useMemoization) {
-        memoizationRegistry.set(memoizeVars, data)
+        memoizationRegistry.set(memoizeVarsKey, data)
       }
 
       logLoader.end(loadLoaderContext)
 
       return data
     })
+
+  loader.clearCache = (memoizeVars) => {
+    if (typeof memoizeVars !== "object" || memoizeVars === null) {
+      memoizationRegistry.clear()
+      return
+    }
+
+    const memoizeVarsKey = memoizeVarsHash
+      ? objectHash(memoizeVars)
+      : memoizeVars
+
+    if (memoizationRegistry.has(memoizeVarsKey)) {
+      memoizationRegistry.delete(memoizeVarsKey)
+    }
+  }
+
   return loader
 }
