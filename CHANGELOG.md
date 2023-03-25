@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+### [1.3.1](https://github.com/devthejo/foundernetes/compare/v1.3.0...v1.3.1) (2023-03-25)
+
+
+### Bug Fixes
+
+* compile execa ([99e70ec](https://github.com/devthejo/foundernetes/commit/99e70ece50c7cb8a1f187ef21c81fb273ac68e8a))
+
 ## [1.3.0](https://github.com/devthejo/foundernetes/compare/v1.2.1...v1.3.0) (2023-03-25)
 
 
