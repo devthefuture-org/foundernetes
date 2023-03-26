@@ -31,6 +31,7 @@ module.exports = async (definition) => {
     onOK,
     onChanged,
     onFailed,
+    factoryTags = [],
     defaultTags: createDefaultTags = [],
     tags: createTags = [],
   } = definition
@@ -75,6 +76,7 @@ module.exports = async (definition) => {
       if (tags.length === 0) {
         tags.push(...createDefaultTags)
       }
+      tags.push(...factoryTags)
       if (!matchTags(tags, vars)) {
         return
       }

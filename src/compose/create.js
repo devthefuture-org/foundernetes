@@ -5,6 +5,7 @@ const ctx = require("~/ctx")
 module.exports = async (func) => {
   const {
     tags: createTags = [],
+    factoryTags = [],
     defaultTags: createDefaultTags = ["*"], // by default compose are not filtered when using tags option
   } = func
   return async (vars = {}, options = {}) =>
@@ -14,6 +15,7 @@ module.exports = async (func) => {
       if (tags.length === 0) {
         tags.push(...createDefaultTags)
       }
+      tags.push(...factoryTags)
       if (!matchTags(tags, vars)) {
         return
       }

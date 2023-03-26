@@ -39,6 +39,7 @@ module.exports = async (definition) => {
   const {
     retryOnUndefined = true,
     catchErrorAsUndefined = false,
+    factoryTags = [],
     defaultTags: createDefaultTags = ["*"], // by default loaders are not filtered when using tags option
     tags: createTags = [],
   } = definition
@@ -68,6 +69,7 @@ module.exports = async (definition) => {
       if (tags.length === 0) {
         tags.push(...createDefaultTags)
       }
+      tags.push(...factoryTags)
       if (!matchTags(tags, vars)) {
         return
       }
