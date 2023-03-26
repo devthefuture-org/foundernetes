@@ -6,7 +6,7 @@ module.exports = async (func) => {
   const {
     tags: createTags = [],
     factoryTags = [],
-    defaultTags: createDefaultTags = ["*"], // by default compose are not filtered when using tags option
+    defaultTags: createDefaultTags = [],
   } = func
   return async (vars = {}, options = {}) =>
     ctx.fork(async () => {
