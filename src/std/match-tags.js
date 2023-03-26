@@ -18,7 +18,7 @@ module.exports = (tags, vars) => {
       )
     )
   ) {
-    log.debug("tags doesn't match, skipping...")
+    log.debug("tags doesn't match, skipping...", { tags })
     return false
   }
 
@@ -26,7 +26,7 @@ module.exports = (tags, vars) => {
     skipTags &&
     skipTags.some((skipTag) => tags.some((t) => wildstring.match(skipTag, t)))
   ) {
-    log.debug("tags explicitly skipped, skipping...")
+    log.debug("tags explicitly skipped, skipping...", { tags })
     return false
   }
 
