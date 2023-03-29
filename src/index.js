@@ -4,7 +4,11 @@ const async = require("~/lib/async")
 const createIterator = require("~/iterator/create")
 const iteratorFactory = require("~/iterator/factory")
 
-const composeFactory = require("~/compose/factory")
+const composerFactory = require("~/composer/factory")
+const composableFactory = require("~/composable/factory")
+const composablePlayFactory = require("~/composable/play-factory")
+const composableLoaderFactory = require("~/composable/loader-factory")
+const compose = require("~/compose")
 
 const createPlay = require("~/play/create")
 const playFactory = require("~/play/factory")
@@ -43,7 +47,11 @@ module.exports = {
   loaderFactory,
   createPlaybook,
   playbookFactory,
-  composeFactory,
+  composerFactory,
+  composableFactory,
+  composablePlayFactory,
+  composableLoaderFactory,
+  compose,
 
   // vars
   createValidator,

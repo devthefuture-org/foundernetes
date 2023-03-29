@@ -24,6 +24,10 @@ const treeFactory = async (
   await async.eachOf(factories, async (factory, name) => {
     const factoryOptions = get(factoriesDeps, scopeKey)
     if (typeof factory === "function") {
+      const { composable = true } = factory
+      if (!composable) {
+        return
+      }
       const factoryName = autoName ? name : undefined
       const factoryTags = []
       if (autoTags) {
@@ -66,9 +70,8 @@ const defaultOptions = {
   tagsPrefix: "f10n",
 }
 
-module.exports =
-  (factoriesTree, rootKey, options = {}) =>
-  async (deps) => {
+module.exports = (factoriesTree, rootKey, options = {}) => {
+  const factory = async (deps) => {
     const tree = await treeFactory(
       factoriesTree,
       deps,
@@ -78,3 +81,6 @@ module.exports =
     // console.dir({ tree }, { depth: Infinity })
     return tree
   }
+  factory.factories = factoriesTree
+  return factory
+}
