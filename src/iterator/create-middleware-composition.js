@@ -1,4 +1,4 @@
-const compose = require("~/utils/compose")
+const composeReducer = require("~/utils/compose-reducer")
 
 module.exports = (key, middlewares) => {
   const composers = middlewares.map(
@@ -6,5 +6,5 @@ module.exports = (key, middlewares) => {
       (...args) =>
         middleware(key, args)
   )
-  return compose(...composers)
+  return composeReducer(...composers)
 }
