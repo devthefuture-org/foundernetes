@@ -53,6 +53,7 @@ const treeFactory = async (
               {
                 ...factoryDefaults,
                 ...factoryDefaultsOverride,
+                factoryName: factoryDefaultsOverrideFromComposer.factoryName,
                 factoryTags: [
                   ...factoryTags,
                   ...(factoryDefaultsOverride.factoryTags || []),
