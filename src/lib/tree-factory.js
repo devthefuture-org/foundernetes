@@ -24,8 +24,8 @@ const treeFactory = async (
   await async.eachOf(factories, async (factory, name) => {
     const factoryOptions = get(factoriesDeps, scopeKey)
     if (typeof factory === "function") {
-      const { composable = true } = factory
-      if (!composable) {
+      const { composable = false } = factory
+      if (composable) {
         return
       }
       const factoryName = autoName ? name : undefined
