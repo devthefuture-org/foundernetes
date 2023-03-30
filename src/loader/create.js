@@ -16,6 +16,7 @@ const isAbortError = require("~/utils/is-abort-error")
 
 const getPluginName = require("~/std/get-plugin-name")
 const matchTags = require("~/std/match-tags")
+const mergeTags = require("~/std/merge-tags")
 
 const logLoader = require("./log-loader")
 
@@ -65,11 +66,12 @@ module.exports = async (definition) => {
       const loadLoaderContext = logLoader.init(definition)
 
       const { tags: playTags = [] } = options
-      const tags = [...createTags, ...playTags]
-      if (tags.length === 0) {
-        tags.push(...createDefaultTags)
-      }
-      tags.push(...factoryTags)
+      const tags = await mergeTags({
+        factoryTags,
+        createDefaultTags,
+        createTags,
+        playTags,
+      })
       if (!matchTags(tags, vars)) {
         return
       }

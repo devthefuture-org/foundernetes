@@ -19,6 +19,7 @@ const isAbortError = require("~/utils/is-abort-error")
 
 const ctx = require("~/ctx")
 const unsecureRandomUid = require("~/utils/unsecure-random-uid")
+const mergeTags = require("~/std/merge-tags")
 const logPlay = require("./log-play")
 
 const castArrayAsFunction = require("./cast-array-as-function")
@@ -72,11 +73,12 @@ module.exports = async (definition) => {
       const logPlayContext = logPlay.init(definition)
 
       const { tags: playTags = [] } = options
-      const tags = [...createTags, ...playTags]
-      if (tags.length === 0) {
-        tags.push(...createDefaultTags)
-      }
-      tags.push(...factoryTags)
+      const tags = await mergeTags({
+        factoryTags,
+        createDefaultTags,
+        createTags,
+        playTags,
+      })
       if (!matchTags(tags, vars)) {
         return
       }

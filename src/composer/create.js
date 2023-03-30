@@ -1,4 +1,5 @@
 const matchTags = require("~/std/match-tags")
+const mergeTags = require("~/std/merge-tags")
 
 const ctx = require("~/ctx")
 
@@ -11,11 +12,13 @@ module.exports = async (func) => {
   return async (vars = {}, options = {}) =>
     ctx.fork(async () => {
       const { tags: playTags = [] } = options
-      const tags = [...createTags, ...playTags]
-      if (tags.length === 0) {
-        tags.push(...createDefaultTags)
-      }
-      tags.push(...factoryTags)
+      const tags = await mergeTags({
+        factoryTags,
+        createDefaultTags,
+        createTags,
+        playTags,
+      })
+      console.log("tags", func.tags, tags)
       if (!matchTags(tags, vars)) {
         return
       }
