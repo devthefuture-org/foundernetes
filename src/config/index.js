@@ -114,7 +114,6 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
           ...tags.flatMap((tag) => {
             const parts = tag.split(":")
             const newTags = []
-            newTags.push([...parts, "*"].join(":"))
             while (parts.length) {
               newTags.push([...parts].join(":"))
               parts.pop()
@@ -149,6 +148,5 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
     options: opts,
     env,
   })
-
   return config
 }
