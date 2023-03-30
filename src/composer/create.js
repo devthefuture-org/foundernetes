@@ -18,7 +18,6 @@ module.exports = async (func) => {
         createTags,
         playTags,
       })
-      console.log("tags", func.tags, tags)
       if (!matchTags(tags, vars)) {
         return
       }

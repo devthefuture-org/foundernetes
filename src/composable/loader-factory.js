@@ -1,4 +1,4 @@
-const loaderFactory = require("~/loader/factory")
-const create = require("./create")
+const create = require("~/loader/create")
+const factoryOfFactory = require("~/std/factory-of-factory")
 
-module.exports = (...args) => create(loaderFactory(...args))
+module.exports = factoryOfFactory(create, { composable: true })

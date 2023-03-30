@@ -1,22 +1,31 @@
 const defaults = require("lodash.defaults")
 
 module.exports =
-  (create) =>
-  (definition, factoryDefaults = {}) =>
-  async (config = {}, override = {}) => {
-    if (typeof definition === "function") {
-      if (typeof config === "function") {
-        config = await config()
+  (create, meta = {}) =>
+  (definition, factoryDefaults = {}) => {
+    const exported = async (deps = {}, createDefaults = {}) => {
+      // console.log({ createDefaults })
+      if (typeof definition === "function") {
+        if (typeof deps === "function") {
+          deps = await deps()
+        }
+        definition = await definition(deps)
       }
-      definition = await definition(config)
+      if (typeof createDefaults === "function") {
+        createDefaults = await createDefaults(definition)
+      }
+
+      Object.assign(definition, createDefaults)
+
+      defaults(definition, factoryDefaults)
+      if (factoryDefaults.tags) {
+        definition.tags = [...(definition.tags || []), ...factoryDefaults.tags]
+      }
+
+      return create(definition)
     }
-    if (typeof override === "function") {
-      override = await override(definition)
-    }
 
-    Object.assign(definition, override)
+    Object.assign(exported, meta)
 
-    defaults(definition, factoryDefaults)
-
-    return create(definition)
+    return exported
   }

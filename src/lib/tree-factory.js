@@ -2,6 +2,8 @@ const get = require("lodash.get")
 const defaults = require("lodash.defaults")
 const async = require("~/lib/async")
 
+// const objectSortKeys = require("~/utils/object-sort-keys")
+
 const treeFactory = async (
   factories,
   deps,
@@ -11,7 +13,8 @@ const treeFactory = async (
   values = {},
   rootValues = values
 ) => {
-  deps = { ...deps, module: values }
+  const mod = {}
+  deps = { ...deps, mod }
   if (rootKey) {
     deps[rootKey] = rootValues
   }
@@ -21,13 +24,12 @@ const treeFactory = async (
   const scopeKey = scope.join(".")
 
   const { mainKey, autoName, autoTags, tagsPrefix } = options
-  await async.eachOf(factories, async (factory, name) => {
+
+  // factories = objectSortKeys(factories, (key) => (key === mainKey ? 1 : 0))
+
+  await async.eachOfSeries(factories, async (factory, name) => {
     const factoryOptions = get(factoriesDeps, scopeKey)
     if (typeof factory === "function") {
-      const { composable = false } = factory
-      if (composable) {
-        return
-      }
       const factoryName = autoName ? name : undefined
       const factoryTags = []
       if (autoTags) {
@@ -38,14 +40,39 @@ const treeFactory = async (
         }
       }
       const factoryDefaults = { factoryName, factoryTags }
-      values[name] = await factory(
-        { ...deps, ...factoryOptions },
-        factoryDefaults
-      )
+      const { composable = false } = factory
+      const factoryParams = { ...deps, ...factoryOptions }
+      if (composable) {
+        factories[name] = async (
+          factoryParamsOverride = {},
+          factoryDefaultsOverride = {}
+        ) => {
+          const composed = async (factoryDefaultsOverrideFromComposer) =>
+            factory(
+              { ...factoryParams, ...factoryParamsOverride },
+              {
+                ...factoryDefaults,
+                ...factoryDefaultsOverride,
+                factoryTags: [
+                  ...factoryTags,
+                  ...(factoryDefaultsOverride.factoryTags || []),
+                  ...(factoryDefaultsOverrideFromComposer.factoryTags || []),
+                ],
+              }
+            )
+          composed.composed = true
+          return composed
+        }
+        return
+      }
+      const component = await factory(factoryParams, factoryDefaults)
+      values[name] = component
+      mod[name] = component
       if (name === mainKey) {
-        const tmp = values
         values = values[name]
-        Object.assign(values, tmp)
+      }
+      if (component.composed) {
+        values[name] = await values[name](factoryDefaults)
       }
     } else {
       const childScope = [...scope, name]
@@ -60,6 +87,7 @@ const treeFactory = async (
       )
     }
   })
+  Object.assign(mod, values)
   return values
 }
 
@@ -78,9 +106,10 @@ module.exports = (factoriesTree, rootKey, options = {}) => {
       rootKey,
       defaults(options, defaultOptions)
     )
-    // console.dir({ tree }, { depth: Infinity })
+    // process.exit(0)
     return tree
   }
   factory.factories = factoriesTree
+  // console.dir({ factory }, { depth: Infinity })
   return factory
 }

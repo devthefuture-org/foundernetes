@@ -1,4 +1,4 @@
-const playFactory = require("~/play/factory")
-const create = require("./create")
+const create = require("~/play/create")
+const factoryOfFactory = require("~/std/factory-of-factory")
 
-module.exports = (...args) => create(playFactory(...args))
+module.exports = factoryOfFactory(create, { composable: true })
