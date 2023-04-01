@@ -23,8 +23,10 @@ const load = (input, { isArray, retroCompat = true } = {}) => {
     : loadObject(input, { retroCompat })
 }
 
-// module.exports.dump = (input) => yaml.stringify(input)
-const dump = (input) => jsYaml.dump(input)
+const dump = (input, retroCompat = true) =>
+  retroCompat
+    ? yaml.stringify(input, { schema: "yaml-1.1" })
+    : jsYaml.dump(input)
 
 const dumpAll = (manifests) =>
   manifests.map((manifest) => dump(manifest)).join("---\n")
