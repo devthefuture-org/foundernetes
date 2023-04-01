@@ -4,7 +4,7 @@ const ctx = require("~/ctx")
 
 module.exports = (tags, vars) => {
   const config = ctx.require("config")
-  const log = ctx.require("logger")
+  const logger = ctx.require("logger")
 
   const { tags: runTags, skipTags } = config
 
@@ -18,7 +18,7 @@ module.exports = (tags, vars) => {
       )
     )
   ) {
-    log.debug("tags doesn't match, skipping...", { tags })
+    logger.debug("tags doesn't match, skipping...", { tags })
     return false
   }
 
@@ -26,7 +26,7 @@ module.exports = (tags, vars) => {
     skipTags &&
     skipTags.some((skipTag) => tags.some((t) => wildstring.match(skipTag, t)))
   ) {
-    log.debug("tags explicitly skipped, skipping...", { tags })
+    logger.debug("tags explicitly skipped, skipping...", { tags })
     return false
   }
 

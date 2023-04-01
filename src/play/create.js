@@ -11,7 +11,9 @@ const FoundernetesStopError = require("~/error/stop")
 const FoundernetesPlayCheckError = require("~/error/play-check")
 
 const getPluginName = require("~/std/get-plugin-name")
+const conditions = require("~/std/conditions")
 const matchTags = require("~/std/match-tags")
+const mergeTags = require("~/std/merge-tags")
 
 const castRetry = require("~/lib/cast-retry")
 
@@ -19,7 +21,6 @@ const isAbortError = require("~/utils/is-abort-error")
 
 const ctx = require("~/ctx")
 const unsecureRandomUid = require("~/utils/unsecure-random-uid")
-const mergeTags = require("~/std/merge-tags")
 const logPlay = require("./log-play")
 
 const castArrayAsFunction = require("./cast-array-as-function")
@@ -35,6 +36,7 @@ module.exports = async (definition) => {
     factoryTags = [],
     defaultTags: createDefaultTags = [],
     tags: createTags = [],
+    if: createIfConditions = [],
   } = definition
 
   let { run } = definition
@@ -80,6 +82,19 @@ module.exports = async (definition) => {
         playTags,
       })
       if (!matchTags(tags, vars)) {
+        return
+      }
+      if (
+        !(await conditions(
+          [...createIfConditions, ...(play.if || []), ...(options.if || [])],
+          {
+            func: play,
+            name,
+            tags,
+            vars,
+          }
+        ))
+      ) {
         return
       }
 

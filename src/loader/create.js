@@ -15,6 +15,7 @@ const castRetry = require("~/lib/cast-retry")
 const isAbortError = require("~/utils/is-abort-error")
 
 const getPluginName = require("~/std/get-plugin-name")
+const conditions = require("~/std/conditions")
 const matchTags = require("~/std/match-tags")
 const mergeTags = require("~/std/merge-tags")
 
@@ -43,6 +44,7 @@ module.exports = async (definition) => {
     factoryTags = [],
     defaultTags: createDefaultTags = ["*"], // by default loaders are not filtered when using tags option
     tags: createTags = [],
+    if: createIfConditions = [],
   } = definition
 
   definition = { ...definition, name }
@@ -73,6 +75,19 @@ module.exports = async (definition) => {
         playTags,
       })
       if (!matchTags(tags, vars)) {
+        return
+      }
+      if (
+        !(await conditions(
+          [...createIfConditions, ...(loader.if || []), ...(options.if || [])],
+          {
+            func: loader,
+            name,
+            tags,
+            vars,
+          }
+        ))
+      ) {
         return
       }
 

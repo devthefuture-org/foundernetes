@@ -4,8 +4,9 @@ const async = require("~/lib/async")
 
 // const objectSortKeys = require("~/utils/object-sort-keys")
 
-const treeFactory = async (
+const treeRecursiveFactory = async (
   factories,
+  factoriesParams,
   deps,
   rootKey,
   options,
@@ -19,16 +20,16 @@ const treeFactory = async (
     deps[rootKey] = rootValues
   }
 
-  const factoriesDeps = {}
-
-  const scopeKey = scope.join(".")
-
   const { mainKey, autoName, autoTags, tagsPrefix } = options
 
   // factories = objectSortKeys(factories, (key) => (key === mainKey ? 1 : 0))
 
   await async.eachOfSeries(factories, async (factory, name) => {
-    const factoryOptions = get(factoriesDeps, scopeKey)
+    const scopeKey = [...scope.filter((s) => s), name].join(".")
+    const factoryCompositionParams = get(factoriesParams, scopeKey)
+    if (rootKey === "conditions") {
+      console.log({ scopeKey, factoryCompositionParams, factoriesParams })
+    }
     if (typeof factory === "function") {
       const factoryName = autoName ? name : undefined
       const factoryTags = []
@@ -41,7 +42,7 @@ const treeFactory = async (
       }
       const factoryDefaults = { factoryName, factoryTags }
       const { composable = false } = factory
-      const factoryParams = { ...deps, ...factoryOptions }
+      const factoryParams = { ...deps, ...factoryCompositionParams }
       if (composable) {
         factories[name] = async (
           factoryParamsOverride = {},
@@ -77,9 +78,10 @@ const treeFactory = async (
       }
     } else {
       const childScope = [...scope, name]
-      values[name] = await treeFactory(
+      values[name] = await treeRecursiveFactory(
         factory,
-        { ...deps, ...factoryOptions },
+        factoriesParams,
+        { ...deps, ...factoryCompositionParams },
         rootKey,
         options,
         childScope,
@@ -99,10 +101,16 @@ const defaultOptions = {
   tagsPrefix: "f10n",
 }
 
-module.exports = (factoriesTree, rootKey, options = {}) => {
+module.exports = (
+  rootKey,
+  factoriesTree,
+  factoriesParams = {},
+  options = {}
+) => {
   const factory = async (deps) => {
-    const tree = await treeFactory(
+    const tree = await treeRecursiveFactory(
       factoriesTree,
+      factoriesParams,
       deps,
       rootKey,
       defaults(options, defaultOptions)
