@@ -44,9 +44,9 @@ const report = ({ log = true }) => {
     return
   }
   const { counter } = ctx.require("playbook")
-  const msg = `🚩 report: ${chalk.green(
-    `Unchanged=${counter.unchanged}`
-  )} ${chalk.cyanBright(`Changed=${counter.changed}`)} ${chalk.greenBright(
+  const msg = `🚩 report: ${chalk.cyanBright(
+    `Changed=${counter.changed}`
+  )} ${chalk.green(`Unchanged=${counter.unchanged}`)} ${chalk.greenBright(
     `OK=${counter.unchanged + counter.changed}`
   )} ${chalk.red(`Failed=${counter.failed}`)} ${
     counter.retried > 0 ? chalk.yellow(`Retried=${counter.retried}`) : ""
