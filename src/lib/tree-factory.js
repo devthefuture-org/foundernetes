@@ -1,5 +1,6 @@
 const get = require("lodash.get")
 const defaults = require("lodash.defaults")
+const cloneDeep = require("lodash.clonedeep")
 const async = require("~/lib/async")
 
 // const objectSortKeys = require("~/utils/object-sort-keys")
@@ -104,6 +105,7 @@ module.exports = (
   factoriesParams = {},
   options = {}
 ) => {
+  factoriesTree = cloneDeep(factoriesTree)
   const factory = async (deps) => {
     const tree = await treeRecursiveFactory(
       factoriesTree,

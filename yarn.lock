@@ -3498,6 +3498,7 @@ __metadata:
     lint-staged: ^13.0.4
     lodash: ^4.17.21
     lodash.camelcase: ^4.3.0
+    lodash.clonedeep: ^4.5.0
     lodash.defaults: ^4.2.0
     lodash.defaultsdeep: ^4.6.1
     lodash.get: ^4.4.2
@@ -5419,6 +5420,13 @@ __metadata:
   version: 4.3.0
   resolution: "lodash.camelcase@npm:4.3.0"
   checksum: cb9227612f71b83e42de93eccf1232feeb25e705bdb19ba26c04f91e885bfd3dd5c517c4a97137658190581d3493ea3973072ca010aab7e301046d90740393d1
+  languageName: node
+  linkType: hard
+
+"lodash.clonedeep@npm:^4.5.0":
+  version: 4.5.0
+  resolution: "lodash.clonedeep@npm:4.5.0"
+  checksum: 92c46f094b064e876a23c97f57f81fbffd5d760bf2d8a1c61d85db6d1e488c66b0384c943abee4f6af7debf5ad4e4282e74ff83177c9e63d8ff081a4837c3489
   languageName: node
   linkType: hard
 
