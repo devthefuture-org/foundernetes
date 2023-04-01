@@ -27,9 +27,6 @@ const treeRecursiveFactory = async (
   await async.eachOfSeries(factories, async (factory, name) => {
     const scopeKey = [...scope.filter((s) => s), name].join(".")
     const factoryCompositionParams = get(factoriesParams, scopeKey)
-    if (rootKey === "conditions") {
-      console.log({ scopeKey, factoryCompositionParams, factoriesParams })
-    }
     if (typeof factory === "function") {
       const factoryName = autoName ? name : undefined
       const factoryTags = []
