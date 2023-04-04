@@ -4,6 +4,8 @@ const omit = require("lodash.omit")
 const { parse } = require("shell-quote")
 const chalk = require("chalk")
 
+const isRoot = require("~/lib/is-root")
+
 const ctx = require("~/ctx")
 
 const { execa } = require("~cjs/execa")
@@ -56,13 +58,15 @@ module.exports = (command, args, options) => {
 
   const callbacks = [...(extraOptions.callbacks || [])]
 
-  let { sudo } = extraOptions
+  const isRootUser = isRoot()
+
+  const { sudo } = extraOptions
   const {
     enforceLeastPrivilege = config.execEnforceLeastPrivilege,
     enforceLeastPrivilegeUseGoSu = config.execEnforceLeastPrivilegeUseGoSu,
   } = extraOptions
 
-  if (!sudo && enforceLeastPrivilege && process.env.SUDO_USER) {
+  if (!sudo && enforceLeastPrivilege && isRootUser && process.env.SUDO_USER) {
     if (enforceLeastPrivilegeUseGoSu) {
       commandFunction = gosuFactory({
         execaOptions,
@@ -70,13 +74,14 @@ module.exports = (command, args, options) => {
         group: process.env.SUDO_USER,
       })
     } else {
-      sudo = {
+      commandFunction = sudoFactory({
+        execaOptions,
         user: process.env.SUDO_USER,
         group: process.env.SUDO_USER,
-      }
+      })
     }
   }
-  if (sudo) {
+  if (sudo && !isRootUser) {
     if (sudo === true) {
       commandFunction = ctx.require("sudo")
     } else {

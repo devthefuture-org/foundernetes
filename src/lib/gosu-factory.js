@@ -6,7 +6,6 @@ module.exports = (options = {}) => {
 
   return (command, args = [], execaOptions = {}) => {
     const gosuArgs = [`${user}${group ? `:${group}` : ""}`, command, ...args]
-
     const child = execa("gosu", gosuArgs, {
       ...execaDefaultOptions,
       ...execaOptions,

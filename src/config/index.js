@@ -1,12 +1,13 @@
 const os = require("os")
 const path = require("path")
 const { mkdtemp } = require("fs/promises")
-
+const untildify = require("untildify")
 const fs = require("fs-extra")
-
 const parseDuration = require("parse-duration")
 
 const loadStructuredConfig = require("~/utils/load-structured-config")
+
+const syncDir = require("~/lib/sync-dir")
 
 const envParserCastArray = require("./env-parsers/cast-array")
 const envParserYaml = require("./env-parsers/yaml")
@@ -79,7 +80,24 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
     extraPaths: {
       default: [],
       sideEffect: (extraPaths) => {
-        process.env.PATH = [extraPaths, process.env.PATH].join(path.delimiter)
+        process.env.PATH = [...extraPaths, process.env.PATH].join(
+          path.delimiter
+        )
+      },
+    },
+    extractBinPath: {
+      default: {
+        source: "/snapshot/foundation/bin",
+        target: "~/.foundernetes/bin",
+      },
+      sideEffect: async (extractBinPath) => {
+        const { source } = extractBinPath
+        if (!(await fs.pathExists(source))) {
+          return
+        }
+        const target = untildify(extractBinPath.target)
+        await syncDir(source, target)
+        process.env.PATH = [target, process.env.PATH].join(path.delimiter)
       },
     },
     logStd: {

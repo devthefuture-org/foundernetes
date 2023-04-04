@@ -3521,6 +3521,7 @@ __metadata:
     sonic-boom: ^3.2.0
     through2: ^4.0.2
     tiged: ^2.12.3
+    untildify: ^4.0.0
     which: ^3.0.0
     wildstring: ^1.0.9
     ya-retry: ^1.2.0
@@ -7973,6 +7974,13 @@ __metadata:
   version: 1.0.0
   resolution: "unpipe@npm:1.0.0"
   checksum: 4fa18d8d8d977c55cb09715385c203197105e10a6d220087ec819f50cb68870f02942244f1017565484237f1f8c5d3cd413631b1ae104d3096f24fdfde1b4aa2
+  languageName: node
+  linkType: hard
+
+"untildify@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "untildify@npm:4.0.0"
+  checksum: 39ced9c418a74f73f0a56e1ba4634b4d959422dff61f4c72a8e39f60b99380c1b45ed776fbaa0a4101b157e4310d873ad7d114e8534ca02609b4916bb4187fb9
   languageName: node
   linkType: hard
 

@@ -339,6 +339,7 @@ module.exports = async (definition) => {
         }
         if (postCheckResult === false) {
           logger.info(`❌ ${chalk.red(`[${itemName}] failed`)}`)
+          logger.debug(`[${itemName}] failed`, { vars })
           counter.failed++
           if (onFailed) {
             await onFailed(vars)

@@ -4,6 +4,7 @@ const ctx = require("~/ctx")
 
 const sudoFactory = require("~/lib/sudo-factory")
 const sudoAskPassword = require("~/lib/sudo-ask-password")
+const isRoot = require("~/lib/is-root")
 
 const isAbortError = require("~/utils/is-abort-error")
 
@@ -33,7 +34,7 @@ module.exports = async ({ callback, targets = [] }) => {
   const { sudo } = config
   if (sudo) {
     const sudoOptions = {}
-    if (config.sudoAskPassword) {
+    if (config.sudoAskPassword && !isRoot()) {
       const password = await sudoAskPassword()
       sudoOptions.password = password
     }
