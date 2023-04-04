@@ -91,7 +91,7 @@ module.exports = (command, args, options) => {
 
   const {
     logger = ctx.require("logger"),
-    logStd = config.logStd,
+    logStd = config.execLogStd,
     logStdout = logStd,
     logStderr = logStd,
     logStdLevel = "info",

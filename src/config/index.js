@@ -63,6 +63,11 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
       envParser: envParserYaml,
       defaultFunction: (config) => !!config.sudoPassword,
     },
+    execLogStd: {
+      env: "F10S_EXEC_LOG_STD",
+      envParser: envParserYaml,
+      default: true,
+    },
     execLogCommands: {
       env: "F10S_EXEC_LOG_COMMANDS",
       envParser: envParserYaml,
@@ -100,10 +105,13 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
         process.env.PATH = [target, process.env.PATH].join(path.delimiter)
       },
     },
-    logStd: {
-      env: "F10S_LOG_STD",
-      envParser: envParserYaml,
+    logFile: {
+      env: "F10S_LOG_FILE",
+    },
+    logFilePlain: {
+      env: "F10S_LOG_FILE_PLAIN",
       default: true,
+      envParser: envParserYaml,
     },
     tmpRootPath: {
       env: "F10S_TMP_ROOT_PATH",

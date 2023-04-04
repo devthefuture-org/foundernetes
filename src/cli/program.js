@@ -1,9 +1,12 @@
+const path = require("path")
 const { Command } = require("commander")
+const fs = require("fs-extra")
 
 const ctx = require("~/ctx")
 const loadConfig = require("~/config")
 const createLogger = require("~/utils/logger-factory")
-const globalLogger = require("~/utils/logger")
+const removeExtname = require("~/utils/remove-extname")
+
 const options = require("./options")
 
 module.exports = () => {
@@ -26,8 +29,26 @@ module.exports = () => {
       ctx.set("config", config)
 
       const loggerOverride = ctx.get("loggerOverride")
+      const { logFile, logLevel } = config
+      let { logFilePlain = !!logFile } = config
+      if (logFile) {
+        await fs.ensureFile(logFile)
+      }
+      if (logFilePlain) {
+        if (logFilePlain === true) {
+          const basename = path.basename(logFile)
+          logFilePlain = path.join(
+            path.dirname(logFile),
+            `${removeExtname(basename)}.plain${path.extname(basename)}`
+          )
+        }
+        await fs.ensureFile(logFilePlain)
+      }
       let logger = createLogger({
         secrets: [],
+        logFile,
+        logFilePlain,
+        logLevel,
       })
       if (loggerOverride) {
         logger = loggerOverride(logger, config)
@@ -35,7 +56,6 @@ module.exports = () => {
       ctx.set("logger", logger)
 
       logger.configureDebug(opts.D)
-      globalLogger.configureDebug(opts.D)
     })
 
   return program
