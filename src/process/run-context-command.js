@@ -98,16 +98,7 @@ module.exports = async ({ callback, targets = [] }) => {
     logger.warn("process was interrupted: exited gracefully")
   }
 
-  await Promise.all(
-    logger.streams.map((stream) => {
-      stream.end()
-      return new Promise((resolve) => {
-        stream.once("finish", () => {
-          resolve()
-        })
-      })
-    })
-  )
+  await logger.end()
 
   process.exit(exitCode)
 }

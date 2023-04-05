@@ -1,7 +1,5 @@
 const fs = require("fs")
-const { Logger } = require("direct-logger")
-const streamCombiner = require("~/utils/stream-combiner")
-const streamTransformer = require("~/utils/stream-transformer")
+const { Logger, streamCombiner, streamTransformer } = require("direct-logger")
 const removeAllAnsiColors = require("~/utils/remove-all-ansi-colors")
 
 module.exports = (opts = {}) => {
