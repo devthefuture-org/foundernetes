@@ -2378,6 +2378,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dayjs@npm:^1.11.7":
+  version: 1.11.7
+  resolution: "dayjs@npm:1.11.7"
+  checksum: 5003a7c1dd9ed51385beb658231c3548700b82d3548c0cfbe549d85f2d08e90e972510282b7506941452c58d32136d6362f009c77ca55381a09c704e9f177ebb
+  languageName: node
+  linkType: hard
+
 "debug@npm:2.6.9, debug@npm:^2.6.9":
   version: 2.6.9
   resolution: "debug@npm:2.6.9"
@@ -2607,12 +2614,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"direct-logger@npm:^2.12.0":
-  version: 2.12.0
-  resolution: "direct-logger@npm:2.12.0"
+"direct-logger@npm:^2.13.0":
+  version: 2.13.0
+  resolution: "direct-logger@npm:2.13.0"
   dependencies:
     chalk: ^4.1.0
-  checksum: 022e8ecad7db5c64faec27ba185ab7c4d722204ff1fcd8dff72c427477e14df555e369e466381aa8cd33de95fed55a36f9bc66483012f41c2f8a32b18b66c20c
+    dayjs: ^1.11.7
+  checksum: 53657914798a68dbf921cd43ff1f7f965303af60180084450a6dc1a5142e6bd56aa046f424860c517c75756d88e9f2ccc6e01207764ba128775db4d787575f7b
   languageName: node
   linkType: hard
 
@@ -3475,7 +3483,7 @@ __metadata:
     commit-and-tag-version: ^10.1.0
     compare-versions: ^5.0.1
     decompress: ^4.2.1
-    direct-logger: ^2.12.0
+    direct-logger: ^2.13.0
     docsify-cli: ^4.4.4
     dotenv: ^16.0.3
     enquirer: ^2.3.6

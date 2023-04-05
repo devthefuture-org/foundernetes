@@ -25,12 +25,15 @@ module.exports = (opts = {}) => {
 
   const logger = Logger({
     formatter: "cli",
-    formatterOptions: {
-      displayLevel: false,
-    },
     level: logLevel,
     streams: Logger.levels.map((_level, _i) => createLoggerStream()),
     ...opts,
+    formatterOptions: {
+      displayLevel: false,
+      // displayDate: true,
+      displayDuration: true,
+      ...(opts.formatterOptions || {}),
+    },
   })
 
   const configureDebug = (debug) => {
