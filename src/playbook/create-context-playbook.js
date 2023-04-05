@@ -62,6 +62,7 @@ module.exports = async (definition, callback) => {
     loaders: definition.loaders || {},
     playbookName,
     definition,
+    counter,
   })
 
   return execPlaybook

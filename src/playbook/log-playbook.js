@@ -60,4 +60,53 @@ const report = ({ log = true }) => {
   })
 }
 
-module.exports = { start, end, report }
+const getPlaybooksList = (playbooks) =>
+  playbooks.map((playbook) => playbook.playbookName)
+
+const startAll = (playbooks) => {
+  if (playbooks.length === 0) {
+    return
+  }
+  const logger = ctx.require("logger")
+  logger.info(
+    `🌍 launching all playbooks: ${chalk.cyanBright(
+      getPlaybooksList(playbooks).join(",")
+    )}`,
+    {
+      datetime: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+    }
+  )
+}
+
+const endAll = (playbooks) => {
+  if (playbooks.length === 0) {
+    return
+  }
+  const logger = ctx.require("logger")
+
+  const counter = {
+    unchanged: 0,
+    changed: 0,
+    failed: 0,
+    retried: 0,
+    total: 0,
+  }
+  for (const playbook of playbooks) {
+    for (const key of Object.keys(counter)) {
+      counter[key] += playbook.counter[key]
+    }
+  }
+  const msg = `🌍 total report: ${chalk.cyanBright(
+    `Changed=${counter.changed}`
+  )} ${chalk.green(`Unchanged=${counter.unchanged}`)} ${chalk.greenBright(
+    `OK=${counter.unchanged + counter.changed}`
+  )} ${chalk.red(`Failed=${counter.failed}`)} ${
+    counter.retried > 0 ? chalk.yellow(`Retried=${counter.retried}`) : ""
+  }`
+  logger.info(msg, {
+    datetime: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+    playbooks: getPlaybooksList(playbooks),
+  })
+}
+
+module.exports = { start, end, report, startAll, endAll }
