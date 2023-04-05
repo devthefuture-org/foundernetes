@@ -29,7 +29,7 @@ module.exports = () => {
       ctx.set("config", config)
 
       const loggerOverride = ctx.get("loggerOverride")
-      const { logFile, logLevel } = config
+      const { logFile } = config
       let { logFilePlain = !!logFile } = config
       if (logFile) {
         await fs.ensureFile(logFile)
@@ -44,11 +44,16 @@ module.exports = () => {
         }
         await fs.ensureFile(logFilePlain)
       }
+      const { logLevel, logDate, logDuration } = config
       let logger = createLogger({
         secrets: [],
         logFile,
         logFilePlain,
         logLevel,
+        formatterOptions: {
+          displayDuration: logDuration,
+          displayDate: logDate,
+        },
       })
       if (loggerOverride) {
         logger = loggerOverride(logger, config)

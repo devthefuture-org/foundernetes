@@ -105,6 +105,20 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
         process.env.PATH = [target, process.env.PATH].join(path.delimiter)
       },
     },
+    logLevel: {
+      env: "F10S_LOG_LEVEL",
+      default: "info",
+    },
+    logDate: {
+      env: "F10S_LOG_DATE",
+      default: false,
+      envParser: envParserYaml,
+    },
+    logDuration: {
+      env: "F10S_LOG_DURATION",
+      default: true,
+      envParser: envParserYaml,
+    },
     logFile: {
       env: "F10S_LOG_FILE",
     },
