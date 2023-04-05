@@ -34,7 +34,7 @@ module.exports = () => {
       if (logFile) {
         await fs.ensureFile(logFile)
       }
-      if (logFilePlain) {
+      if (logFile && logFilePlain) {
         if (logFilePlain === true) {
           const basename = path.basename(logFile)
           logFilePlain = path.join(
@@ -48,7 +48,7 @@ module.exports = () => {
       let logger = createLogger({
         secrets: [],
         logFile,
-        logFilePlain,
+        logFilePlain: logFile ? logFilePlain : false,
         logLevel,
         formatterOptions: {
           displayDuration: logDuration,
