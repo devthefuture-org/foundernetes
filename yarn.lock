@@ -3482,6 +3482,7 @@ __metadata:
     commander: ^9.4.1
     commit-and-tag-version: ^10.1.0
     compare-versions: ^5.0.1
+    dayjs: ^1.11.7
     decompress: ^4.2.1
     direct-logger: ^2.13.0
     docsify-cli: ^4.4.4

@@ -1,4 +1,5 @@
 const chalk = require("chalk")
+const dayjs = require("dayjs")
 
 const ctx = require("~/ctx")
 
@@ -23,7 +24,9 @@ const start = (definition) => {
       getContextLoggerOptions()
     )
   )
-  logger.info(`📖 launching playbook: ${name}`)
+  logger.info(`📖 launching playbook: ${name}`, {
+    datetime: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+  })
   return logPlaybookContext
 }
 
@@ -52,7 +55,9 @@ const report = ({ log = true }) => {
     counter.retried > 0 ? chalk.yellow(`Retried=${counter.retried}`) : ""
   }`
   const logger = ctx.require("parentLogger")
-  logger.info(msg)
+  logger.info(msg, {
+    datetime: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+  })
 }
 
 module.exports = { start, end, report }

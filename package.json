@@ -15,6 +15,7 @@
     "chalk": "^4.1.2",
     "commander": "^9.4.1",
     "compare-versions": "^5.0.1",
+    "dayjs": "^1.11.7",
     "decompress": "^4.2.1",
     "direct-logger": "^2.13.0",
     "dotenv": "^16.0.3",
