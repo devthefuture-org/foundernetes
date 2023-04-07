@@ -1,22 +1,21 @@
 const conditions = require("~/std/conditions")
 const matchTags = require("~/std/match-tags")
 const mergeTags = require("~/std/merge-tags")
+const treeName = require("~/tree/name")
 
 const ctx = require("~/ctx")
 
 module.exports = async (func) => {
   const {
     tags: createTags = [],
-    factoryTags = [],
     defaultTags: createDefaultTags = [],
     if: createIfConditions = [],
-    name,
   } = func
-  const composeFunc = async (vars = {}, options = {}) =>
+  const composer = async (vars = {}, options = {}) =>
     ctx.fork(async () => {
       const { tags: playTags = [] } = options
       const tags = await mergeTags({
-        factoryTags,
+        func: composer,
         createDefaultTags,
         createTags,
         playTags,
@@ -28,12 +27,12 @@ module.exports = async (func) => {
         !(await conditions(
           [
             ...createIfConditions,
-            ...(composeFunc.if || []),
+            ...(composer.if || []),
             ...(options.if || []),
           ],
           {
             func,
-            name,
+            name: composer.name,
             tags,
             options,
           }
@@ -43,5 +42,6 @@ module.exports = async (func) => {
       }
       return func(vars)
     })
-  return composeFunc
+  composer.name = treeName(composer)
+  return composer
 }

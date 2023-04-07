@@ -5,9 +5,10 @@ const logPlaybook = require("./log-playbook")
 
 module.exports = async (options, targets = []) => {
   const callback = async (playbooks) => {
-    logPlaybook.startAll(playbooks)
-
     const parallel = options.P
+
+    logPlaybook.startAll(playbooks, { parallel })
+
     const method = parallel ? async.parallel : async.series
     await method(playbooks)
 

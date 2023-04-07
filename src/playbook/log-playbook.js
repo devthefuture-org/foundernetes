@@ -63,13 +63,14 @@ const report = ({ log = true }) => {
 const getPlaybooksList = (playbooks) =>
   playbooks.map((playbook) => playbook.playbookName)
 
-const startAll = (playbooks) => {
-  if (playbooks.length === 0) {
+const startAll = (playbooks, { parallel }) => {
+  if (playbooks.length <= 1) {
     return
   }
+  const methodName = parallel ? "parallel" : "series"
   const logger = ctx.require("logger")
   logger.info(
-    `🌍 launching all playbooks: ${chalk.cyanBright(
+    `🌍 launching all playbooks in ${methodName}: ${chalk.cyanBright(
       getPlaybooksList(playbooks).join(",")
     )}`,
     {
@@ -79,7 +80,7 @@ const startAll = (playbooks) => {
 }
 
 const endAll = (playbooks) => {
-  if (playbooks.length === 0) {
+  if (playbooks.length <= 1) {
     return
   }
   const logger = ctx.require("logger")

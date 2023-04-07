@@ -16,7 +16,7 @@ const init = (definition) => {
   ctx.replace("logger", (l) =>
     l.child(
       {
-        play: name,
+        loader: name,
       },
       getContextLoggerOptions()
     )

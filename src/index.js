@@ -1,23 +1,15 @@
+const dbug = require("~/dbug")
 const cli = require("~/cli")
 
 const async = require("~/lib/async")
 const createIterator = require("~/iterator/create")
-const iteratorFactory = require("~/iterator/factory")
 
-const composerFactory = require("~/composer/factory")
-const composableFactory = require("~/composable/factory")
-const composablePlayFactory = require("~/composable/play-factory")
-const composableLoaderFactory = require("~/composable/loader-factory")
-const compose = require("~/compose")
-
-const createPlay = require("~/play/create")
-const playFactory = require("~/play/factory")
+const createTree = require("~/tree/create")
 
 const createLoader = require("~/loader/create")
-const loaderFactory = require("~/loader/factory")
-
-const createPlaybook = require("~/playbook/factory")
-const playbookFactory = require("~/playbook/factory")
+const createPlay = require("~/play/create")
+const createComposer = require("~/composer/create")
+const createPlaybook = require("~/playbook/create")
 
 const validate = require("~/vars/validate")
 const createValidator = require("~/vars/create-validator")
@@ -27,7 +19,6 @@ const yaml = require("~/utils/yaml")
 const sudoFactory = require("~/lib/sudo-factory")
 const sudoAskPassword = require("~/lib/sudo-ask-password")
 const execa = require("~/lib/execa")
-const treeFactory = require("~/lib/tree-factory")
 
 const ctx = require("~/ctx")
 
@@ -40,18 +31,11 @@ module.exports = {
 
   // factories
   createIterator,
-  iteratorFactory,
-  createPlay,
-  playFactory,
   createLoader,
-  loaderFactory,
+  createPlay,
+  createComposer,
   createPlaybook,
-  playbookFactory,
-  composerFactory,
-  composableFactory,
-  composablePlayFactory,
-  composableLoaderFactory,
-  compose,
+  createTree,
 
   // vars
   createValidator,
@@ -74,5 +58,7 @@ module.exports = {
   execa,
   $: execa,
   async,
-  treeFactory,
+
+  // dev
+  dbug,
 }

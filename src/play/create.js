@@ -1,7 +1,6 @@
 const yaRetry = require("ya-retry")
 const chalk = require("chalk")
 const objectHash = require("object-hash")
-
 const createValidator = require("~/vars/create-validator")
 
 const FoundernetesPlayPostCheckError = require("~/error/play-post-check")
@@ -58,12 +57,11 @@ module.exports = async (definition) => {
     validate = await createValidator(validate)
   }
 
-  const name = getPluginName(definition, "play")
-
-  definition = { ...definition, name }
-
   const play = async (vars = {}, options = {}) =>
     ctx.fork(async () => {
+      const name = getPluginName(definition, play)
+      definition = { ...definition, name }
+
       const contextPlay = {
         name,
       }

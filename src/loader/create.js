@@ -13,7 +13,6 @@ const ctx = require("~/ctx")
 const castRetry = require("~/lib/cast-retry")
 
 const isAbortError = require("~/utils/is-abort-error")
-
 const getPluginName = require("~/std/get-plugin-name")
 const conditions = require("~/std/conditions")
 const matchTags = require("~/std/match-tags")
@@ -34,8 +33,6 @@ module.exports = async (definition) => {
     validateData = await createValidator(validateData)
   }
 
-  const name = getPluginName(definition, "loader")
-
   const retry = castRetry(definition.retry, "loader")
 
   const {
@@ -47,8 +44,6 @@ module.exports = async (definition) => {
     if: createIfConditions = [],
   } = definition
 
-  definition = { ...definition, name }
-
   const {
     memoizeVarsHash = true,
     cache: defaultCache,
@@ -58,6 +53,9 @@ module.exports = async (definition) => {
 
   const loader = async (vars = {}, options = {}) =>
     ctx.fork(async () => {
+      const name = getPluginName(definition, loader)
+      definition = { ...definition, name }
+
       const contextLoader = {
         name,
       }

@@ -10,8 +10,8 @@ const logPlaybook = require("./log-playbook")
 
 module.exports = async (definition, callback) => {
   const counter = { unchanged: 0, changed: 0, failed: 0, retried: 0, total: 0 }
-
-  const { name: playbookName, iterators = {} } = definition
+  // dbug(definition).k()
+  const { iterators = {} } = definition
 
   const execPlaybook = async () =>
     ctx.fork(async () => {
@@ -21,7 +21,7 @@ module.exports = async (definition, callback) => {
       }
 
       const contextPlaybook = {
-        name: playbookName,
+        name: execPlaybook.playbookName || definition.name,
         counter,
       }
 
@@ -60,7 +60,6 @@ module.exports = async (definition, callback) => {
     iterators,
     plays: definition.plays || {},
     loaders: definition.loaders || {},
-    playbookName,
     definition,
     counter,
   })

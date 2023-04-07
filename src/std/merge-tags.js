@@ -1,5 +1,7 @@
+const treeTags = require("~/tree/tags")
+
 module.exports = async ({
-  factoryTags = [],
+  func,
   createDefaultTags = [],
   createTags = [],
   playTags = [],
@@ -19,7 +21,7 @@ module.exports = async ({
   }
 
   // not optout-able, conventioned
-  tags.push(...factoryTags)
+  tags.push(...treeTags(func))
 
   return tags
 }

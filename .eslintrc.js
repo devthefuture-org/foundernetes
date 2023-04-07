@@ -94,5 +94,6 @@ module.exports = {
   },
   globals: {
     AggregateError: true,
+    dbug: true,
   },
 }
