@@ -23,10 +23,12 @@ module.exports = (opts = {}) => {
     return streamCombiner(...streams)
   }
 
+  const logStream = createLoggerStream()
+
   const logger = Logger({
     formatter: "cli",
     level: logLevel,
-    streams: Logger.levels.map((_level, _i) => createLoggerStream()),
+    streams: Logger.levels.map((_level, _i) => logStream),
     ...opts,
     formatterOptions: {
       displayLevel: false,
