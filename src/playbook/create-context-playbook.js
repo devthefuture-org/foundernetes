@@ -20,8 +20,10 @@ module.exports = async (definition, callback) => {
         iterator = defaultIterator
       }
 
+      const name = execPlaybook.playbookName || definition.name
+
       const contextPlaybook = {
-        name: execPlaybook.playbookName || definition.name,
+        name,
         counter,
       }
 
@@ -31,7 +33,7 @@ module.exports = async (definition, callback) => {
         iterator,
       })
 
-      const logPlaybookContext = logPlaybook.start(definition)
+      const logPlaybookContext = logPlaybook.start({ ...definition, name })
 
       let failedError
       try {
