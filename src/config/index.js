@@ -75,6 +75,9 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
         if (userInfos.uid !== 0) {
           return userInfos.username
         }
+        if (process.env.SUDO_USER) {
+          return process.env.SUDO_USER
+        }
         return config.userDefaultUid
       },
       transform: async (user) => passwdUser(user),
