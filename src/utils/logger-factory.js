@@ -23,7 +23,8 @@ module.exports = (opts = {}) => {
     return streamCombiner(...streams)
   }
 
-  const logStream = createLoggerStream()
+  const logStream =
+    logFile || logFilePlain ? createLoggerStream() : process.stderr
 
   const logger = Logger({
     formatter: "cli",
