@@ -8,6 +8,7 @@ const parseDuration = require("parse-duration")
 const loadStructuredConfig = require("~/utils/load-structured-config")
 
 const syncDir = require("~/lib/sync-dir")
+const passwdUser = require("~/lib/passwd-user")
 
 const envParserCastArray = require("./env-parsers/cast-array")
 const envParserYaml = require("./env-parsers/yaml")
@@ -62,6 +63,21 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
       env: "F10S_SUDO",
       envParser: envParserYaml,
       defaultFunction: (config) => !!config.sudoPassword,
+    },
+    userDefaultUid: {
+      env: "F10S_USER_DEFAULT_UID",
+      default: "1000",
+    },
+    user: {
+      env: "F10S_USER",
+      defaultFunction: async (config) => {
+        const userInfos = await os.userInfo()
+        if (userInfos.uid !== 0) {
+          return userInfos.username
+        }
+        return config.userDefaultUid
+      },
+      transform: async (user) => passwdUser(user),
     },
     execLogStd: {
       env: "F10S_EXEC_LOG_STD",

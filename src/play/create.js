@@ -74,6 +74,7 @@ module.exports = async (definition) => {
 
       const { tags: playTags = [] } = options
       const tags = await mergeTags({
+        func: play,
         factoryTags,
         createDefaultTags,
         createTags,
