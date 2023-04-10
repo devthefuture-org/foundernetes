@@ -1,4 +1,4 @@
-const dbug = require("~/dbug")
+const dbug = require("@foundernetes/dbug")
 const cli = require("~/cli")
 
 const async = require("~/lib/async")

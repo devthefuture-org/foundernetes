@@ -1,5 +1,4 @@
-const fs = require("fs")
-const { Logger, streamCombiner, streamTransformer } = require("direct-logger")
+const { Logger, fileWriteStreamSync } = require("direct-logger")
 const removeAllAnsiColors = require("~/utils/remove-all-ansi-colors")
 
 module.exports = (opts = {}) => {
@@ -7,24 +6,30 @@ module.exports = (opts = {}) => {
   const { logFilePlain } = opts
 
   const createLoggerStream = () => {
-    const streams = []
-    streams.push(process.stderr)
+    const callbacks = []
+    callbacks.push((msg) => process.stderr.write(msg))
     if (logFile) {
-      const fileStream = fs.createWriteStream(logFile)
-      streams.push(fileStream)
+      const stream = fileWriteStreamSync(logFile)
+      callbacks.push((msg) => stream.write(msg))
     }
     if (logFilePlain) {
-      const fileStream = fs.createWriteStream(logFilePlain)
-      const stream = streamTransformer(fileStream, (data) =>
-        removeAllAnsiColors(data.toString())
-      )
-      streams.push(stream)
+      const stream = fileWriteStreamSync(logFilePlain)
+      callbacks.push((msg) => {
+        msg = removeAllAnsiColors(msg)
+        stream.write(msg)
+      })
     }
-    return streamCombiner(...streams)
+    return (msg, _enc, done) => {
+      for (const callback of callbacks) {
+        callback(msg)
+      }
+      if (done) {
+        done()
+      }
+    }
   }
 
-  const logStream =
-    logFile || logFilePlain ? createLoggerStream() : process.stderr
+  const logStream = createLoggerStream()
 
   const logger = Logger({
     formatter: "cli",

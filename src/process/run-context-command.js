@@ -100,7 +100,5 @@ module.exports = async ({ callback, targets = [] }) => {
     logger.warn("process was interrupted: exited gracefully")
   }
 
-  await logger.end()
-
   process.exit(exitCode)
 }

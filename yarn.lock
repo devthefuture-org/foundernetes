@@ -425,6 +425,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@foundernetes/dbug@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@foundernetes/dbug@npm:1.0.0"
+  checksum: 134d34dfc7c1bf36b6ea843f2426ea083cd4b497e9426370fd6b4a8d4588b0292e715546c2f90c2cb1698262f79c5a9e759e650241bcba0012b9387845df7e34
+  languageName: node
+  linkType: hard
+
 "@gar/promisify@npm:^1.1.3":
   version: 1.1.3
   resolution: "@gar/promisify@npm:1.1.3"
@@ -2614,13 +2621,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"direct-logger@npm:^2.14.1":
-  version: 2.14.1
-  resolution: "direct-logger@npm:2.14.1"
+"direct-logger@npm:^2.15.0":
+  version: 2.15.0
+  resolution: "direct-logger@npm:2.15.0"
   dependencies:
     chalk: ^4.1.0
     dayjs: ^1.11.7
-  checksum: 5c766e086f14183b469994e8fc8af11139a5feea47f07811cdd49d08f05c5a77a5bfe57a8f3abb56417f01e4cbe2352380f6fdeb94a6078a7d5181ef8678d7fb
+  checksum: 87ce19669fb9a04b8316e4d8b847c3cde195a8553bd08a52a7e6a6a7765c59f40bec47cb57e6a05eb6fd64de16987bc561bdfd558e9226015fab20cfe5f367b0
   languageName: node
   linkType: hard
 
@@ -3474,6 +3481,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "foundernetes@workspace:."
   dependencies:
+    "@foundernetes/dbug": ^1.0.0
     "@vercel/ncc": ^0.36.1
     ajv: ^8.11.2
     async: ^3.2.4
@@ -3484,7 +3492,7 @@ __metadata:
     compare-versions: ^5.0.1
     dayjs: ^1.11.7
     decompress: ^4.2.1
-    direct-logger: ^2.14.1
+    direct-logger: ^2.15.0
     docsify-cli: ^4.4.4
     dotenv: ^16.0.3
     enquirer: ^2.3.6
