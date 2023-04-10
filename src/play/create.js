@@ -144,6 +144,7 @@ module.exports = async (definition) => {
           retry,
           retryOnFalse,
           retryOnError,
+          retryOnErrors,
           catchErrorAsFalse,
           func,
         }) =>
@@ -193,7 +194,12 @@ module.exports = async (definition) => {
               if (retryOnFalse) {
                 err = results === false ? true : null
               } else {
-                err = hasError === true && retryOnError ? true : null
+                err =
+                  hasError === true &&
+                  (retryOnError ||
+                    retryOnErrors.some((errClass) => err instanceof errClass))
+                    ? true
+                    : null
               }
               if (operation.retry(err)) {
                 if (abortSignal.aborted) {
@@ -234,6 +240,12 @@ module.exports = async (definition) => {
         postCheckRetryOnError = retryOnError,
         beforeRetryOnError = retryOnError,
         afterRetryOnError = retryOnError,
+        retryOnErrors = [],
+        runRetryOnErrors = retryOnErrors,
+        preCheckRetryOnErrors = retryOnErrors,
+        postCheckRetryOnErrors = retryOnErrors,
+        beforeRetryOnErrors = retryOnErrors,
+        afterRetryOnErrors = retryOnErrors,
       } = definition
 
       const {
@@ -250,6 +262,7 @@ module.exports = async (definition) => {
         retry: beforeRetry,
         retryOnFalse: beforeRetryOnFalse,
         retryOnError: beforeRetryOnError,
+        retryOnErrors: beforeRetryOnErrors,
         func: async () => (before ? before(vars) : {}),
       })
       const extraContext = await beforeRetryer()
@@ -264,6 +277,7 @@ module.exports = async (definition) => {
           retry: preCheckRetry,
           retryOnFalse: preCheckRetryOnFalse,
           retryOnError: preCheckRetryOnError,
+          retryOnErrors: preCheckRetryOnErrors,
           func: async () => {
             const event = {
               isPreCheck: true,
@@ -295,6 +309,7 @@ module.exports = async (definition) => {
           retry: runRetry,
           retryOnFalse: runRetryOnFalse,
           retryOnError: runRetryOnError,
+          retryOnErrors: runRetryOnErrors,
           func: async () => run(vars, extraContext),
         })
         logger.info(`🏃 ${chalk.cyanBright(`[${itemName}] running ...`)}`)
@@ -313,6 +328,7 @@ module.exports = async (definition) => {
             retry: postCheckRetry,
             retryOnFalse: postCheckRetryOnFalse,
             retryOnError: postCheckRetryOnError,
+            retryOnErrors: postCheckRetryOnErrors,
             func: async () => {
               const event = {
                 isPostCheck: true,
@@ -368,6 +384,7 @@ module.exports = async (definition) => {
         retry: afterRetry,
         retryOnFalse: afterRetryOnFalse,
         retryOnError: afterRetryOnError,
+        retryOnErrors: afterRetryOnErrors,
         func: async () => (after ? after(vars, extraContext) : null),
       })
       await afterRetryer()
