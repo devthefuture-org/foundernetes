@@ -207,7 +207,8 @@ module.exports = async (definition) => {
             })
           })
 
-      const retry = castRetry(definition.retry, "run")
+      const retry = castRetry(definition.retry, "default")
+      const runRetry = castRetry(definition.runRetry, "run", [retry])
       const checkRetry = castRetry(definition.checkRetry, "check")
       const postCheckRetry = castRetry(definition.postCheckRetry, "postCheck", [
         retry,
@@ -291,7 +292,7 @@ module.exports = async (definition) => {
         const runRetryer = retryerCreate({
           type: "run",
           catchErrorAsFalse: catchRunErrorAsFalse,
-          retry,
+          retry: runRetry,
           retryOnFalse: runRetryOnFalse,
           retryOnError: runRetryOnError,
           func: async () => run(vars, extraContext),
