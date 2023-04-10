@@ -223,7 +223,7 @@ module.exports = async (definition) => {
       const {
         retryOnFalse = true,
         runRetryOnFalse = retryOnFalse,
-        preCheckRetryOnFalse = retryOnFalse,
+        preCheckRetryOnFalse = false,
         postCheckRetryOnFalse = retryOnFalse,
         beforeRetryOnFalse = retryOnFalse,
         afterRetryOnFalse = retryOnFalse,
