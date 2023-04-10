@@ -1,6 +1,6 @@
 const symbols = require("~/tree/symbols")
 
-module.exports = (func, prefix = "f8s") => {
+module.exports = (func, prefix = "f10s") => {
   const tags = []
   if (func && func[symbols.scope]) {
     const scope = func[symbols.scope]
