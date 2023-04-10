@@ -102,11 +102,14 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
       default: false,
     },
     extraPaths: {
-      default: [],
+      default: ["/usr/local/bin"],
       sideEffect: (extraPaths) => {
-        process.env.PATH = [...extraPaths, process.env.PATH].join(
-          path.delimiter
-        )
+        process.env.PATH = [
+          ...new Set([
+            ...extraPaths,
+            ...process.env.PATH.split(path.delimiter),
+          ]),
+        ].join(path.delimiter)
       },
     },
     extractBinPath: {
