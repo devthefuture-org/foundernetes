@@ -63,11 +63,26 @@ const loadAll = (input, { retroCompat = true } = {}) => {
   return documents
 }
 
+const loadValue = (input, retroCompat = true) => {
+  if (input.includes("\n")) {
+    input = `value: |
+${input
+  .split("\n")
+  .map((line) => `  ${line}`)
+  .join("\n")}`
+  } else {
+    input = `value: ${input}`
+  }
+  const data = load(input, retroCompat)
+  return data.value
+}
+
 module.exports = {
   parse: yaml.parse,
   load,
   loadObject,
   loadAll,
+  loadValue,
   dump,
   dumpAll,
   detect,
