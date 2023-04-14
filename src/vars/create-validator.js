@@ -18,7 +18,8 @@ module.exports = async (schema, options = {}) => {
     ...options,
   })
 
-  ajv.addKeyword("validator", {
+  ajv.addKeyword({
+    keyword: "validator",
     compile: (schm, parentSchema) =>
       function validate(data) {
         if (typeof schm === "function") {
