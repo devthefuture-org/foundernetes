@@ -10,8 +10,8 @@ module.exports = async () => {
       return {
         username: fields[0],
         password: fields[1],
-        userId: fields[2],
-        groupId: fields[3],
+        uid: fields[2],
+        gid: fields[3],
         name: fields[4],
         homedir: fields[5],
         shell: fields[6],

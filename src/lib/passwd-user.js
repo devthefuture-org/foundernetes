@@ -9,6 +9,6 @@ module.exports = async (search) => {
   }
   const users = await passwd()
   return users.find(
-    (user) => user.username === search || user.userId === search.toString()
+    (user) => user.username === search || user.uid === search.toString()
   )
 }
