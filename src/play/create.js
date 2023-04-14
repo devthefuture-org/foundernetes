@@ -41,14 +41,14 @@ module.exports = async (definition) => {
   let { run } = definition
 
   let { preCheck, postCheck } = definition
-  if (!preCheck) {
+  if (!preCheck && run) {
     preCheck = check
   }
   if (!postCheck) {
     postCheck = check
   }
 
-  preCheck = run ? castArrayAsFunction(preCheck) : null
+  preCheck = preCheck ? castArrayAsFunction(preCheck) : null
   postCheck = castArrayAsFunction(postCheck)
   run = run ? castArrayAsFunction(run) : null
 
@@ -305,7 +305,7 @@ module.exports = async (definition) => {
         }
       }
 
-      if (preCheckResult === false) {
+      if (preCheckResult === false && run) {
         logger.info(`🙀 ${chalk.cyanBright(`[${itemName}] checked not-ready`)}`)
         const runRetryer = retryerCreate({
           type: "run",
