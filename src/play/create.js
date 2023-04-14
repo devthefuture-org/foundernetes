@@ -48,9 +48,9 @@ module.exports = async (definition) => {
     postCheck = check
   }
 
-  preCheck = castArrayAsFunction(preCheck)
+  preCheck = run ? castArrayAsFunction(preCheck) : null
   postCheck = castArrayAsFunction(postCheck)
-  run = castArrayAsFunction(run)
+  run = run ? castArrayAsFunction(run) : null
 
   let { validate } = definition
   if (validate && typeof validate === "object") {
@@ -270,34 +270,38 @@ module.exports = async (definition) => {
       const logger = ctx.require("logger")
 
       let preCheckResult
-      try {
-        const preCheckRetryer = retryerCreate({
-          type: "preCheck",
-          catchErrorAsFalse: catchPreCheckErrorAsFalse,
-          retry: preCheckRetry,
-          retryOnFalse: preCheckRetryOnFalse,
-          retryOnError: preCheckRetryOnError,
-          retryOnErrors: preCheckRetryOnErrors,
-          func: async () => {
-            const event = {
-              isPreCheck: true,
-              isPostCheck: false,
-              event: "preCheck",
-            }
-            return preCheck(vars, extraContext, event)
-          },
-        })
-        logger.info(`🕵️  ${chalk.blueBright(`[${itemName}] pre-checking ...`)}`)
-        preCheckResult = await preCheckRetryer()
-      } catch (error) {
-        if (isAbortError(error)) {
-          throw error
-        }
-        if (catchCheckErrorAsFalse) {
-          preCheckResult = false
-          logger.error(error)
-        } else {
-          throw error
+      if (preCheck) {
+        try {
+          const preCheckRetryer = retryerCreate({
+            type: "preCheck",
+            catchErrorAsFalse: catchPreCheckErrorAsFalse,
+            retry: preCheckRetry,
+            retryOnFalse: preCheckRetryOnFalse,
+            retryOnError: preCheckRetryOnError,
+            retryOnErrors: preCheckRetryOnErrors,
+            func: async () => {
+              const event = {
+                isPreCheck: true,
+                isPostCheck: false,
+                event: "preCheck",
+              }
+              return preCheck(vars, extraContext, event)
+            },
+          })
+          logger.info(
+            `🕵️  ${chalk.blueBright(`[${itemName}] pre-checking ...`)}`
+          )
+          preCheckResult = await preCheckRetryer()
+        } catch (error) {
+          if (isAbortError(error)) {
+            throw error
+          }
+          if (catchCheckErrorAsFalse) {
+            preCheckResult = false
+            logger.error(error)
+          } else {
+            throw error
+          }
         }
       }
 

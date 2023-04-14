@@ -1,0 +1,5 @@
+dryRun
+  Changed->NotReady
+  dryRunCheck (override check in dryRun, avoid to run check)
+  dryRun func (override default log function)
+  postCheck overrided by OK
