@@ -101,12 +101,16 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
     execEnforceLeastPrivilegeUseGoSu: {
       default: false,
     },
+    addExtraPaths: {
+      default: [],
+    },
     extraPaths: {
-      default: ["/usr/local/bin"],
-      sideEffect: (extraPaths) => {
+      default: ["/usr/local/bin", "/snap/bin"],
+      sideEffect: (extraPaths, config) => {
         process.env.PATH = [
           ...new Set([
             ...extraPaths,
+            ...config.addExtraPaths,
             ...process.env.PATH.split(path.delimiter),
           ]),
         ].join(path.delimiter)
