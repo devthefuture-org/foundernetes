@@ -174,6 +174,7 @@ module.exports = async (definition) => {
                   throw err
                 }
                 if (
+                  retryOnError ||
                   catchErrorAsFalse ||
                   err instanceof FoundernetesPlayCheckError
                 ) {
