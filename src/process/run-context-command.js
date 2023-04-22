@@ -15,6 +15,7 @@ const FoundernetesPlayPostCheckError = require("~/error/play-post-check")
 const { exitCodes } = require("~/error/constants")
 
 const { getPlaybookSet } = require("~/playbook/load-cwd")
+const logError = require("~/error/log-error")
 
 module.exports = async ({ callback, targets = [] }) => {
   const config = ctx.require("config")
@@ -86,9 +87,10 @@ module.exports = async ({ callback, targets = [] }) => {
     if (isAbortError(error)) {
       exitCode = exitCodes.INTERRUPTED_GRACEFULLY
     } else if (error instanceof FoundernetesPlayPostCheckError) {
+      logError(error)
       exitCode = exitCodes.FAILED_POST_CHECK
     } else {
-      logger.error(error)
+      logError(error)
       exitCode = exitCodes.FAILED
     }
   }

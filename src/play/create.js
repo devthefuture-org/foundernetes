@@ -270,6 +270,19 @@ module.exports = async (definition) => {
 
       const logger = ctx.require("logger")
 
+      const handleFail = async (error) => {
+        logger.error(error, { vars })
+        logger.info(`❌ ${chalk.red(`[${itemName}] failed`)}`)
+        logger.debug(`[${itemName}] failed`, { vars })
+        counter.failed++
+        if (onFailed) {
+          await onFailed(vars)
+        }
+        if (!continueOnRunError) {
+          throw error
+        }
+      }
+
       let preCheckResult
       if (preCheck) {
         try {
@@ -297,11 +310,11 @@ module.exports = async (definition) => {
           if (isAbortError(error)) {
             throw error
           }
-          if (catchCheckErrorAsFalse) {
+          if (catchPreCheckErrorAsFalse) {
             preCheckResult = false
             logger.error(error)
           } else {
-            throw error
+            return handleFail(error)
           }
         }
       }
@@ -318,14 +331,24 @@ module.exports = async (definition) => {
           func: async () => run(vars, extraContext),
         })
         logger.info(`🏃 ${chalk.cyanBright(`[${itemName}] running ...`)}`)
-        const runResult = await runRetryer()
-        logger.info(`🔚 ${chalk.cyanBright(`[${itemName}] ran`)}`)
-        if (runResult === false) {
-          counter.failed++
-          throw new FoundernetesPlayRunError()
+        try {
+          const runResult = await runRetryer()
+          logger.info(`🔚 ${chalk.cyanBright(`[${itemName}] ran`)}`)
+          if (runResult === false) {
+            return handleFail(
+              new FoundernetesPlayRunError("run returned false", {
+                name,
+                tags,
+                vars,
+              })
+            )
+          }
+        } catch (error) {
+          return handleFail(error)
         }
 
         let postCheckResult
+        let postCheckError
         try {
           const postCheckRetryer = retryerCreate({
             type: "postCheck",
@@ -351,29 +374,17 @@ module.exports = async (definition) => {
           if (isAbortError(error)) {
             throw error
           }
-          if (catchCheckErrorAsFalse) {
-            postCheckResult = false
-            logger.error(error)
-          } else {
-            throw error
-          }
+          postCheckError = error
+          postCheckResult = false
         }
+
         if (postCheckResult === false) {
-          logger.info(`❌ ${chalk.red(`[${itemName}] failed`)}`)
-          logger.debug(`[${itemName}] failed`, { vars })
-          counter.failed++
-          if (onFailed) {
-            await onFailed(vars)
-          }
-          if (!continueOnRunError) {
-            throw new FoundernetesPlayPostCheckError()
-          }
-        } else {
-          logger.info(`✅ ${chalk.cyanBright(`[${itemName}] checked ready`)}`)
-          counter.changed++
-          if (onChanged) {
-            await onChanged(vars)
-          }
+          return handleFail(new FoundernetesPlayPostCheckError(postCheckError))
+        }
+        logger.info(`✅ ${chalk.cyanBright(`[${itemName}] checked ready`)}`)
+        counter.changed++
+        if (onChanged) {
+          await onChanged(vars)
         }
       } else {
         logger.info(`✅ ${chalk.green(`[${itemName}] checked ready`)}`)

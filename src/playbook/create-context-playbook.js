@@ -36,21 +36,26 @@ module.exports = async (definition, callback) => {
       const logPlaybookContext = logPlaybook.start({ ...definition, name })
 
       let failedError
+      let playingError
       try {
         await callback()
       } catch (error) {
         if (!(error instanceof FoundernetesPlayPostCheckError)) {
-          logError(error)
           if (!isAbortError(error)) {
-            throw Error
+            logError(error)
+            playingError = error
           }
         } else {
+          logError(error)
           failedError = error
         }
       }
 
       logPlaybook.report(logPlaybookContext)
 
+      if (playingError) {
+        throw playingError
+      }
       if (failedError) {
         throw failedError
       }
