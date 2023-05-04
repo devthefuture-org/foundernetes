@@ -11,6 +11,7 @@ module.exports = async ({ plays, mod }) =>
     let { config: configSet = {} } = vars
 
     configSet = {
+      AuthorizedKeysFile: ".ssh/authorized_keys", // many OpenSSH versions also look for ssh/authorized_keys2, avoid this vector of attack enforcing the default one path
       ListenAddress: "0.0.0.0",
       PasswordAuthentication: "no",
       AuthenticationMethods: "publickey",
