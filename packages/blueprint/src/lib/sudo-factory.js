@@ -83,7 +83,7 @@ module.exports = (options = {}) => {
         }
         if (passwordNeeded) {
           if (passwordLessAfterTimeout) {
-            Promise.race([passwordTyped.promise, setTimeout(2000)])
+            await Promise.race([passwordTyped.promise, setTimeout(2000)])
           } else {
             await passwordTyped.promise
           }
