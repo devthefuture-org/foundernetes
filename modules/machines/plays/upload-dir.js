@@ -19,7 +19,7 @@ module.exports = async ({ mod }) => {
     const relativeFiles = files.map((file) => file.slice(source.length + 1))
 
     await iterator.eachSeries(relativeFiles, async (file) => {
-      const isDir = file.slice(-1) === "/"
+      const isDir = file.endsWith("/")
       if (isDir) {
         await mod.remoteMkdir({ ...options, target: `${target}/${file}` })
       } else {

@@ -9,5 +9,6 @@ module.exports = {
   fileMode: require("./file-mode"),
   fileUid: require("./file-uid"),
   fileGid: require("./file-gid"),
+  deleteUnlisted: require("./delete-unlisted"),
   sshCommand: require("./ssh-command"),
 }

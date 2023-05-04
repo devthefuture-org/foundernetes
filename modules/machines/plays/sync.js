@@ -102,9 +102,16 @@ module.exports = async ({ mod }) => {
       }
     })
 
-    const { delete: deleteUnlisted = false } = vars
-    if (deleteUnlisted) {
-      // TODO
+    const { delete: deleteUnlisted = true } = vars
+    if (isDirMain && deleteUnlisted) {
+      const targetFiles = relativeFiles.map((file) => `${targetMain}/${file}`)
+      const targetDirs = [
+        targetMain,
+        ...targetFiles.filter((file) => file.endsWith("/")),
+      ]
+      await iterator.eachSeries(targetDirs, async (dir) => {
+        await mod.deleteUnlisted({ dir, files: targetFiles })
+      })
     }
   })
 }
