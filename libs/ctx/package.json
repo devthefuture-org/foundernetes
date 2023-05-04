@@ -1,0 +1,7 @@
+{
+  "name": "@foundernetes/ctx",
+  "packageManager": "yarn@3.3.0",
+  "dependencies": {
+    "nctx": "^1.7.1"
+  }
+}

@@ -1,5 +1,5 @@
 module.exports = {
-  ignorePatterns: ["!.versionrc.js"],
+  ignorePatterns: ["!.versionrc.js", "!.foundernetesrc.js", "dist/**"],
   settings: {
     "import/resolver": {
       alias: true,
@@ -8,13 +8,15 @@ module.exports = {
   extends: ["airbnb-base", "prettier", "plugin:jest/recommended"],
   plugins: ["prettier", "import", "jest"],
   rules: {
+    "arrow-body-style": [0],
+    "no-return-assign": [0],
     "node/no-extraneous-require": [0],
     "import/no-commonjs": [0],
     "import/no-dynamic-require": [0],
     "import/no-extraneous-dependencies": [
       "error",
       {
-        devDependencies: ["scripts/**/*", "tests/**/*"],
+        devDependencies: ["scripts/**/*", "**/tests/**/*"],
         optionalDependencies: false,
         peerDependencies: false,
       },

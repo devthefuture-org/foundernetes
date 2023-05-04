@@ -1,0 +1,12 @@
+${{# if (osRelease.id === "debian") { }}
+
+deb https://deb.debian.org/debian/ ${{osRelease.versionCodename}} main contrib non-free
+deb-src https://deb.debian.org/debian/ ${{osRelease.versionCodename}} main contrib non-free
+
+deb https://deb.debian.org/debian-security/ ${{osRelease.versionCodename}}-security main contrib non-free
+deb-src https://deb.debian.org/debian-security/ ${{osRelease.versionCodename}}-security main contrib non-free
+
+deb https://deb.debian.org/debian/ ${{osRelease.versionCodename}}-updates main contrib non-free
+deb-src https://deb.debian.org/debian/ ${{osRelease.versionCodename}}-updates main contrib non-free
+
+${{# } }}

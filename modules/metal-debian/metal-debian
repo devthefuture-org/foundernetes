@@ -1,0 +1,24 @@
+#!/usr/bin/env -S node --no-warnings --stack-trace-limit=1000
+
+require("events").EventEmitter.defaultMaxListeners = 0
+
+const { cli, dbug } = require("@foundernetes/blueprint")
+
+dbug.registerGlobal()
+
+const playbooks = require("~/playbooks")
+
+const loadLocalConfig = require("./.foundernetesrc")
+
+const main = async () => {
+  const config = await loadLocalConfig()
+
+  await cli(process.argv, {
+    inlineConfigs: [config],
+    playbookSet: {
+      playbooks,
+    },
+  })
+}
+
+main()

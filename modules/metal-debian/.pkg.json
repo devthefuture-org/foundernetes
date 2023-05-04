@@ -1,0 +1,11 @@
+{
+  "pkg": {
+    "targets": [
+      "node18-linux"
+    ],
+    "assets": [
+      "dist/**",
+      "bin/**"
+    ]
+  }
+}

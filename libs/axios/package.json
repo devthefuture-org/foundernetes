@@ -1,0 +1,10 @@
+{
+  "name": "@foundernetes/axios",
+  "packageManager": "yarn@3.3.0",
+  "dependencies": {
+    "@foundernetes/ctx": "workspace:^",
+    "axios": "^1.4.0",
+    "axios-retry": "^3.4.0"
+  },
+  "main": "index.js"
+}

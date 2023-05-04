@@ -1,0 +1,7 @@
+{
+  "name": "@foundernetes/match",
+  "packageManager": "yarn@3.3.0",
+  "dependencies": {
+    "wildstring": "^1.0.9"
+  }
+}

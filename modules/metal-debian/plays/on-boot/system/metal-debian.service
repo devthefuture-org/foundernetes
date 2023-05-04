@@ -1,0 +1,9 @@
+[Unit]
+Description=Foundernetes Metal Debian
+After=nss-lookup.target
+
+[Service]
+ExecStart=/opt/metal-debian-boot.sh
+
+[Install]
+WantedBy=multi-user.target
