@@ -59,10 +59,12 @@ module.exports = async () => {
           return plays.sync(file)
         }
       )
-      // await iterator.eachOfSeries(host.commands, async (command) => {
-      //   return plays.sshCommand(command)
-      // })
-      // plays.uploadFile()
+      await iterator.eachOfSeries(host.commands, async (command) => {
+        if (typeof command === "string") {
+          command = { command }
+        }
+        return plays.sshCommand(command)
+      })
 
       logger.info(`✅ deployed ${hostName}`)
     })

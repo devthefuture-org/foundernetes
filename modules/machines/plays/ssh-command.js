@@ -10,24 +10,28 @@ module.exports = async () => {
     const ssh = ctx.require("ssh")
     const logger = ctx.require("logger")
     commandOptions = deepmerge({}, commandOptions)
-    if (typeof command === "string") {
-      command = shellQuote.parse(command)
+    if (Array.isArray(command)) {
+      command = shellQuote.quote(command)
     }
-    const commandStr = shellQuote.quote(command)
-    const [cmd, ...args] = command
-    logger.info(`▶️  ${commandStr} ...`)
-    const { code, stdout, stderr } = await ssh.exec(cmd, args, commandOptions)
+    logger.info(`▶️  ${command} ...`)
+    let result
+    if (command.startsWith("sudo ")) {
+      result = await ssh.execCommandSudo(command, commandOptions)
+    } else {
+      result = await ssh.execCommand(command, commandOptions)
+    }
+    const { code, stdout, stderr } = result
     if (stdout) {
-      logger.debug(`${stdout}`, { command: commandStr, code })
+      logger.debug(`${stdout}`, { command, code })
     }
     if (stderr) {
-      logger.debug(`${stderr}`, { command: commandStr, code })
+      logger.debug(`${stderr}`, { command, code })
     }
     if (code === 0) {
-      logger.info(`☑️  ${commandStr}`)
+      logger.info(`☑️  ${command}`)
     } else {
       logger.error(`❗ exit code ${code}`, {
-        command: commandStr,
+        command,
         code,
         stdout,
         stderr,
