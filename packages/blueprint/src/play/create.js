@@ -318,7 +318,7 @@ module.exports = async (definition) => {
         }
       }
 
-      if (preCheckResult === false && run) {
+      if ((preCheckResult === false || !preCheck) && run) {
         logger.info(`🙀 ${chalk.cyanBright(`[${itemName}] checked not-ready`)}`)
         const runRetryer = retryerCreate({
           type: "run",
@@ -348,42 +348,46 @@ module.exports = async (definition) => {
 
         let postCheckResult
         let postCheckError
-        try {
-          const postCheckRetryer = retryerCreate({
-            type: "postCheck",
-            catchErrorAsFalse: catchPostCheckErrorAsFalse,
-            retry: postCheckRetry,
-            retryOnFalse: postCheckRetryOnFalse,
-            retryOnError: postCheckRetryOnError,
-            retryOnErrors: postCheckRetryOnErrors,
-            func: async () => {
-              const event = {
-                isPostCheck: true,
-                isPreCheck: false,
-                event: "postCheck",
-              }
-              return postCheck(vars, extraContext, event)
-            },
-          })
-          logger.info(
-            `🕵️  ${chalk.cyanBright(`[${itemName}] post-checking ...`)}`
-          )
-          postCheckResult = await postCheckRetryer()
-        } catch (error) {
-          if (isAbortError(error)) {
-            throw error
+        if (postCheck) {
+          try {
+            const postCheckRetryer = retryerCreate({
+              type: "postCheck",
+              catchErrorAsFalse: catchPostCheckErrorAsFalse,
+              retry: postCheckRetry,
+              retryOnFalse: postCheckRetryOnFalse,
+              retryOnError: postCheckRetryOnError,
+              retryOnErrors: postCheckRetryOnErrors,
+              func: async () => {
+                const event = {
+                  isPostCheck: true,
+                  isPreCheck: false,
+                  event: "postCheck",
+                }
+                return postCheck(vars, extraContext, event)
+              },
+            })
+            logger.info(
+              `🕵️  ${chalk.cyanBright(`[${itemName}] post-checking ...`)}`
+            )
+            postCheckResult = await postCheckRetryer()
+          } catch (error) {
+            if (isAbortError(error)) {
+              throw error
+            }
+            postCheckError = error
+            postCheckResult = false
           }
-          postCheckError = error
-          postCheckResult = false
         }
 
         if (postCheckResult === false) {
           return handleFail(new FoundernetesPlayPostCheckError(postCheckError))
         }
-        logger.info(`✅ ${chalk.cyanBright(`[${itemName}] checked ready`)}`)
-        counter.changed++
-        if (onChanged) {
-          await onChanged(vars)
+        if (postCheck) {
+          logger.info(`✅ ${chalk.cyanBright(`[${itemName}] checked ready`)}`)
+          counter.changed++
+          if (onChanged) {
+            await onChanged(vars)
+          }
         }
       } else {
         logger.info(`✅ ${chalk.green(`[${itemName}] checked ready`)}`)
