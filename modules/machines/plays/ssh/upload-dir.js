@@ -21,7 +21,7 @@ module.exports = async ({ mod }) => {
     await iterator.eachSeries(relativeFiles, async (file) => {
       const isDir = file.endsWith("/")
       if (isDir) {
-        await mod.remoteMkdir({ ...options, target: `${target}/${file}` })
+        await mod.mkdir({ ...options, target: `${target}/${file}` })
       } else {
         await mod.uploadFile({
           ...options,

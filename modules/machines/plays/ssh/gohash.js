@@ -1,6 +1,5 @@
 const path = require("path")
-const fs = require("fs-extra")
-const { createPlay, $ } = require("@foundernetes/blueprint")
+const { createPlay } = require("@foundernetes/blueprint")
 const ctx = require("@foundernetes/ctx")
 const gohash = require("~/lib/gohash")
 const gohashRemote = require("~/lib/gohash-remote")
@@ -9,7 +8,7 @@ module.exports = async () => {
   return createPlay({
     async before() {
       const remoteFile = ".foundernetes/machines/bin/gohash"
-      const localFile = path.join(__dirname, "../bin/gohash")
+      const localFile = path.join(__dirname, "../../bin/gohash")
       const sum = await gohash(localFile)
       return { remoteFile, localFile, sum }
     },

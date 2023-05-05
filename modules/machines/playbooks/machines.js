@@ -51,19 +51,19 @@ module.exports = async () => {
       const ssh = await createSsh(host.ssh)
       ctx.set("ssh", ssh)
 
-      await plays.gohash()
+      await plays.ssh.gohash()
       await iterator.eachOfLimit(
         host.files,
         parallelFilesLimit,
         async (file) => {
-          return plays.sync(file)
+          return plays.ssh.sync(file)
         }
       )
       await iterator.eachOfSeries(host.commands, async (command) => {
         if (typeof command === "string") {
           command = { command }
         }
-        return plays.sshCommand(command)
+        return plays.ssh.command(command)
       })
 
       logger.info(`✅ deployed ${hostName}`)
