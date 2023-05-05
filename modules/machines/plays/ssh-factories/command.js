@@ -1,3 +1,5 @@
+const omit = require("lodash.omit")
+
 const shellQuote = require("shell-quote")
 const ctx = require("@foundernetes/ctx")
 const { createPlay } = require("@foundernetes/blueprint")
@@ -7,13 +9,58 @@ module.exports = async ({ check }) => {
   return createPlay({
     check,
     async run(vars) {
-      let { command, ...commandOptions } = vars
+      let commandOptions = omit(vars, [
+        "command",
+        "logStd",
+        "logStderr",
+        "logStdout",
+      ])
+
       const ssh = ctx.require("ssh")
+
       const logger = ctx.require("logger")
-      commandOptions = deepmerge({}, commandOptions)
+
+      const {
+        logStd = true,
+        logStderr = logStd,
+        logStdout = logStd,
+        logWrap = true,
+        logNewLine = !logWrap,
+      } = vars
+
+      let { command } = vars
       if (Array.isArray(command)) {
         command = shellQuote.quote(command)
       }
+
+      commandOptions = deepmerge(
+        {
+          onStderr: (chunk) => {
+            if (logStderr) {
+              if (logWrap) {
+                logger.info(chunk.toString(), { command })
+              } else {
+                process.stderr.write(
+                  chunk.toString() + (logNewLine ? "\n" : "")
+                )
+              }
+            }
+          },
+          onStdout: (chunk) => {
+            if (logStdout) {
+              if (logWrap) {
+                logger.info(chunk.toString(), { command })
+              } else {
+                process.stderr.write(
+                  chunk.toString() + (logNewLine ? "\n" : "")
+                )
+              }
+            }
+          },
+        },
+        commandOptions
+      )
+
       logger.info(`▶️  ${command} ...`)
       let result
       if (command.startsWith("sudo ")) {
