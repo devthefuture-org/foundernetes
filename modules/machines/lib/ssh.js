@@ -7,6 +7,8 @@ const untildify = require("untildify")
 const { NodeSSH } = require("node-ssh")
 const Deferred = require("@foundernetes/std/deferred")
 
+const sshSudoDetectPasswordNeeded = require("./ssh-sudo-detect-password-needed")
+
 module.exports = async (options = {}) => {
   const ssh = new NodeSSH()
   const {
@@ -17,6 +19,7 @@ module.exports = async (options = {}) => {
     tryKeyboard = true,
     sudoPassword = password,
     sudoPasswordNeeded: sudoPasswordNeededDefault,
+    sudoPasswordDetectNeeded: sudoPasswordDetectNeededDefault = true,
     sudoPasswordLessAfterTimeout: sudoPasswordLessAfterTimeoutDefault = true,
   } = options
 
@@ -44,18 +47,17 @@ module.exports = async (options = {}) => {
       group: impersonateGroup,
       sudoPassword: sudoPasswordLocal = sudoPassword,
       sudoPasswordNeeded = sudoPasswordNeededDefault,
+      sudoPasswordDetectNeeded = sudoPasswordDetectNeededDefault,
       sudoPasswordLessAfterTimeout = sudoPasswordLessAfterTimeoutDefault,
-      filterSudo = true,
       ...commandOptions
     } = opts
+
     if (!Array.isArray(command)) {
       command = shellQuote.parse(command)
     }
-    if (filterSudo && command[0] === "sudo") {
-      command = command.slice(1)
-    }
-    const sudoArgs = [
-      "sudo",
+
+    command = [
+      ...command.splice(0, 1),
       "-S",
       ...(preserveEnv ? ["-E"] : []),
       ...(impersonateUser !== undefined ? ["-u", impersonateUser] : []),
@@ -65,15 +67,14 @@ module.exports = async (options = {}) => {
       sudoPrompt,
       ...command,
     ]
-
-    const cmd = shellQuote.quote(sudoArgs)
+    command = shellQuote.quote(command)
 
     const stdin = new PassThrough()
 
     let prompted = 0
     const passwordTyped = new Deferred()
 
-    const promise = ssh.execCommand(cmd, {
+    const promise = ssh.execCommand(command, {
       ...commandOptions,
       onStderr: (chunk) => {
         const lines = chunk.toString().trim().split("\n")
@@ -91,7 +92,11 @@ module.exports = async (options = {}) => {
 
     let passwordNeeded = sudoPasswordNeeded
     if (passwordNeeded === undefined) {
-      passwordNeeded = !!sudoPasswordLocal
+      if (sudoPasswordDetectNeeded) {
+        passwordNeeded = await sshSudoDetectPasswordNeeded(ssh)
+      } else {
+        passwordNeeded = !!sudoPasswordLocal
+      }
     }
     if (passwordNeeded) {
       if (sudoPasswordLessAfterTimeout) {
