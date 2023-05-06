@@ -5,7 +5,7 @@ const humanizeDuration = require("~/lib/humanize-duration")
 const onNewTimeoutCreate =
   (type) =>
   ({ timeout, attempts }) => {
-    const logger = ctx.require("logger")
+    const logger = ctx.getLogger()
     logger.warn(
       `${type} try #${attempts} failed, will try again in ${humanizeDuration(
         timeout
@@ -14,7 +14,7 @@ const onNewTimeoutCreate =
   }
 
 module.exports = (retry, type, defaultsProps = []) => {
-  const config = ctx.require("config")
+  const config = ctx.getConfig()
   if (retry === undefined || retry === null) {
     retry = config.defaultRetry
   }

@@ -19,7 +19,7 @@ module.exports = async () =>
         reject: false,
       })
 
-      const logger = ctx.require("logger")
+      const logger = ctx.getLogger()
       if (isPostCheck && exitCode !== 0) {
         const { stderr, stdout } = await $(`systemctl status ${name}`, {
           reject: false,

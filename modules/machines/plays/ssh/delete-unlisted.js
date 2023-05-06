@@ -1,10 +1,10 @@
 const { createPlay } = require("@foundernetes/blueprint")
-const ctx = require("@foundernetes/ctx")
 const removeSuffix = require("@foundernetes/std/remove-suffix")
+const ctx = require("~/ctx")
 
 module.exports = async () => {
   const getRemoteFiles = async (dir) => {
-    const ssh = ctx.require("ssh")
+    const ssh = ctx.getSSH()
     const sftp = await ssh.requestSFTP()
     dir = removeSuffix(dir, "/")
     const list = await new Promise((resolve, reject) => {
@@ -35,7 +35,7 @@ module.exports = async () => {
     },
     async run({ dir, files }) {
       const remoteFiles = await getRemoteFiles(dir)
-      const ssh = ctx.require("ssh")
+      const ssh = ctx.getSSH()
       const deleteFiles = remoteFiles.filter(
         (remoteFile) => !isExpectedFile(remoteFile, files)
       )

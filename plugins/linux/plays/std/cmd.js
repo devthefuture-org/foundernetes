@@ -25,7 +25,7 @@ module.exports = async () =>
         ...checkCmdOptions,
       })
 
-      const logger = ctx.require("logger")
+      const logger = ctx.getLogger()
       if (debugCommand && isPostCheck && exitCode !== 0) {
         const { stderr, stdout } = await $(debugCommand, {
           reject: false,

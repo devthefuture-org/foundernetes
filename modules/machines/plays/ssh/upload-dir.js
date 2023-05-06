@@ -1,8 +1,8 @@
 const path = require("path")
 const omit = require("lodash/omit")
-const ctx = require("@foundernetes/ctx")
 const { createComposer } = require("@foundernetes/blueprint")
 const listFilesRecursive = require("@foundernetes/std/list-files-recursive")
+const ctx = require("~/ctx")
 
 module.exports = async ({ mod }) => {
   return createComposer(async (vars) => {
@@ -14,7 +14,7 @@ module.exports = async ({ mod }) => {
 
     const files = await listFilesRecursive(source, true)
 
-    const iterator = ctx.require("iterator")
+    const iterator = ctx.getIterator()
 
     const relativeFiles = files.map((file) => file.slice(source.length + 1))
 

@@ -1,5 +1,5 @@
 const shellQuote = require("shell-quote")
-const ctx = require("@foundernetes/ctx")
+const ctx = require("~/ctx")
 const commandFactory = require("~/plays/ssh-factories/command")
 
 module.exports = async (deps) => {
@@ -13,7 +13,7 @@ module.exports = async (deps) => {
     if (Array.isArray(command)) {
       command = shellQuote.quote(command)
     }
-    const ssh = ctx.require("ssh")
+    const ssh = ctx.getSSH()
     const { code } = await ssh.execCommand(command)
     return code === 0
   }

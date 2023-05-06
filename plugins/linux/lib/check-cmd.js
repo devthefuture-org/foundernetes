@@ -6,7 +6,7 @@ const matchCondition = require("@foundernetes/match/condition")
 
 module.exports = async (check, options = {}) => {
   const {
-    logger = ctx.require("logger"),
+    logger = ctx.getLogger(),
     commandOptions = {},
     logErr = true,
   } = options

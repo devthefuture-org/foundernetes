@@ -1,3 +1,18 @@
-const nctx = require("nctx")
+const Context = require("nctx")
 
-module.exports = nctx.create(Symbol("@foundernetes"))
+class FoundernetesContext extends Context {
+  constructor() {
+    super(Symbol("@foundernetes"))
+  }
+
+  getLogger() {
+    return this.proxyRequire.logger
+  }
+
+  getConfig() {
+    return this.proxyRequire.logger
+  }
+}
+
+module.exports = new FoundernetesContext()
+module.exports.FoundernetesContext = FoundernetesContext

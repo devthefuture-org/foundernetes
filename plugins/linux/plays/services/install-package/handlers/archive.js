@@ -8,8 +8,8 @@ const matchCondition = require("@foundernetes/match/condition")
 const checksumFile = require("~/lib/checksum-file")
 
 module.exports = async ({ name, file, extracted, checksum, tmpDir }) => {
-  const config = ctx.require("config")
-  const logger = ctx.require("logger")
+  const config = ctx.getConfig()
+  const logger = ctx.getLogger()
   if (!tmpDir) {
     tmpDir = `${config.tmpDir}/${randomUUID()}`
     await fs.ensureDir(tmpDir)

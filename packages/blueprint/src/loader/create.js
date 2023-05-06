@@ -143,7 +143,7 @@ module.exports = async (definition) => {
 
       const data = await new Promise((resolve, reject) => {
         const stopSignal = () => {
-          // const logger = ctx.require("logger")
+          // const logger = ctx.getLogger()
           // logger.debug(`loader cancel next try`)
           operation.stop()
           reject(new FoundernetesStopError())
@@ -151,7 +151,7 @@ module.exports = async (definition) => {
         events.on("stop", stopSignal)
         operation.attempt(async (currentAttempt) => {
           let results
-          const logger = ctx.require("logger")
+          const logger = ctx.getLogger()
           if (currentAttempt > 1) {
             logger.debug(`loader try #${currentAttempt}`)
             counter.retried++

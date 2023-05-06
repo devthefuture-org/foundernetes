@@ -9,7 +9,7 @@ const ctx = require("@foundernetes/ctx")
 const sudoDetectPasswordNeeded = require("./sudo-detect-password-needed")
 
 module.exports = (options = {}) => {
-  const config = ctx.require("config")
+  const config = ctx.getConfig()
   const { execaOptions: execaDefaultOptions = {} } = options
   const { password = config.sudoPassword } = options
   const { passwordNeeded: passwordNeededDefault } = options

@@ -20,7 +20,7 @@ module.exports = async () => {
 
   const playbook = async () => {
     // ℹ️ get context variables
-    // const logger = ctx.require("logger")
+    // const logger = ctx.getLogger()
     const iterator = ctx.require("iterator")
     // iterator.use(iteratorDebugMiddleware)
 

@@ -24,7 +24,7 @@ const init = (definition) => {
 }
 
 const start = ({ name }) => {
-  const logger = ctx.require("logger")
+  const logger = ctx.getLogger()
   logger.info(`▶️  playing: ${name}`)
   const iteratorSerie = ctx.get("iteratorSerie")
   if (iteratorSerie) {
@@ -38,12 +38,12 @@ const end = ({ log = true, name, elapsed }) => {
   if (!log) {
     return
   }
-  const logger = ctx.require("logger")
+  const logger = ctx.getLogger()
   logger.setPrefix("")
   logger.info(`⏹  played: ${name}`)
   elapsed.end({
     label: "🏁 play runned in",
-    logger: ctx.require("logger"),
+    logger: ctx.getLogger(),
     logLevel: "trace",
   })
 }

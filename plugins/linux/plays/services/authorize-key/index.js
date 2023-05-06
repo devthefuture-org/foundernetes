@@ -10,7 +10,7 @@ module.exports = async ({ loaders, children }) =>
     vars = { ...vars }
 
     if (!vars.user) {
-      const config = ctx.require("config")
+      const config = ctx.getConfig()
       vars.user = config.user.username
     }
 

@@ -3,8 +3,8 @@ const ctx = require("@foundernetes/ctx")
 const { exitCodes } = require("~/error/constants")
 
 module.exports = () => {
-  const logger = ctx.require("logger")
-  const config = ctx.require("config")
+  const logger = ctx.getLogger()
+  const config = ctx.getConfig()
   const events = ctx.require("events")
   const abortController = new AbortController()
   const signals = ["SIGTERM", "SIGHUP", "SIGINT"]

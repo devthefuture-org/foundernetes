@@ -132,7 +132,7 @@ module.exports = async ({ loaders }) => {
 
   return createPlay({
     async check(vars) {
-      const logger = ctx.require("logger")
+      const logger = ctx.getLogger()
 
       let { rules } = vars
       rules = normalizeRules(rules)

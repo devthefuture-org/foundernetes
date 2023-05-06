@@ -1,6 +1,6 @@
 const path = require("path")
 const { createPlay } = require("@foundernetes/blueprint")
-const ctx = require("@foundernetes/ctx")
+const ctx = require("~/ctx")
 const gohash = require("~/lib/gohash")
 const gohashRemote = require("~/lib/gohash-remote")
 
@@ -12,13 +12,13 @@ module.exports = async () => {
 
     return {
       async check() {
-        const ssh = ctx.require("ssh")
+        const ssh = ctx.getSSH()
         const remoteSum = await gohashRemote(remoteFile, ssh)
         return remoteSum === sum
       },
       async run() {
-        const logger = ctx.require("logger")
-        const ssh = ctx.require("ssh")
+        const logger = ctx.getLogger()
+        const ssh = ctx.getSSH()
         logger.info(`⬆️  uploading ${localFile} -> ${remoteFile} ...`)
         await ssh.putFile(localFile, remoteFile)
         await ssh.execCommand(`chmod +x ${remoteFile}`)

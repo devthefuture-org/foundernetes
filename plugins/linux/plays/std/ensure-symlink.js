@@ -12,7 +12,7 @@ module.exports = async ({ loaders }) =>
         target: actualTarget,
       } = await loaders.std.symlink({ link })
       if (exitCode !== 0) {
-        const logger = ctx.require("logger")
+        const logger = ctx.getLogger()
         logger.error(error)
         return false
       }

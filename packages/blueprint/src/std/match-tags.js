@@ -3,8 +3,8 @@ const wildstring = require("wildstring")
 const ctx = require("@foundernetes/ctx")
 
 module.exports = (tags, vars) => {
-  const config = ctx.require("config")
-  const logger = ctx.require("logger")
+  const config = ctx.getConfig()
+  const logger = ctx.getLogger()
 
   const { tags: runTags, skipTags } = config
 

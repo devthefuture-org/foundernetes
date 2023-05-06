@@ -8,7 +8,7 @@ const init = (definition) => {
   const { log = true, name } = definition
   const elapsed = timeLogger()
   const logLoaderContext = { ...definition, elapsed }
-  ctx.set("parentLogger", ctx.require("logger"))
+  ctx.set("parentLogger", ctx.getLogger())
   if (!log) {
     return logLoaderContext
   }
@@ -24,7 +24,7 @@ const init = (definition) => {
   return logLoaderContext
 }
 const start = ({ name }) => {
-  const logger = ctx.require("logger")
+  const logger = ctx.getLogger()
   logger.info(`🔻  loading: ${name}`)
   logger.setPrefix("├─── ")
 }
@@ -33,12 +33,12 @@ const end = ({ log = true, name, elapsed }) => {
   if (!log) {
     return false
   }
-  const logger = ctx.require("logger")
+  const logger = ctx.getLogger()
   logger.setPrefix("")
   logger.info(`🔺  loaded: ${name}`)
   elapsed.end({
     label: "🏁 loader runned in",
-    logger: ctx.require("logger"),
+    logger: ctx.getLogger(),
     logLevel: "trace",
   })
 }

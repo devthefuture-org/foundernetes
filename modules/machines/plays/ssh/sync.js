@@ -1,9 +1,9 @@
 const path = require("path")
 const fs = require("fs-extra")
 
-const ctx = require("@foundernetes/ctx")
 const { createComposer } = require("@foundernetes/blueprint")
 const listFilesRecursive = require("@foundernetes/std/list-files-recursive")
+const ctx = require("~/ctx")
 
 module.exports = async ({ mod }) => {
   return createComposer(async (vars) => {
@@ -51,7 +51,7 @@ module.exports = async ({ mod }) => {
       ? await listFilesRecursive(sourceMain, true)
       : [sourceMain]
 
-    const iterator = ctx.require("iterator")
+    const iterator = ctx.getIterator()
 
     const relativeFiles = files.map((file) => file.slice(sourceMain.length + 1))
 

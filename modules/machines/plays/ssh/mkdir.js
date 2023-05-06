@@ -1,10 +1,10 @@
-const ctx = require("@foundernetes/ctx")
 const { createPlay } = require("@foundernetes/blueprint")
+const ctx = require("~/ctx")
 
 module.exports = async () => {
   return createPlay({
     async check(vars) {
-      const ssh = ctx.require("ssh")
+      const ssh = ctx.getSSH()
       const sftp = await ssh.requestSFTP()
       const { target } = vars
       return new Promise((resolve, reject) => {
@@ -22,7 +22,7 @@ module.exports = async () => {
       })
     },
     async run(vars) {
-      const ssh = ctx.require("ssh")
+      const ssh = ctx.getSSH()
       const { target } = vars
       const { method = "sftp" } = vars
       await ssh.mkdir(target, method)

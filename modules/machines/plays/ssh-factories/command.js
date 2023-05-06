@@ -1,9 +1,9 @@
 const omit = require("lodash/omit")
 
 const shellQuote = require("shell-quote")
-const ctx = require("@foundernetes/ctx")
 const { createPlay } = require("@foundernetes/blueprint")
 const deepmerge = require("@foundernetes/std/deepmerge")
+const ctx = require("~/ctx")
 
 module.exports = async ({ check }) => {
   return createPlay({
@@ -16,9 +16,9 @@ module.exports = async ({ check }) => {
         "logStdout",
       ])
 
-      const ssh = ctx.require("ssh")
+      const ssh = ctx.getSSH()
 
-      const logger = ctx.require("logger")
+      const logger = ctx.getLogger()
 
       const {
         logStd = true,

@@ -15,7 +15,7 @@ const getList = async (playbooksPath) => {
 const getPlaybookSet = async () => {
   const playbooks = {}
 
-  const config = ctx.require("config")
+  const config = ctx.getConfig()
   const { cwd, playbooksDir } = config
   const playbooksPath = `${cwd}/${playbooksDir}`
 

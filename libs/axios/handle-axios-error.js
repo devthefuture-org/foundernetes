@@ -1,6 +1,6 @@
 const ctx = require("@foundernetes/ctx")
 
-module.exports = (error, logger = ctx.require("logger")) => {
+module.exports = (error, logger = ctx.getLogger()) => {
   const url = error.request?.res?.responseUrl
   if (error.response) {
     logger.error(

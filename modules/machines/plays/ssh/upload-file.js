@@ -3,8 +3,8 @@ const fs = require("fs-extra")
 const tmp = require("tmp")
 const defaults = require("lodash/defaults")
 
-const ctx = require("@foundernetes/ctx")
 const { createPlay } = require("@foundernetes/blueprint")
+const ctx = require("~/ctx")
 
 const gohash = require("~/lib/gohash")
 const gohashRemote = require("~/lib/gohash-remote")
@@ -29,8 +29,8 @@ module.exports = async () => {
         return remoteSum === checksum
       },
       async run() {
-        const logger = ctx.require("logger")
-        const ssh = ctx.require("ssh")
+        const logger = ctx.getLogger()
+        const ssh = ctx.getSSH()
         const { target } = vars
 
         logger.info(`⬆️  uploading ${source} -> ${target} ...`)

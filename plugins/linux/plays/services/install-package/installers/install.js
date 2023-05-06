@@ -28,7 +28,7 @@ module.exports = async () =>
         checkCmd,
         async (_vars, _common, { isPostCheck }) => {
           const { ensureWhich = true } = vars
-          const logger = ctx.require("logger")
+          const logger = ctx.getLogger()
           if (!(await fs.pathExists(file))) {
             return false
           }

@@ -6,7 +6,7 @@ const yaRetry = require("ya-retry")
 
 module.exports = async () => {
   return async () => {
-    const logger = ctx.require("logger")
+    const logger = ctx.getLogger()
     await yaRetry(
       async (_bail) => {
         try {

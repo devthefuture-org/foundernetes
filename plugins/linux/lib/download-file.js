@@ -18,9 +18,9 @@ const checksumFile = require("./checksum-file")
 module.exports = async (
   url,
   file,
-  { logger = ctx.require("logger"), logEnabled = true, checksum, sudo } = {}
+  { logger = ctx.getLogger(), logEnabled = true, checksum, sudo } = {}
 ) => {
-  const config = ctx.require("config")
+  const config = ctx.getConfig()
 
   const tmpDir = `${config.tmpDir}/${randomUUID()}`
   await fs.ensureDir(tmpDir)

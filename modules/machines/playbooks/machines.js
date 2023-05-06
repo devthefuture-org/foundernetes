@@ -1,14 +1,15 @@
-const ctx = require("@foundernetes/ctx")
+const tmp = require("tmp")
+
 const deepmerge = require("@foundernetes/std/deepmerge")
 const { createPlaybook, createTree } = require("@foundernetes/blueprint")
+
+const ctx = require("~/ctx")
 
 const tree = {
   loaders: require("~/loaders"),
   plays: require("~/plays"),
   // conditions: require("~/conditions"),
 }
-
-const tmp = require("tmp")
 
 const createSsh = require("~/lib/ssh")
 
@@ -18,7 +19,7 @@ module.exports = async () => {
   const { plays, loaders } = await createTree(tree, treeParams)
 
   const playbook = async () => {
-    const iterator = ctx.require("iterator")
+    const iterator = ctx.getIterator()
 
     const inventoryFile = process.env.F10S_MACHINES_FILE || "machines.yaml"
     const inventory = await loaders.std.yaml({ file: inventoryFile })
@@ -43,7 +44,7 @@ module.exports = async () => {
         h
       )
 
-      const logger = ctx.require("logger")
+      const logger = ctx.getLogger()
 
       const hostName = host.name || host.ssh.address
       logger.info(`🚀 deploying ${hostName} ...`)

@@ -567,7 +567,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@foundernetes/ctx@workspace:libs/ctx"
   dependencies:
-    nctx: ^2.0.1
+    nctx: ^2.1.0
   languageName: unknown
   linkType: soft
 
@@ -6420,12 +6420,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nctx@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "nctx@npm:2.0.1"
+"nctx@npm:^2.1.0":
+  version: 2.1.1
+  resolution: "nctx@npm:2.1.1"
   dependencies:
     lodash: ^4.17.21
-  checksum: 75fc3a2d54a17d5a22b777d87253d3c0ac7ec8e52835e7a39abc345fe7fb2ff984d0c02cbb52174f34918ad5deb23c59c667ee9aa48dd9324e450d1f3de43ce9
+  checksum: f9e99c7ec8ac4d84c58ba7ed83a29612c0c36af2c9e6535a001c0874e984607b026d0afed8cbdd73456c80bbe26dfb45ec7f0c6eaae3bad8b7d223b454ed58aa
   languageName: node
   linkType: hard
 

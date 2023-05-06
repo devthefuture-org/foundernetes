@@ -17,8 +17,8 @@ const { getPlaybookSet } = require("~/playbook/load-cwd")
 const logError = require("~/error/log-error")
 
 module.exports = async ({ callback, targets = [] }) => {
-  const config = ctx.require("config")
-  const logger = ctx.require("logger")
+  const config = ctx.getConfig()
+  const logger = ctx.getLogger()
   const staticDefinitions = ctx.require("staticDefinitions")
 
   const events = new EventEmitter()

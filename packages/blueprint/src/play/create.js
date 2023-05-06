@@ -151,7 +151,7 @@ const create = async (definition) => {
           new Promise((resolve, reject) => {
             const operation = yaRetry.operation(retry)
             const stopSignal = () => {
-              // const logger = ctx.require("logger")
+              // const logger = ctx.getLogger()
               // logger.debug(`${type} cancel next try`)
               operation.stop()
               reject(new FoundernetesStopError())
@@ -159,7 +159,7 @@ const create = async (definition) => {
             events.on("stop", stopSignal)
             operation.attempt(async (currentAttempt) => {
               let results
-              const logger = ctx.require("logger")
+              const logger = ctx.getLogger()
               if (currentAttempt > 1) {
                 logger.debug(`${type} try #${currentAttempt}`)
                 counter.retried++
@@ -267,7 +267,7 @@ const create = async (definition) => {
       })
       const extraContext = await beforeRetryer()
 
-      const logger = ctx.require("logger")
+      const logger = ctx.getLogger()
 
       const handleFail = async (error) => {
         logger.error(error, { vars })

@@ -53,7 +53,7 @@ module.exports = (command, args, options) => {
   const extraOptions = pick(options, f10sExecaOptions)
 
   const signal = ctx.require("abortSignal")
-  const config = ctx.require("config")
+  const config = ctx.getConfig()
 
   const callbacks = [...(extraOptions.callbacks || [])]
 
@@ -89,7 +89,7 @@ module.exports = (command, args, options) => {
   }
 
   const {
-    logger = ctx.require("logger"),
+    logger = ctx.getLogger(),
     logStd = config.execLogStd,
     logStdout = logStd,
     logStderr = logStd,
