@@ -16,14 +16,14 @@ const getPluginName = require("~/std/get-plugin-name")
 const conditions = require("~/std/conditions")
 const matchTags = require("~/std/match-tags")
 const mergeTags = require("~/std/merge-tags")
-
+const symbolProperties = require("~/tree/symbol-properties")
 const castRetry = require("~/lib/cast-retry")
 
 const logPlay = require("./log-play")
 
 const castArrayAsFunction = require("./cast-array-as-function")
 
-module.exports = async (definition) => {
+const create = async (definition) => {
   const {
     check,
     before,
@@ -412,4 +412,17 @@ module.exports = async (definition) => {
     })
 
   return play
+}
+
+module.exports = async (arg) => {
+  if (typeof arg === "function") {
+    const func = async (vars, options) => {
+      const definition = await arg(vars, options)
+      const play = await create(definition)
+      Object.assign(play, symbolProperties(func))
+      return play(vars, options)
+    }
+    return func
+  }
+  return create(arg)
 }
