@@ -4,16 +4,13 @@ const { createPlay, $ } = require("@foundernetes/blueprint")
 
 const splitUnit = require("@foundernetes/std/split-unit")
 
-module.exports = async () =>
-  createPlay({
+module.exports = async () => {
+  return createPlay({
     runRetry: 2,
     runRetryOnError: true,
-    async before(vars) {
-      const { periodicity = "1d" } = vars
-      return { periodicity }
-    },
-    async check(vars, { periodicity }) {
-      const { filename = "/var/cache/apt/pkgcache.bin" } = vars
+    async check(vars) {
+      const { periodicity = "1d", filename = "/var/cache/apt/pkgcache.bin" } =
+        vars
       if (!(await fs.pathExists(filename))) {
         return false
       }
@@ -31,3 +28,4 @@ module.exports = async () =>
       })
     },
   })
+}
