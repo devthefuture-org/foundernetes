@@ -14,7 +14,6 @@ module.exports = async (options = {}) => {
   const {
     address,
     user,
-    port,
     password,
     tryKeyboard = true,
     sudoPassword = password,
@@ -31,14 +30,28 @@ module.exports = async (options = {}) => {
   let sudoPrompt = `[sudo][${randomUUID()}] password: `
   sudoPrompt = sudoPrompt.trim()
 
-  await ssh.connect({
-    host: address,
-    username: user,
-    port,
-    privateKeyPath: keyPath,
-    password,
-    tryKeyboard,
-  })
+  let { port } = options
+  if (!Array.isArray(port)) {
+    port = [port]
+  }
+
+  for (const p of port) {
+    try {
+      await ssh.connect({
+        host: address,
+        username: user,
+        port: p,
+        privateKeyPath: keyPath,
+        password,
+        tryKeyboard,
+      })
+      break
+    } catch (err) {
+      if (err.code !== "ECONNREFUSED") {
+        throw err
+      }
+    }
+  }
 
   ssh.execCommandSudo = async (command, opts = {}) => {
     const {
