@@ -1,4 +1,4 @@
-const composeReducer = require("@foundernetes/std/compose-reducer")
+const composeReducer = require("@foundernetes/std/pipe-reducer")
 
 module.exports = (key, middlewares) => {
   const composers = middlewares.map(

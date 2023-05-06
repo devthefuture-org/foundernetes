@@ -1,4 +1,4 @@
-const composeReducer =
+const pipeReducer =
   (f, g) =>
   async (...args) => {
     let result = await g(...args)
@@ -11,5 +11,5 @@ module.exports = (...fns) => {
   if (fns.length === 0) {
     fns.push((arg) => arg)
   }
-  return fns.reduce(composeReducer)
+  return fns.reduce(pipeReducer)
 }
