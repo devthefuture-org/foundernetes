@@ -13,7 +13,7 @@ module.exports = async (definition, callback) => {
   // dbug(definition).k()
   const { iterators = {} } = definition
 
-  const execPlaybook = async () =>
+  const execPlaybook = async (...params) =>
     ctx.fork(async () => {
       let { default: iterator } = iterators
       if (!iterator) {
@@ -38,7 +38,7 @@ module.exports = async (definition, callback) => {
       let failedError
       let playingError
       try {
-        await callback()
+        await callback(...params)
       } catch (error) {
         if (!(error instanceof FoundernetesPlayPostCheckError)) {
           if (!isAbortError(error)) {

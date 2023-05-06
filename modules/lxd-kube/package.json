@@ -1,0 +1,7 @@
+{
+  "name": "@foundernetes/lxd-kube",
+  "packageManager": "yarn@3.3.0",
+  "dependencies": {
+    "@foundernetes/machines": "workspace:^"
+  }
+}

@@ -26,7 +26,7 @@ module.exports = () => {
       const { inlineConfigs = [] } = staticDefinitions
 
       const config = await loadConfig(opts, inlineConfigs)
-      ctx.set("config", config)
+      ctx.setConfig(config)
 
       const loggerOverride = ctx.get("loggerOverride")
       const { logFile } = config
@@ -58,7 +58,7 @@ module.exports = () => {
       if (loggerOverride) {
         logger = loggerOverride(logger, config)
       }
-      ctx.set("logger", logger)
+      ctx.setLogger(logger)
 
       logger.configureDebug(opts.D)
     })

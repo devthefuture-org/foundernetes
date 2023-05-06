@@ -20,6 +20,8 @@ const sudoFactory = require("~/lib/sudo-factory")
 const sudoAskPassword = require("~/lib/sudo-ask-password")
 const execa = require("~/lib/execa")
 
+const config = require("~/config")
+
 const FoundernetesPlayCheckError = require("~/error/play-check")
 const FoundernetesPlayPreCheckError = require("~/error/play-pre-check")
 const FoundernetesPlayPostCheckError = require("~/error/play-post-check")
@@ -58,4 +60,7 @@ module.exports = {
 
   // dev
   dbug,
+
+  // config
+  config,
 }

@@ -620,7 +620,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@foundernetes/machines@workspace:modules/machines":
+"@foundernetes/lxd-kube@workspace:modules/lxd-kube":
+  version: 0.0.0-use.local
+  resolution: "@foundernetes/lxd-kube@workspace:modules/lxd-kube"
+  dependencies:
+    "@foundernetes/machines": "workspace:^"
+  languageName: unknown
+  linkType: soft
+
+"@foundernetes/machines@workspace:^, @foundernetes/machines@workspace:modules/machines":
   version: 0.0.0-use.local
   resolution: "@foundernetes/machines@workspace:modules/machines"
   dependencies:

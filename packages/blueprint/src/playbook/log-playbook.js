@@ -11,7 +11,7 @@ const start = (definition) => {
   const elapsed = timeLogger()
   const logPlaybookContext = { ...definition, elapsed }
   const { log = true, name } = definition
-  ctx.set("parentLogger", ctx.getLogger())
+  ctx.set("parentLogger", ctx.require("logger"))
   if (!log) {
     return logPlaybookContext
   }
@@ -38,7 +38,7 @@ const end = ({ log = true, name, elapsed }) => {
   logger.info(`📕 playbook done: ${name}`)
   elapsed.end({
     label: "🏁 playbook runned in",
-    logger: ctx.getLogger(),
+    logger: ctx.require("logger"),
     logLevel: "trace",
   })
 }
@@ -70,7 +70,7 @@ const startAll = (playbooks, { parallel }) => {
     return
   }
   const methodName = parallel ? "parallel" : "series"
-  const logger = ctx.getLogger()
+  const logger = ctx.require("logger")
   logger.info(
     `🌍 launching all playbooks in ${methodName}: ${chalk.cyanBright(
       getPlaybooksList(playbooks).join(",")
@@ -85,7 +85,7 @@ const endAll = (playbooks) => {
   if (playbooks.length <= 1) {
     return
   }
-  const logger = ctx.getLogger()
+  const logger = ctx.require("logger")
 
   const counter = {
     unchanged: 0,

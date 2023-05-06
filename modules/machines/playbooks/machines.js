@@ -18,13 +18,15 @@ module.exports = async () => {
 
   const { plays, loaders } = await createTree(tree, treeParams)
 
-  const playbook = async () => {
+  const playbook = async ({ inventory } = {}) => {
     const iterator = ctx.getIterator()
 
-    const inventoryFile = process.env.F10S_MACHINES_FILE || "machines.yaml"
-    const inventory = await loaders.std.yaml({ file: inventoryFile })
+    if (!inventory) {
+      const inventoryFile = process.env.F10S_MACHINES_FILE || "machines.yaml"
+      inventory = await loaders.std.yaml({ file: inventoryFile })
+    }
 
-    const { hosts, ...hostDefaults } = inventory
+    const { hosts = {}, ...hostDefaults } = inventory
     const { parallelHostsLimit = Infinity, parallelFilesLimit = 1 } = inventory
     tmp.setGracefulCleanup()
 
