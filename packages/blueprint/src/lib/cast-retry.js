@@ -1,4 +1,4 @@
-const defaults = require("lodash.defaults")
+const defaults = require("lodash/defaults")
 const ctx = require("@foundernetes/ctx")
 const humanizeDuration = require("~/lib/humanize-duration")
 

@@ -1,6 +1,6 @@
-const defaults = require("lodash.defaults")
-const pick = require("lodash.pick")
-const omit = require("lodash.omit")
+const defaults = require("lodash/defaults")
+const pick = require("lodash/pick")
+const omit = require("lodash/omit")
 const { parse } = require("shell-quote")
 const chalk = require("chalk")
 

@@ -1,6 +1,6 @@
 const os = require("os")
 
-const pick = require("lodash.pick")
+const pick = require("lodash/pick")
 
 const { createLoader } = require("@foundernetes/blueprint")
 

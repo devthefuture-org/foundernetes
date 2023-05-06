@@ -1,7 +1,7 @@
 const ctx = require("@foundernetes/ctx")
 const { createComposer } = require("@foundernetes/blueprint")
 
-const capitalize = require("lodash.capitalize")
+const capitalize = require("lodash/capitalize")
 
 module.exports = async ({ plays, mod }) =>
   createComposer(async (vars) => {

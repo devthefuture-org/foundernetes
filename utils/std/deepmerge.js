@@ -1,4 +1,4 @@
-const mergeWith = require("lodash.mergewith")
+const mergeWith = require("lodash/mergeWith")
 
 module.exports = (objValue, ...srcValues) =>
   mergeWith(objValue, ...srcValues, (oValue, srcValue) => {

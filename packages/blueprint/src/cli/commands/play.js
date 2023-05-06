@@ -1,4 +1,4 @@
-const get = require("lodash.get")
+const get = require("lodash/get")
 
 const runContextCommand = require("~/process/run-context-command")
 const loadInputPayload = require("~/process/load-input-payload")

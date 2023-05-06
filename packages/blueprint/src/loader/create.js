@@ -1,5 +1,5 @@
 const yaRetry = require("ya-retry")
-const pick = require("lodash.pick")
+const pick = require("lodash/pick")
 const objectHash = require("object-hash")
 
 const isAbortError = require("@foundernetes/std/is-abort-error")

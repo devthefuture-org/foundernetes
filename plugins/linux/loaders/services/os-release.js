@@ -1,6 +1,6 @@
 const { createLoader, $ } = require("@foundernetes/blueprint")
 
-const camelcase = require("lodash.camelcase")
+const camelcase = require("lodash/camelCase")
 
 const removeSuffix = require("@foundernetes/std/remove-suffix")
 const removePrefix = require("@foundernetes/std/remove-prefix")

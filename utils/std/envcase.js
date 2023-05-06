@@ -1,3 +1,3 @@
-const uppercase = require("lodash.uppercase")
+const upperCase = require("lodash/upperCase")
 
-module.exports = (str) => uppercase(str).replaceAll(" ", "_")
+module.exports = (str) => upperCase(str).replaceAll(" ", "_")

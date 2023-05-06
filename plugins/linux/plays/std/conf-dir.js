@@ -4,7 +4,7 @@ const fs = require("fs-extra")
 const ctx = require("@foundernetes/ctx")
 const { async } = require("@foundernetes/blueprint")
 
-const omit = require("lodash.omit")
+const omit = require("lodash/omit")
 const { render } = require("@foundernetes/eta")
 const removeExtname = require("@foundernetes/std/remove-extname")
 

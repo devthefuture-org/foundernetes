@@ -1,4 +1,4 @@
-const setWith = require("lodash.setwith")
+const setWith = require("lodash/setWith")
 const traverse = require("./traverse")
 
 module.exports = (obj, keyModifier) =>

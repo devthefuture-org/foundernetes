@@ -1,7 +1,7 @@
-const isEqual = require("lodash.isequal")
-const defaults = require("lodash.defaults")
-const cloneDeep = require("lodash.clonedeep")
-const snakeCase = require("lodash.snakecase")
+const isEqual = require("lodash/isEqual")
+const defaults = require("lodash/defaults")
+const cloneDeep = require("lodash/cloneDeep")
+const snakeCase = require("lodash/snakeCase")
 const ctx = require("@foundernetes/ctx")
 const { createPlay, $ } = require("@foundernetes/blueprint")
 
@@ -98,10 +98,10 @@ module.exports = async ({ loaders }) => {
         to_ports: toPorts,
         to_port_ranges: toPortRanges,
         from_port_ranges: fromPortRanges,
-        from_interface: fromInterface,
+        // from_interface: fromInterface,
       } = rule
 
-      const routed = actionDirection === "fwd"
+      // const routed = actionDirection === "fwd"
       const incoming = actionDirection === "in"
 
       const proto = incoming ? toTransport : fromTransport

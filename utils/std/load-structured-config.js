@@ -1,7 +1,7 @@
 const os = require("os")
 
 const fs = require("fs-extra")
-const camelCase = require("lodash.camelcase")
+const camelCase = require("lodash/camelCase")
 
 const yaml = require("./yaml")
 const deepmerge = require("./deepmerge")

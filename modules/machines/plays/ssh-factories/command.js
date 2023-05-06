@@ -1,4 +1,4 @@
-const omit = require("lodash.omit")
+const omit = require("lodash/omit")
 
 const shellQuote = require("shell-quote")
 const ctx = require("@foundernetes/ctx")

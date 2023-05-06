@@ -1,5 +1,5 @@
 const path = require("path")
-const omit = require("lodash.omit")
+const omit = require("lodash/omit")
 const ctx = require("@foundernetes/ctx")
 const { createComposer } = require("@foundernetes/blueprint")
 const listFilesRecursive = require("@foundernetes/std/list-files-recursive")

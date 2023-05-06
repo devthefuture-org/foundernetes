@@ -1,4 +1,4 @@
-const get = require("lodash.get")
+const get = require("lodash/get")
 const async = require("@foundernetes/async")
 
 const symbols = require("./symbols")

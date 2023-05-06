@@ -2,8 +2,8 @@ const path = require("path")
 
 const { createComposer } = require("@foundernetes/blueprint")
 
-// const defaultsDeep = require("lodash.defaultsdeep")
-const cloneDeep = require("lodash.clonedeep")
+// const defaultsDeep = require("lodash/defaultsDeep")
+const cloneDeep = require("lodash/cloneDeep")
 
 module.exports = async ({ plays }) =>
   createComposer(async (vars = {}) => {
