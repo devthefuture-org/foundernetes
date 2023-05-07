@@ -71,7 +71,7 @@
     "start": "yarn playbook",
     "build": "yarn build:clean && yarn build:ncc && yarn build:pkg",
     "build:clean": "rm -rf ./dist",
-    "build:ncc": "ncc build ./metal-debian --source-map --v8-cache",
+    "build:ncc": "cd ../../ && ncc build modules/metal-debian/metal-debian --out modules/metal-debian/dist --source-map --v8-cache",
     "build:pkg": "pkg -c .pkg.json -o ./dist-bin/metal-debian --compress=GZip ./dist/index.js",
     "playbook": "./metal-debian playbook",
     "build:foundernetes": "pkg node_modules/.bin/foundernetes",
