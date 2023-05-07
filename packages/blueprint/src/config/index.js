@@ -126,6 +126,7 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
         if (!Array.isArray(extractBinPath)) {
           extractBinPath = [extractBinPath]
         }
+        const envPath = process.env.PATH.split(path.delimiter)
         for (let p of extractBinPath) {
           if (typeof p === "string") {
             p = { source: p }
@@ -137,8 +138,11 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
           let { target = "~/.foundernetes/bin" } = p
           target = untildify(target)
           await syncDir(source, target)
-          process.env.PATH = [target, process.env.PATH].join(path.delimiter)
+          if (!envPath.includes(target)) {
+            envPath.push(target)
+          }
         }
+        process.env.PATH = envPath.join(path.delimiter)
       },
     },
     logLevel: {

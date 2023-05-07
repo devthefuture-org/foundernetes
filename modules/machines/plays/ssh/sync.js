@@ -6,9 +6,18 @@ const listFilesRecursive = require("@foundernetes/std/list-files-recursive")
 const ctx = require("~/ctx")
 
 module.exports = async ({ mod }) => {
-  return createComposer(async (vars) => {
-    const { target: targetMain } = vars
+  return createComposer(async ({ ...vars }) => {
+    let { target: targetMain } = vars
     let { source: sourceMain } = vars
+
+    if (targetMain === undefined || targetMain === null) {
+      if (!sourceMain.startsWith("/")) {
+        targetMain = sourceMain
+      } else {
+        targetMain = "."
+      }
+      vars.target = targetMain
+    }
 
     sourceMain = path.resolve(sourceMain)
 

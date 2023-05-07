@@ -1,7 +1,19 @@
+const path = require("path")
 const fs = require("fs-extra")
 
 module.exports = async () => {
   const isDist = await fs.pathExists("/snapshot")
+  const distBinDirs = () => [
+    "/snapshot/modules/metal-debian/bin",
+    "/snapshot/modules/machines/bin",
+  ]
+  const devBinDirs = () => {
+    const devBinRoot = path.resolve(path.dirname(process.argv[1]), "..", "..")
+    return [
+      `${devBinRoot}/modules/metal-debian/bin`,
+      `${devBinRoot}/modules/machines/bin`,
+    ]
+  }
   return {
     sudo: true,
     sudoPassword: process.env.F10S_DEBIANMETAL_SUDO_PASSWORD,
@@ -11,8 +23,6 @@ module.exports = async () => {
     },
     execEnforceLeastPrivilege: true,
     execEnforceLeastPrivilegeUseGoSu: true,
-    extractBinPath: isDist
-      ? ["/snapshot/modules/metal-debian/bin", "/snapshot/modules/machines/bin"]
-      : [],
+    extractBinPath: isDist ? distBinDirs() : devBinDirs(),
   }
 }

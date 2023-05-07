@@ -1,5 +1,10 @@
 module.exports = {
-  ignorePatterns: ["!.versionrc.js", "!.foundernetesrc.js", "dist/**"],
+  ignorePatterns: [
+    "!.versionrc.js",
+    "!.foundernetesrc.js",
+    "**/dist/**",
+    ".cjs",
+  ],
   settings: {
     "import/resolver": {
       alias: true,

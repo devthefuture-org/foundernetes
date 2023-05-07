@@ -36,7 +36,6 @@ const main = async () => {
         ],
         extraCommands: [
           {
-            // command: "sudo ~/.metal-debian/metal-debian",
             command: "sudo ./metal-debian",
             logWrap: false,
             env: {

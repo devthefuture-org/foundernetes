@@ -1,8 +1,11 @@
 const path = require("path")
 const fs = require("fs-extra")
 
+const shellQuote = require("shell-quote")
+
 const ctx = require("@foundernetes/ctx")
 const yaml = require("@foundernetes/std/yaml")
+const { execa } = require("@foundernetes/execa")
 const loadStructuredConfig = require("@foundernetes/std/load-structured-config")
 const envParserCastArray = require("@foundernetes/std/env-parsers/cast-array")
 // const envParserYaml = require("@foundernetes/std/env-parsers/yaml")
@@ -35,6 +38,14 @@ module.exports = (params = {}) => {
           option: "machines",
           env: "F10S_MACHINES",
         },
+        machinesBuild: {
+          option: "machines-build",
+          env: "F10S_MACHINES_BUILD",
+        },
+        machinesBuildCommand: {
+          option: "machinesBuildCommand",
+          env: "F10S_MACHINES_BUILD_COMMAND",
+        },
       }
       const extendsConfig = await loadStructuredConfig({
         configStructure,
@@ -64,11 +75,35 @@ module.exports = (params = {}) => {
             "--machines-upload <file...>",
             "upload a file on machines, can be used multiple times"
           )
+          .option("--machines-build", "build binary package")
+          .option(
+            "--machines-build-command <command>",
+            "build command",
+            "yarn build"
+          )
           .action(async (targets, opts, cmd) => {
             const config = ctx.getConfig()
             if (!config.machines) {
               await action(targets, opts, cmd)
               return
+            }
+
+            const isDist = await fs.pathExists("/snapshot")
+
+            if (config.machinesBuild && !isDist) {
+              let { machinesBuildCommand } = config
+              const workspaceDirPath = path.dirname(process.argv[1])
+              if (typeof machinesBuildCommand === "string") {
+                machinesBuildCommand = shellQuote.parse(machinesBuildCommand)
+              }
+              await execa(
+                machinesBuildCommand[0],
+                machinesBuildCommand.slice(1),
+                {
+                  cwd: workspaceDirPath,
+                  stdio: "inherit",
+                }
+              )
             }
 
             const { machinesCwd, machinesUpload = [], machinesConfig } = config
@@ -91,7 +126,6 @@ module.exports = (params = {}) => {
             }
 
             const selfUploadFiles = []
-            const isDist = await fs.pathExists("/snapshot")
             const {
               selfUploadDist = true,
               selfUploadTarget = program.name(),
