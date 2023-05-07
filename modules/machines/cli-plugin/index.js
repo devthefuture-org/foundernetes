@@ -168,6 +168,8 @@ module.exports = (params = {}) => {
             }
 
             await machines(machinesDefinition)
+
+            process.exit(0)
           })
       },
     },
