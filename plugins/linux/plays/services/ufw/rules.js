@@ -1,7 +1,7 @@
 const isEqual = require("lodash/isEqual")
 const defaults = require("lodash/defaults")
 const cloneDeep = require("lodash/cloneDeep")
-const snakeCase = require("lodash/snakeCase")
+const camelCase = require("lodash/camelCase")
 const ctx = require("@foundernetes/ctx")
 const { createPlay, $ } = require("@foundernetes/blueprint")
 
@@ -9,6 +9,9 @@ const traverse = require("@foundernetes/std/traverse")
 const objectSortKeys = require("@foundernetes/std/object-sort-keys")
 
 module.exports = async ({ loaders }) => {
+  const keyMap = {
+    actionDirection: "direction",
+  }
   const normalizeRule = (rule) => {
     rule = cloneDeep(rule)
     rule = traverse(rule, (o) => {
@@ -17,28 +20,34 @@ module.exports = async ({ loaders }) => {
       }
       for (const [k, val] of Object.entries(o)) {
         delete o[k]
-        o[snakeCase(k)] = val
+        o[camelCase(k)] = val
       }
       return o
     })
+    rule = Object.entries(rule).reduce((acc, [k, v]) => {
+      k = keyMap[k] || k
+      acc[k] = v
+      return acc
+    }, {})
     rule = defaults(rule, {
       action: "allow",
-      action_direction: "in",
-      network_protocol: "ipv4",
-      to_interface: null,
-      to_transport: null,
-      to_service: null,
-      to_port_ranges: null,
-      to_ip: "0.0.0.0",
-      to_ip_prefix: "0",
+      direction: "in",
+      networkProtocol: "ipv4",
+      toInterface: null,
+      toTransport: null,
+      toService: null,
+      toPortRanges: null,
+      toIp: "0.0.0.0",
+      toIpPrefix: "0",
       comment: null,
-      from_ip: null,
-      from_ip_prefix: "0",
-      from_interface: "any",
-      from_transport: null,
-      from_port_ranges: null,
-      from_service: null,
+      fromIp: null,
+      fromIpPrefix: "0",
+      fromInterface: "any",
+      fromTransport: null,
+      fromPortRanges: null,
+      fromService: null,
       index: null,
+      route: false,
     })
     rule = traverse(rule, (val) => {
       if (val !== undefined && val !== null && typeof val !== "object") {
@@ -48,40 +57,37 @@ module.exports = async ({ loaders }) => {
       return val
     })
     if (
-      rule.from_port_ranges?.length === 1 &&
-      rule.from_port_ranges[0].start === "0"
+      rule.fromPortRanges?.length === 1 &&
+      rule.fromPortRanges[0].start === "0"
     ) {
-      rule.from_port_ranges = null
+      rule.fromPortRanges = null
     }
-    if (
-      rule.to_port_ranges?.length === 1 &&
-      rule.to_port_ranges[0].start === "0"
-    ) {
-      rule.to_port_ranges = null
+    if (rule.toPortRanges?.length === 1 && rule.toPortRanges[0].start === "0") {
+      rule.toPortRanges = null
     }
     if (rule.index) {
       rule.index = null
     }
-    if (rule.from_service) {
-      rule.from_ports = null
-      rule.from_port_ranges = null
+    if (rule.fromService) {
+      rule.fromPorts = null
+      rule.fromPortRanges = null
     }
-    if (rule.from_transport === "any") {
-      rule.from_transport = null
+    if (rule.fromTransport === "any") {
+      rule.fromTransport = null
     }
-    if (rule.to_transport === "any") {
-      rule.to_transport = null
+    if (rule.toTransport === "any") {
+      rule.toTransport = null
     }
-    if (rule.from_ip === "0.0.0.0" && rule.from_ip_prefix === "0") {
-      rule.from_ip = null
-    }
-
-    if (rule.from_interface === "any") {
-      rule.from_interface = null
+    if (rule.fromIp === "0.0.0.0" && rule.fromIpPrefix === "0") {
+      rule.fromIp = null
     }
 
-    if (rule.to_interface === "any") {
-      rule.to_interface = null
+    if (rule.fromInterface === "any") {
+      rule.fromInterface = null
+    }
+
+    if (rule.toInterface === "any") {
+      rule.toInterface = null
     }
 
     return rule
@@ -91,18 +97,56 @@ module.exports = async ({ loaders }) => {
     let newRules = []
     for (const rule of rules) {
       const {
-        action_direction: actionDirection,
-        from_transport: fromTransport,
-        to_transport: toTransport,
-        from_ports: fromPorts,
-        to_ports: toPorts,
-        to_port_ranges: toPortRanges,
-        from_port_ranges: fromPortRanges,
-        // from_interface: fromInterface,
+        fromTransport,
+        toTransport,
+        fromPorts,
+        toPorts,
+        toPortRanges,
+        fromPortRanges,
+        // fromInterface,
+        toInterface,
       } = rule
 
-      // const routed = actionDirection === "fwd"
-      const incoming = actionDirection === "in"
+      let { direction } = rule
+      if (direction === "fwd") {
+        rule.route = true
+      }
+      const { route } = rule
+
+      if (toInterface !== "any") {
+        direction = route ? "out" : "in"
+      } else {
+        direction = route ? "in" : "out"
+      }
+
+      const incoming = direction === "in"
+
+      if (rule.interface) {
+        if (incoming) {
+          rule.fromInterface = rule.interface
+        } else {
+          rule.toInterface = rule.interface
+        }
+        delete rule.interface
+      }
+
+      const abstractKeys = [
+        "interface",
+        "ip",
+        "ipPrefix",
+        "transport",
+        "ports",
+        "portRanges",
+        "service",
+      ]
+      for (const key of abstractKeys) {
+        if (rule[key]) {
+          const prefix =
+            (incoming && !route) || (!incoming && route) ? "to" : "from"
+          rule[camelCase(`${prefix}-${key}`)] = rule[key]
+          delete rule[key]
+        }
+      }
 
       const proto = incoming ? toTransport : fromTransport
       if (
@@ -114,13 +158,13 @@ module.exports = async ({ loaders }) => {
       ) {
         newRules.push({
           ...rule,
-          from_transport: incoming ? null : "tcp",
-          to_transport: incoming ? "tcp" : null,
+          fromTransport: incoming ? null : "tcp",
+          toTransport: incoming ? "tcp" : null,
         })
         newRules.push({
           ...rule,
-          from_transport: incoming ? null : "udp",
-          to_transport: incoming ? "udp" : null,
+          fromTransport: incoming ? null : "udp",
+          toTransport: incoming ? "udp" : null,
         })
       } else {
         newRules.push(rule)
@@ -230,28 +274,27 @@ module.exports = async ({ loaders }) => {
 
         const {
           action,
-          action_direction: actionDirection,
+          route,
+          direction,
           // network_protocol: networkProtocol,
-          to_interface: toInterface,
-          to_transport: toTransport,
-          to_ip: toIp,
-          to_ip_prefix: toIpPrefix,
-          to_ports: toPorts,
-          to_port_ranges: toPortRanges,
-          to_service: toService,
+          toInterface,
+          toTransport,
+          toIp,
+          toIpPrefix,
+          toPorts,
+          toPortRanges,
+          toService,
           comment,
-          from_ip: fromIp,
-          from_ip_prefix: fromIpPrefix,
-          from_interface: fromInterface,
-          from_transport: fromTransport,
-          from_ports: fromPorts,
-          from_port_ranges: fromPortRanges,
-          from_service: fromService,
+          fromIp,
+          fromIpPrefix,
+          fromInterface,
+          fromTransport,
+          fromPorts,
+          fromPortRanges,
+          fromService,
         } = rule
 
-        const incoming =
-          actionDirection === "in" ||
-          (actionDirection === "fwd" && fromInterface !== "any")
+        const incoming = direction === "in"
 
         const interface = incoming ? fromInterface : toInterface
 
@@ -287,7 +330,7 @@ module.exports = async ({ loaders }) => {
         const service = incoming ? toService : fromService
 
         const { stdout } = await $(
-          `ufw ${actionDirection === "fwd" ? "route" : ""} ${
+          `ufw ${route ? "route" : ""} ${
             lastFoundIndex > 0 && lastFoundIndex + 2 < actualRules.length
               ? `insert ${lastFoundIndex + 2}`
               : ""
