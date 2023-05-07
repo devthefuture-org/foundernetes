@@ -168,7 +168,47 @@ module.exports = async (options = {}) => {
     return getDirectory(localDirectory, remoteDirectory, opts)
   }
 
-  // extra command sudo
+  // extra commands
+  ssh.getCwd = () => {
+    return cwd
+  }
+
+  ssh.readdir = async (dir) => {
+    if (cwd && !dir.startsWith("/")) {
+      dir = path.join(cwd, dir)
+    }
+    const sftp = await ssh.requestSFTP()
+    return new Promise((resolve, reject) => {
+      sftp.readdir(dir, (err, ls) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(ls)
+        }
+      })
+    })
+  }
+
+  ssh.dirExists = async (dir) => {
+    if (cwd && !dir.startsWith("/")) {
+      dir = path.join(cwd, dir)
+    }
+    const sftp = await ssh.requestSFTP()
+    return new Promise((resolve, reject) => {
+      sftp.readdir(dir, (err) => {
+        if (err) {
+          if (err.code === 2) {
+            resolve(false)
+          } else {
+            reject(err)
+          }
+        } else {
+          resolve(true)
+        }
+      })
+    })
+  }
+
   ssh.execCommandSudo = async (command, opts = {}) => {
     const {
       preserveEnv = true,

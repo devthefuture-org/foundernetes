@@ -5,17 +5,8 @@ const ctx = require("~/ctx")
 module.exports = async () => {
   const getRemoteFiles = async (dir) => {
     const ssh = ctx.getSSH()
-    const sftp = await ssh.requestSFTP()
     dir = removeSuffix(dir, "/")
-    const list = await new Promise((resolve, reject) => {
-      sftp.readdir(dir, (err, ls) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(ls)
-        }
-      })
-    })
+    const list = await ssh.readdir(dir)
     return list.map(({ filename }) => `${dir}/${filename}`)
   }
 
