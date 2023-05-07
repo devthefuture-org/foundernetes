@@ -563,6 +563,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@foundernetes/cli-machines@workspace:^, @foundernetes/cli-machines@workspace:plugins/cli-machines":
+  version: 0.0.0-use.local
+  resolution: "@foundernetes/cli-machines@workspace:plugins/cli-machines"
+  dependencies:
+    "@foundernetes/ctx": "workspace:^"
+    "@foundernetes/machines": "workspace:^"
+    "@foundernetes/std": "workspace:^"
+  languageName: unknown
+  linkType: soft
+
 "@foundernetes/ctx@workspace:^, @foundernetes/ctx@workspace:libs/ctx":
   version: 0.0.0-use.local
   resolution: "@foundernetes/ctx@workspace:libs/ctx"
@@ -705,6 +715,7 @@ __metadata:
     "@foundernetes/async": "workspace:^"
     "@foundernetes/axios": "workspace:^"
     "@foundernetes/blueprint": "workspace:^"
+    "@foundernetes/cli-machines": "workspace:^"
     "@foundernetes/ctx": "workspace:^"
     "@foundernetes/eta": "workspace:^"
     "@foundernetes/execa": "workspace:^"

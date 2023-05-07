@@ -9,7 +9,7 @@ module.exports = async ({ plays }) =>
     await plays.std.ensureFile({
       file: "/opt/metal-debian-boot.sh",
       contentFile: path.join(__dirname, "opt", "metal-debian-boot.sh"),
-      sudoWrite: true,
+      sudo: true,
     })
     await plays.std.chmod({
       file: "/opt/metal-debian-boot.sh",
@@ -31,7 +31,7 @@ module.exports = async ({ plays }) =>
     })
 
     await plays.services.serviceEnable({
-      serviceName: "metal-debian-boot",
+      serviceName: "f10s-metal-debian",
       checkForSymlink: true,
     })
   })

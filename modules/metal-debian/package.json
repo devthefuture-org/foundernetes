@@ -6,6 +6,7 @@
     "@foundernetes/async": "workspace:^",
     "@foundernetes/axios": "workspace:^",
     "@foundernetes/blueprint": "workspace:^",
+    "@foundernetes/cli-machines": "workspace:^",
     "@foundernetes/ctx": "workspace:^",
     "@foundernetes/eta": "workspace:^",
     "@foundernetes/execa": "workspace:^",

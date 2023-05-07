@@ -1,0 +1,10 @@
+{
+  "name": "@foundernetes/cli-machines",
+  "packageManager": "yarn@3.3.0",
+  "main": "index.js",
+  "dependencies": {
+    "@foundernetes/ctx": "workspace:^",
+    "@foundernetes/machines": "workspace:^",
+    "@foundernetes/std": "workspace:^"
+  }
+}

@@ -19,7 +19,7 @@ const logError = require("~/error/log-error")
 module.exports = async ({ callback, targets = [] }) => {
   const config = ctx.getConfig()
   const logger = ctx.getLogger()
-  const staticDefinitions = ctx.require("staticDefinitions")
+  const projectConfig = ctx.require("projectConfig")
 
   const events = new EventEmitter()
   ctx.set("events", events)
@@ -41,7 +41,7 @@ module.exports = async ({ callback, targets = [] }) => {
     ctx.set("sudo", await sudoFactory(sudoOptions))
   }
 
-  let { playbookSet } = staticDefinitions
+  let { playbookSet } = projectConfig
   if (!playbookSet) {
     playbookSet = await getPlaybookSet()
   }

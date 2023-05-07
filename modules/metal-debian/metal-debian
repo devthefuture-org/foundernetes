@@ -3,6 +3,7 @@
 require("events").EventEmitter.defaultMaxListeners = 0
 
 const { cli, dbug } = require("@foundernetes/blueprint")
+const cliMachines = require("@foundernetes/cli-machines")
 
 dbug.registerGlobal()
 
@@ -18,6 +19,27 @@ const main = async () => {
     playbookSet: {
       playbooks,
     },
+    cliPlugins: [
+      cliMachines({
+        cwd: "/home/j/.metal-debian",
+        extraUpload: [
+          {
+            source: `${process.cwd()}/metal-debian.yaml`,
+            target: "metal-debian.yaml",
+          },
+          {
+            source: `${__dirname}/dist-bin/metal-debian`,
+            target: "metal-debian",
+          },
+        ],
+        extraCommands: [
+          {
+            command: "sudo ~/.metal-debian/metal-debian",
+            logWrap: false,
+          },
+        ],
+      }),
+    ],
   })
 }
 

@@ -1,7 +1,5 @@
-const path = require("path")
-
 module.exports = async () => ({
-  basedir: path.basename(__dirname),
+  __dirname,
   sudo: true,
   sudoPassword: process.env.F10S_DEBIANMETAL_SUDO_PASSWORD,
   execEnv: {

@@ -122,7 +122,9 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
     },
     basedir: {
       defaultFunction: async (config) => {
-        const [basedir] = config.isDist ? await fs.readdir("/snapshot") : []
+        const [basedir] = config.isDist
+          ? await fs.readdir("/snapshot")
+          : [config.__dirname]
         return basedir
       },
     },

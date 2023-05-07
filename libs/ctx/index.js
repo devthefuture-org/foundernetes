@@ -20,7 +20,7 @@ class FoundernetesContext extends Context {
   }
 
   getConfig() {
-    return this.proxyRequire.logger
+    return this.proxyRequire.config
   }
 }
 

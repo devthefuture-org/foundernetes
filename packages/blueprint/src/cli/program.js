@@ -9,8 +9,10 @@ const loadConfig = require("~/config")
 
 const options = require("./options")
 
-module.exports = () => {
+module.exports = async (projectConfig) => {
   const program = new Command()
+
+  const { cliPlugins } = projectConfig
 
   program
     .name("foundernetes")
@@ -22,10 +24,14 @@ module.exports = () => {
     .hook("preAction", async (_thisCommand, actionCommand) => {
       const opts = actionCommand.optsWithGlobals()
 
-      const staticDefinitions = ctx.require("staticDefinitions")
-      const { inlineConfigs = [] } = staticDefinitions
+      const { inlineConfigs = [] } = projectConfig
 
-      const config = await loadConfig(opts, inlineConfigs)
+      let config = await loadConfig(opts, inlineConfigs)
+      for (const plugin of cliPlugins) {
+        if (plugin.config) {
+          config = await plugin.config(config, opts, inlineConfigs)
+        }
+      }
       ctx.setConfig(config)
 
       const loggerOverride = ctx.get("loggerOverride")

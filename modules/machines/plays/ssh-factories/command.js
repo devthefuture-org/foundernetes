@@ -25,7 +25,7 @@ module.exports = async ({ check }) => {
         logStderr = logStd,
         logStdout = logStd,
         logWrap = true,
-        logNewLine = !logWrap,
+        logNewLine = false,
       } = vars
 
       let { command } = vars

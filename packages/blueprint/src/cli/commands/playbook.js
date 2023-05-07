@@ -2,6 +2,17 @@ const playbook = require("~/playbook")
 
 const options = require("../options")
 
+const action = async (targets, opts, _command) => {
+  try {
+    await playbook(opts, targets)
+  } catch (err) {
+    if (err === "") {
+      return
+    }
+    throw err
+  }
+}
+
 module.exports = (program) =>
   program
     .command("playbook", { isDefault: true })
@@ -13,13 +24,6 @@ module.exports = (program) =>
     .addOption(options.skipTags)
     .option("--parallel, -p", "run playbooks in parallel")
     .argument("[target...]", "playbook name or playbook tags")
-    .action(async (targets, opts, _command) => {
-      try {
-        await playbook(opts, targets)
-      } catch (err) {
-        if (err === "") {
-          return
-        }
-        throw err
-      }
-    })
+    .action(action)
+
+module.exports.action = action

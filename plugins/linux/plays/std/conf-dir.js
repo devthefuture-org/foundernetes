@@ -48,7 +48,7 @@ module.exports = async ({ plays }) => {
     } = vars
     if (convention) {
       if (convention === true) {
-        convention = "f8n-"
+        convention = "f10s-"
       }
       if (vars.removeUnlistedFiles === undefined) {
         removeUnlistedFiles = true

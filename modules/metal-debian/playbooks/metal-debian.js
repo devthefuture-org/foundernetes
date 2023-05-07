@@ -26,7 +26,7 @@ module.exports = async () => {
 
     // ℹ️ data
     const dataFile =
-      process.env.F10S_METALDEBIAN_PLAYBOOK_FILE || "debian-metal.yaml"
+      process.env.F10S_METALDEBIAN_PLAYBOOK_FILE || "metal-debian.yaml"
     const data = await loaders.std.yaml({ file: dataFile })
 
     // ℹ️ authorizedKeys
@@ -36,6 +36,7 @@ module.exports = async () => {
         ? process.env.F10S_METALDEBIAN_AUTHORIZED_KEYS.split("\n")
         : []),
     ]
+
     await iterator.eachSeries(
       authorizedKeys,
       (publicKey) => plays.services.authorizeKey({ publicKey }),
@@ -76,7 +77,7 @@ module.exports = async () => {
           tags: [
             "packages",
             "install-packages",
-            ({ name }) => `f8n:play:package:${name}`,
+            ({ name }) => `f10s:play:package:${name}`,
             ...(pkg.tags || []),
           ],
         }),
