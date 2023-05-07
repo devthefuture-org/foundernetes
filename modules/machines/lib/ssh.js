@@ -3,14 +3,20 @@ const { randomUUID } = require("node:crypto")
 const { PassThrough } = require("stream")
 const { setTimeout } = require("timers/promises")
 
+const fs = require("fs-extra")
+
 const shellQuote = require("shell-quote")
-const untildify = require("untildify")
+const untildify = require("@foundernetes/std/untildify")
+const detectTild = require("@foundernetes/std/detect-tild")
+const ctx = require("@foundernetes/ctx")
 const { NodeSSH } = require("node-ssh")
 const Deferred = require("@foundernetes/std/deferred")
 
 const sshSudoDetectPasswordNeeded = require("./ssh-sudo-detect-password-needed")
 
 module.exports = async (options = {}) => {
+  const logger = ctx.getLogger()
+
   const ssh = new NodeSSH()
   const {
     address,
@@ -21,12 +27,20 @@ module.exports = async (options = {}) => {
     sudoPasswordNeeded: sudoPasswordNeededDefault,
     sudoPasswordDetectNeeded: sudoPasswordDetectNeededDefault = true,
     sudoPasswordLessAfterTimeout: sudoPasswordLessAfterTimeoutDefault = true,
-    cwd,
+    env: defaultCommandEnv = {},
   } = options
 
+  const { agent = process.env.SSH_AUTH_SOCK } = options
+
+  const { keyPassword } = options
   let { keyPath } = options
   if (keyPath) {
     keyPath = untildify(keyPath)
+  } else if (!agent) {
+    const defaultKeyPath = untildify("~/.ssh/id_rsa")
+    if (await fs.pathExists(defaultKeyPath)) {
+      keyPath = defaultKeyPath
+    }
   }
 
   let sudoPrompt = `[sudo][${randomUUID()}] password: `
@@ -39,14 +53,18 @@ module.exports = async (options = {}) => {
 
   for (const p of port) {
     try {
+      logger.info(`📡 connecting to ${user}@${address}:${p}...`)
       await ssh.connect({
         host: address,
         username: user,
         port: p,
         privateKeyPath: keyPath,
+        passphrase: keyPassword,
+        agent,
         password,
         tryKeyboard,
       })
+      logger.info(`🤝 connected ${user}@${address}:${p}`)
       break
     } catch (err) {
       if (err.code !== "ECONNREFUSED") {
@@ -55,12 +73,45 @@ module.exports = async (options = {}) => {
     }
   }
 
-  // wrap commands with cwd
-  const execCommand = ssh.execCommand.bind(ssh)
-  ssh.execCommand = (givenCommand, opts = {}) => {
-    if (cwd && !opts.cwd) {
-      opts = { ...opts, cwd }
+  let { cwd } = options
+  const { untildifyCwd = true } = options
+  if (cwd && untildifyCwd && detectTild(cwd)) {
+    let { home } = options
+    if (!home) {
+      const { detectHome = true } = options
+      if (detectHome) {
+        const { stdout } = await ssh.execCommand("echo $HOME")
+        home = stdout
+      }
+      if (!home) {
+        home = `/home/${user}`
+      }
     }
+    cwd = untildify(cwd, home)
+  }
+
+  // wrap commands with cwd and env
+  const execCommand = ssh.execCommand.bind(ssh)
+  ssh.execCommand = (givenCommand, commandOptions = {}) => {
+    const { env = {}, ...opts } = commandOptions
+
+    if (cwd && !opts.cwd) {
+      opts.cwd = cwd
+    }
+
+    const commandEnv = { ...defaultCommandEnv, ...env }
+    const commandEnvEntries = Object.entries(commandEnv)
+    if (commandEnvEntries.length > 0) {
+      const envPrefix = commandEnvEntries
+        .map(([key, val]) => {
+          key = shellQuote.quote([key])
+          val = shellQuote.quote([val])
+          return `${key}=${val}`
+        })
+        .join(" ")
+      givenCommand = [envPrefix, givenCommand].join(" ")
+    }
+
     return execCommand(givenCommand, opts)
   }
 
@@ -120,7 +171,7 @@ module.exports = async (options = {}) => {
   // extra command sudo
   ssh.execCommandSudo = async (command, opts = {}) => {
     const {
-      preserveEnv,
+      preserveEnv = true,
       user: impersonateUser,
       group: impersonateGroup,
       sudoPassword: sudoPasswordLocal = sudoPassword,
@@ -163,6 +214,7 @@ module.exports = async (options = {}) => {
           prompted += 1
           stdin.write(`${sudoPasswordLocal}\n`)
           passwordTyped.resolve()
+          chunk = sudoPrompt.replace(sudoPrompt, "")
         }
         if (commandOptions.onStderr) {
           return commandOptions.onStderr(chunk)

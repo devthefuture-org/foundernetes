@@ -1,7 +1,7 @@
 const os = require("os")
 const path = require("path")
 const { mkdtemp } = require("fs/promises")
-const untildify = require("untildify")
+const untildify = require("@foundernetes/std/untildify")
 const fs = require("fs-extra")
 const parseDuration = require("parse-duration")
 
@@ -120,29 +120,25 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
         return fs.pathExists("/snapshot")
       },
     },
-    basedir: {
-      defaultFunction: async (config) => {
-        const [basedir] = config.isDist
-          ? await fs.readdir("/snapshot")
-          : [config.__dirname]
-        return basedir
-      },
-    },
     extractBinPath: {
-      defaultFunction: (config) => ({
-        source: config.isDist
-          ? `/snapshot/${config.basedir}/bin`
-          : `${path.dirname(process.argv[1])}/bin`,
-        target: "~/.foundernetes/bin",
-      }),
+      default: [],
       sideEffect: async (extractBinPath) => {
-        const { source } = extractBinPath
-        if (!(await fs.pathExists(source))) {
-          return
+        if (!Array.isArray(extractBinPath)) {
+          extractBinPath = [extractBinPath]
         }
-        const target = untildify(extractBinPath.target)
-        await syncDir(source, target)
-        process.env.PATH = [target, process.env.PATH].join(path.delimiter)
+        for (let p of extractBinPath) {
+          if (typeof p === "string") {
+            p = { source: p }
+          }
+          const { source } = p
+          if (!(await fs.pathExists(source))) {
+            continue
+          }
+          let { target = "~/.foundernetes/bin" } = p
+          target = untildify(target)
+          await syncDir(source, target)
+          process.env.PATH = [target, process.env.PATH].join(path.delimiter)
+        }
       },
     },
     logLevel: {

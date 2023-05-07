@@ -38,7 +38,6 @@
     "sonic-boom": "^3.2.0",
     "tiged": "^2.12.3",
     "tmp": "^0.2.1",
-    "untildify": "^4.0.0",
     "which": "^3.0.0",
     "wildstring": "^1.0.9",
     "ya-retry": "^1.2.0",

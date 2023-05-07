@@ -5,7 +5,8 @@
     ],
     "assets": [
       "dist/**",
-      "bin/**"
+      "bin/**",
+      "../machines/bin/**"
     ]
   }
 }

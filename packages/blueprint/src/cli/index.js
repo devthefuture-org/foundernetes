@@ -26,7 +26,7 @@ module.exports = async (args = process.argv, projectConfig = {}) => {
       for (const cliPlugin of cliPlugins) {
         const commandName = command.name()
         if (cliPlugin.commands?.[commandName]) {
-          await cliPlugin.commands[commandName](command, addCommand)
+          await cliPlugin.commands[commandName](command, addCommand, program)
         }
       }
     }

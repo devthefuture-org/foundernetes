@@ -553,23 +553,12 @@ __metadata:
     sonic-boom: ^3.2.0
     through2: ^4.0.2
     tiged: ^2.12.3
-    untildify: ^4.0.0
     which: ^3.0.0
     wildstring: ^1.0.9
     ya-retry: ^1.2.0
     yaml: ^2.1.3
   bin:
     blueprint: ./bin/foundernetes
-  languageName: unknown
-  linkType: soft
-
-"@foundernetes/cli-machines@workspace:^, @foundernetes/cli-machines@workspace:plugins/cli-machines":
-  version: 0.0.0-use.local
-  resolution: "@foundernetes/cli-machines@workspace:plugins/cli-machines"
-  dependencies:
-    "@foundernetes/ctx": "workspace:^"
-    "@foundernetes/machines": "workspace:^"
-    "@foundernetes/std": "workspace:^"
   languageName: unknown
   linkType: soft
 
@@ -692,7 +681,6 @@ __metadata:
     sonic-boom: ^3.2.0
     tiged: ^2.12.3
     tmp: ^0.2.1
-    untildify: ^4.0.0
     which: ^3.0.0
     wildstring: ^1.0.9
     ya-retry: ^1.2.0
@@ -715,11 +703,11 @@ __metadata:
     "@foundernetes/async": "workspace:^"
     "@foundernetes/axios": "workspace:^"
     "@foundernetes/blueprint": "workspace:^"
-    "@foundernetes/cli-machines": "workspace:^"
     "@foundernetes/ctx": "workspace:^"
     "@foundernetes/eta": "workspace:^"
     "@foundernetes/execa": "workspace:^"
     "@foundernetes/linux": "workspace:^"
+    "@foundernetes/machines": "workspace:^"
     "@foundernetes/match": "workspace:^"
     "@vercel/ncc": ^0.36.1
     async-retry: ^1.3.3
@@ -3116,12 +3104,12 @@ __metadata:
   linkType: hard
 
 "direct-logger@npm:^2.15.0":
-  version: 2.15.0
-  resolution: "direct-logger@npm:2.15.0"
+  version: 2.15.1
+  resolution: "direct-logger@npm:2.15.1"
   dependencies:
     chalk: ^4.1.0
     dayjs: ^1.11.7
-  checksum: 87ce19669fb9a04b8316e4d8b847c3cde195a8553bd08a52a7e6a6a7765c59f40bec47cb57e6a05eb6fd64de16987bc561bdfd558e9226015fab20cfe5f367b0
+  checksum: a5dcb39ed25366e62dda2fd81ffb04ff0736d65c8647dff376c4496742fdfbfc55aab4b7dddad4d111164b893fe9d1537134ff10810d050d3d4ffedbadea9cb5
   languageName: node
   linkType: hard
 
@@ -8827,13 +8815,6 @@ __metadata:
   version: 1.0.0
   resolution: "unpipe@npm:1.0.0"
   checksum: 4fa18d8d8d977c55cb09715385c203197105e10a6d220087ec819f50cb68870f02942244f1017565484237f1f8c5d3cd413631b1ae104d3096f24fdfde1b4aa2
-  languageName: node
-  linkType: hard
-
-"untildify@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "untildify@npm:4.0.0"
-  checksum: 39ced9c418a74f73f0a56e1ba4634b4d959422dff61f4c72a8e39f60b99380c1b45ed776fbaa0a4101b157e4310d873ad7d114e8534ca02609b4916bb4187fb9
   languageName: node
   linkType: hard
 

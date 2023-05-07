@@ -3,7 +3,8 @@
 require("events").EventEmitter.defaultMaxListeners = 0
 
 const { cli, dbug } = require("@foundernetes/blueprint")
-const cliMachines = require("@foundernetes/cli-machines")
+const cliMachines = require("@foundernetes/machines/cli-plugin")
+const dayjs = require("dayjs")
 
 dbug.registerGlobal()
 
@@ -14,6 +15,8 @@ const loadLocalConfig = require("./.foundernetesrc")
 const main = async () => {
   const config = await loadLocalConfig()
 
+  const now = dayjs().format("YYYY-MM-DD-HH-mm-ss")
+
   await cli(process.argv, {
     inlineConfigs: [config],
     playbookSet: {
@@ -21,21 +24,27 @@ const main = async () => {
     },
     cliPlugins: [
       cliMachines({
-        cwd: "/home/j/.metal-debian",
+        cwd: "~/.metal-debian",
+        selfUploadTarget: "metal-debian",
+        selfUploadDist: true,
+        selfUploadDevPath: `${__dirname}/dist-bin/metal-debian`,
         extraUpload: [
           {
             source: `${process.cwd()}/metal-debian.yaml`,
             target: "metal-debian.yaml",
           },
-          {
-            source: `${__dirname}/dist-bin/metal-debian`,
-            target: "metal-debian",
-          },
         ],
         extraCommands: [
           {
-            command: "sudo ~/.metal-debian/metal-debian",
+            // command: "sudo ~/.metal-debian/metal-debian",
+            command: "sudo ./metal-debian",
             logWrap: false,
+            env: {
+              F10S_LOG_LEVEL: "trace",
+              F10S_LOG_FILE: `/var/log/metal-debian/machines-${now}.log`,
+              F10S_LOG_FILE_PLAIN: `/var/log/metal-debian/plain.boot-${now}.log`,
+              FORCE_COLOR: 2,
+            },
           },
         ],
       }),

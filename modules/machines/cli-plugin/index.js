@@ -1,5 +1,5 @@
 const path = require("path")
-const fs = require("fs/promises")
+const fs = require("fs-extra")
 
 const ctx = require("@foundernetes/ctx")
 const yaml = require("@foundernetes/std/yaml")
@@ -43,7 +43,7 @@ module.exports = (params = {}) => {
       return { ...config, ...extendsConfig }
     },
     commands: {
-      playbook: async (command, factory) => {
+      playbook: async (command, factory, program) => {
         const { action } = factory
         command
           .option(
@@ -90,6 +90,27 @@ module.exports = (params = {}) => {
               inventory.ssh = {}
             }
 
+            const selfUploadFiles = []
+            const isDist = await fs.pathExists("/snapshot")
+            const {
+              selfUploadDist = true,
+              selfUploadTarget = program.name(),
+              selfUploadDevPath,
+            } = params
+            if (isDist) {
+              if (selfUploadDist) {
+                selfUploadFiles.push({
+                  source: process.argv[0],
+                  target: selfUploadTarget,
+                })
+              }
+            } else if (selfUploadDevPath) {
+              selfUploadFiles.push({
+                source: selfUploadDevPath,
+                target: selfUploadTarget,
+              })
+            }
+
             const machinesDefinition = {
               inventory: {
                 ...inventory,
@@ -103,9 +124,10 @@ module.exports = (params = {}) => {
                   ...machinesUpload.map((f) => {
                     return {
                       source: f,
-                      target: `${machinesCwd}/${path.basename(f)}`,
+                      target: path.basename(f),
                     }
                   }),
+                  ...selfUploadFiles,
                 ],
                 commands: [...inventory.commands, ...extraCommands],
               },

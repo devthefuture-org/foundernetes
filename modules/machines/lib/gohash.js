@@ -1,11 +1,7 @@
-const path = require("path")
-
 const { $ } = require("@foundernetes/blueprint")
 
-const goshashBin = path.join(__dirname, "../bin/gohash")
-
 module.exports = async (file) => {
-  const { stdout: localOutput } = await $(`${goshashBin} ${file}`)
-  const [sum] = localOutput?.split(" ") || []
+  const { stdout } = await $(`gohash ${file}`)
+  const [sum] = stdout?.split(" ") || []
   return sum
 }

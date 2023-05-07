@@ -24,6 +24,9 @@ module.exports = async ({ check }) => {
         logStd = true,
         logStderr = logStd,
         logStdout = logStd,
+        logStdOnError = false,
+        logStdoutOnError = logStdOnError,
+        logStderrOnError = logStdOnError,
         logWrap = true,
         logNewLine = false,
       } = vars
@@ -63,26 +66,23 @@ module.exports = async ({ check }) => {
 
       logger.info(`▶️  ${command} ...`)
       let result
+      if (command.sudo && !command.startsWith("sudo ")) {
+        command = `sudo ${command}`
+      }
       if (command.startsWith("sudo ")) {
         result = await ssh.execCommandSudo(command, commandOptions)
       } else {
         result = await ssh.execCommand(command, commandOptions)
       }
       const { code, stdout, stderr } = result
-      if (stdout) {
-        logger.debug(`${stdout}`, { command, code })
-      }
-      if (stderr) {
-        logger.debug(`${stderr}`, { command, code })
-      }
       if (code === 0) {
         logger.info(`☑️  ${command}`)
       } else {
         logger.error(`❗ exit code ${code}`, {
           command,
           code,
-          stdout,
-          stderr,
+          ...(logStdoutOnError ? { stdout } : {}),
+          ...(logStderrOnError ? { stderr } : {}),
         })
         return false
       }
