@@ -4,7 +4,7 @@ module.exports = async ({ plays, children }) =>
   createComposer(async (vars = {}) => {
     await children.enable(vars)
 
-    await children.default(vars)
+    // await children.default(vars)
 
     const { logging } = vars
     await children.logging(logging)
@@ -16,6 +16,8 @@ module.exports = async ({ plays, children }) =>
       removeUnlistedRules: true,
       ...vars,
     })
+
+    await children.default(vars)
 
     await plays.services.serviceReloadOnFileChange(
       {

@@ -5,10 +5,15 @@ module.exports = function traverse(
   parentObj = null,
   parentKey = null,
   scope = [],
-  rootObj = value
+  rootObj = value,
+  isRoot = true
 ) {
   if (typeof value !== "object" || value === null) {
     return callback(value, parentObj, parentKey, scope, rootObj)
+  }
+  if (isRoot && desc) {
+    value = callback(value, parentObj, parentKey, scope, rootObj)
+    rootObj = value
   }
   for (const key of Object.keys(value)) {
     const childScope = [...scope, key]
@@ -22,11 +27,16 @@ module.exports = function traverse(
       value,
       key,
       childScope,
-      rootObj
+      rootObj,
+      false
     )
     if (!desc) {
       value[key] = callback(value[key], value, key, childScope, rootObj)
     }
+  }
+  if (isRoot && !desc) {
+    value = callback(value, parentObj, parentKey, scope, rootObj)
+    rootObj = value
   }
   return value
 }
