@@ -19,4 +19,5 @@ module.exports = {
   dns: require("./dns"),
   k0sctl: require("./k0sctl"),
   user: require("./user"),
+  disableLoginTerminal: require("./disable-login-terminal"),
 }
