@@ -59,6 +59,9 @@ module.exports = async () => {
         host.files,
         parallelFilesLimit,
         async (file) => {
+          if (typeof file === "string") {
+            file = { source: file }
+          }
           return plays.ssh.sync(file)
         }
       )
