@@ -11,7 +11,6 @@ module.exports = async ({ loaders }) => {
         const conf = await loaders.std.ini({
           file,
         })
-        dbug({ conf: JSON.stringify(conf) })
         return conf.Login?.NAutoVTs === "0" && conf.Login?.ReserveVT === "0"
       },
       async run() {
