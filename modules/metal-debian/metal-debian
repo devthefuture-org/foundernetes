@@ -41,7 +41,7 @@ const main = async () => {
             env: {
               F10S_LOG_LEVEL: "trace",
               F10S_LOG_FILE: `/var/log/metal-debian/machines-${now}.log`,
-              F10S_LOG_FILE_PLAIN: `/var/log/metal-debian/plain.boot-${now}.log`,
+              F10S_LOG_FILE_PLAIN: `/var/log/metal-debian/plain.machines-${now}.log`,
               FORCE_COLOR: 2,
             },
           },
