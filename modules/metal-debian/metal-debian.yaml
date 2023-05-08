@@ -1,5 +1,5 @@
 sshdConfig:
-  port: &sshPort 54567
+  port: 54567
 ufw:
   default:
     incoming: deny
@@ -12,8 +12,7 @@ ufw:
     - direction: in
       ports: [80,443]
       comment: http
-    # - ports: ["${{ sshPort}}"]
-    - ports: [*sshPort]
+    - ports: ["$${{ sshdConfig.port }}"]
       comment: ssh
     - service: portsentry1
     - service: portsentry2

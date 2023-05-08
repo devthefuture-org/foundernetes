@@ -3,6 +3,8 @@ const ctx = require("@foundernetes/ctx")
 const { createPlaybook, createTree } = require("@foundernetes/blueprint")
 const portRangeExcept = require("@foundernetes/linux/lib/port-range-except")
 const deepmerge = require("@foundernetes/std/deepmerge")
+const traverseAsync = require("@foundernetes/std/traverse-async")
+const { render } = require("@foundernetes/eta")
 
 // const iteratorDebugMiddleware = require("~/middlewares/iterator-debug")
 const tree = {
@@ -34,6 +36,12 @@ module.exports = async () => {
     })
     let data = await loaders.std.yaml({ file: dataFile })
     data = deepmerge({}, defaultData, data)
+
+    await traverseAsync(data, async (value) =>
+      typeof value !== "string"
+        ? value
+        : render(value, data, { tags: ["$${{", "}}"] })
+    )
 
     // ℹ️ authorizedKeys
     const authorizedKeys = [
