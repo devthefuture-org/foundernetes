@@ -111,7 +111,7 @@ module.exports = async ({ mod }) => {
       }
     })
 
-    const { delete: deleteUnlisted = true } = vars
+    const { delete: deleteUnlisted = false } = vars
     if (isDirMain && deleteUnlisted) {
       const targetFiles = relativeFiles.map((file) => `${targetMain}/${file}`)
       const targetDirs = [

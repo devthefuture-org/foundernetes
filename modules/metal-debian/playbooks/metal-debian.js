@@ -1,6 +1,8 @@
+const path = require("path")
 const ctx = require("@foundernetes/ctx")
 const { createPlaybook, createTree } = require("@foundernetes/blueprint")
 const portRangeExcept = require("@foundernetes/linux/lib/port-range-except")
+const deepmerge = require("@foundernetes/std/deepmerge")
 
 // const iteratorDebugMiddleware = require("~/middlewares/iterator-debug")
 const tree = {
@@ -27,7 +29,11 @@ module.exports = async () => {
     // ℹ️ data
     const dataFile =
       process.env.F10S_METALDEBIAN_PLAYBOOK_FILE || "metal-debian.yaml"
-    const data = await loaders.std.yaml({ file: dataFile })
+    const defaultData = await loaders.std.yaml({
+      file: path.join(__dirname, "..", "metal-debian.yaml"),
+    })
+    let data = await loaders.std.yaml({ file: dataFile })
+    data = deepmerge({}, defaultData, data)
 
     // ℹ️ authorizedKeys
     const authorizedKeys = [

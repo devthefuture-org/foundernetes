@@ -24,7 +24,7 @@ const main = async () => {
     },
     cliPlugins: [
       cliMachines({
-        cwd: "~/.metal-debian",
+        cwd: config.remoteCwd,
         selfUploadTarget: "metal-debian",
         selfUploadDist: true,
         selfUploadDevPath: `${__dirname}/dist-bin/metal-debian`,

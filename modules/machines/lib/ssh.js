@@ -73,21 +73,35 @@ module.exports = async (options = {}) => {
     }
   }
 
+  // cwd
   let { cwd } = options
-  const { untildifyCwd = true } = options
-  if (cwd && untildifyCwd && detectTild(cwd)) {
-    let { home } = options
-    if (!home) {
-      const { detectHome = true } = options
-      if (detectHome) {
-        const { stdout } = await ssh.execCommand("echo $HOME")
-        home = stdout
-      }
-      if (!home) {
-        home = `/home/${user}`
-      }
+  ssh.getCwd = () => {
+    return cwd
+  }
+
+  ssh.setCwd = async (newCwd, ensureExists = true) => {
+    cwd = newCwd
+    if (!cwd) {
+      return
     }
-    cwd = untildify(cwd, home)
+    const { untildifyCwd = true } = options
+    if (untildifyCwd && detectTild(cwd)) {
+      let { home } = options
+      if (!home) {
+        const { detectHome = true } = options
+        if (detectHome) {
+          const { stdout } = await ssh.execCommand("echo $HOME")
+          home = stdout
+        }
+        if (!home) {
+          home = `/home/${user}`
+        }
+      }
+      cwd = untildify(cwd, home)
+    }
+    if (ensureExists) {
+      await ssh.mkdir(cwd)
+    }
   }
 
   // wrap commands with cwd and env
@@ -116,11 +130,29 @@ module.exports = async (options = {}) => {
   }
 
   const mkdir = ssh.mkdir.bind(ssh)
-  ssh.mkdir = (dir, method, givenSftp) => {
+  ssh.mkdir = async (dir, opts = {}) => {
+    const { sudo = options.sudoMkdir } = opts
     if (cwd && !dir.startsWith("/")) {
       dir = path.join(cwd, dir)
     }
-    return mkdir(dir, method, givenSftp)
+    if (sudo) {
+      await ssh.execCommandSudo(`sudo mkdir -p ${dir}`)
+      if (user !== "0" && user !== 0 && user !== "root") {
+        await ssh.execCommandSudo(`sudo chown ${user}:${user} ${dir}`)
+      }
+    } else {
+      const { method = "sftp", givenSftp } = opts
+      try {
+        await mkdir(dir, method, givenSftp)
+      } catch (err) {
+        const { fallbackSudo: fallbackSudoDefault = true } = options
+        const { fallbackSudo = fallbackSudoDefault } = opts
+        if (fallbackSudo && err.message.includes("Permission denied")) {
+          return ssh.mkdir(dir, { ...opts, sudo: true })
+        }
+        throw err
+      }
+    }
   }
 
   const getFile = ssh.getFile.bind(ssh)
@@ -169,10 +201,6 @@ module.exports = async (options = {}) => {
   }
 
   // extra commands
-  ssh.getCwd = () => {
-    return cwd
-  }
-
   ssh.readdir = async (dir) => {
     if (cwd && !dir.startsWith("/")) {
       dir = path.join(cwd, dir)
@@ -289,6 +317,9 @@ module.exports = async (options = {}) => {
 
     return promise
   }
+
+  const { ensureCwdExists } = options
+  await ssh.setCwd(cwd, ensureCwdExists)
 
   return ssh
 }

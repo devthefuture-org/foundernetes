@@ -14,9 +14,10 @@ module.exports = async () => {
       `${devBinRoot}/modules/machines/bin`,
     ]
   }
+  const { env } = process
   return {
     sudo: true,
-    sudoPassword: process.env.F10S_DEBIANMETAL_SUDO_PASSWORD,
+    sudoPassword: env.F10S_METAL_DEBIAN_SUDO_PASSWORD,
     execEnv: {
       SYSTEMD_PAGER: "",
       LC_ALL: "C",
@@ -24,5 +25,6 @@ module.exports = async () => {
     execEnforceLeastPrivilege: true,
     execEnforceLeastPrivilegeUseGoSu: true,
     extractBinPath: isDist ? distBinDirs() : devBinDirs(),
+    remoteCwd: env.F10S_METAL_DEBIAN_REMOTE_CWD || "/opt/metal-debian",
   }
 }

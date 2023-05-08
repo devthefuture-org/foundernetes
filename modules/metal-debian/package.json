@@ -12,6 +12,7 @@
     "@foundernetes/linux": "workspace:^",
     "@foundernetes/machines": "workspace:^",
     "@foundernetes/match": "workspace:^",
+    "@foundernetes/std": "workspace:^",
     "async-retry": "^1.3.3",
     "commander": "^9.4.1",
     "dayjs": "^1.11.7",

@@ -10,9 +10,8 @@ module.exports = async () => {
     },
     async run(vars) {
       const ssh = ctx.getSSH()
-      const { target } = vars
-      const { method = "sftp" } = vars
-      await ssh.mkdir(target, method)
+      const { target, ...options } = vars
+      await ssh.mkdir(target, options)
     },
   })
 }
