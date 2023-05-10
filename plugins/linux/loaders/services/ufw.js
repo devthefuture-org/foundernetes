@@ -25,17 +25,25 @@ module.exports = () => {
     return data
   }
   return createLoader({
-    load: async (_vars) => {
-      const data = await getConfig("ufw status verbose")
-      if (data.default) {
-        data.default = parseDefault(data.default)
+    load: async (vars) => {
+      const { type = "both" } = vars
+
+      const data = {}
+
+      if (type === "verbose" || type === "both") {
+        const verboseData = await getConfig("ufw status verbose")
+        Object.assign(data, verboseData)
+        if (data.default) {
+          data.default = parseDefault(data.default)
+        }
+        data.verboseRules = data.rules
       }
-      data.verboseRules = data.rules
 
-      const { rules } = await getConfig("ufw status numbered")
-      data.numberedRules = rules
-
-      data.rules = data.numberedRules
+      if (type === "numbered" || type === "both") {
+        const { rules } = await getConfig("ufw status numbered")
+        data.numberedRules = rules
+        data.rules = data.numberedRules
+      }
 
       return data
     },

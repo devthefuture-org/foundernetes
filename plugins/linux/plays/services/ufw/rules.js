@@ -2,16 +2,25 @@ const isEqual = require("lodash/isEqual")
 const defaults = require("lodash/defaults")
 const cloneDeep = require("lodash/cloneDeep")
 const camelCase = require("lodash/camelCase")
+const omit = require("lodash/omit")
 const ctx = require("@foundernetes/ctx")
+const castInt = require("@foundernetes/std/cast-int")
 const { createPlay, $ } = require("@foundernetes/blueprint")
 
 const traverse = require("@foundernetes/std/traverse")
 const objectSortKeys = require("@foundernetes/std/object-sort-keys")
 
+const ruleEqual = (a, b) => {
+  a = omit(a, ["index"])
+  b = omit(b, ["index"])
+  return isEqual(a, b)
+}
+
 module.exports = async ({ loaders }) => {
   const keyMap = {
     actionDirection: "direction",
   }
+
   const normalizeRule = (rule) => {
     rule = cloneDeep(rule)
     rule = traverse(rule, (o) => {
@@ -72,9 +81,7 @@ module.exports = async ({ loaders }) => {
     if (rule.toPortRanges?.length === 1 && rule.toPortRanges[0].start === "0") {
       rule.toPortRanges = null
     }
-    if (rule.index) {
-      rule.index = null
-    }
+    rule.index = castInt(rule.index)
     if (rule.fromService) {
       rule.fromPorts = null
       rule.fromPortRanges = null
@@ -112,6 +119,7 @@ module.exports = async ({ loaders }) => {
   }
 
   const normalizeRules = (rules) => {
+    rules = rules.filter((rule) => rule.enabled !== false)
     rules = rules.map(normalizeRule)
     let newRules = []
     for (const rule of rules) {
@@ -178,19 +186,129 @@ module.exports = async ({ loaders }) => {
         newRules.push(rule)
       }
     }
+
     newRules = newRules.map((rule) => objectSortKeys(rule))
+
+    newRules = newRules.map(({ index, ...rule }, i) => ({
+      ...rule,
+      index: index !== null ? index : i + 1,
+    }))
+    newRules = newRules.sort((a, b) => a.index - b.index)
+
     return newRules
   }
 
+  const getActualRules = async () => {
+    let { rules } = await loaders.services.ufw({ type: "numbered" })
+    rules = normalizeRules(rules)
+    return rules
+  }
+
+  const insertRules = async ({ rules }) => {
+    let actualRules = await getActualRules()
+
+    for (const rule of rules) {
+      const {
+        action,
+        route,
+        direction,
+        toInterface,
+        toTransport,
+        toIp,
+        toIpPrefix,
+        toPorts,
+        toPortRanges,
+        toService,
+        comment,
+        fromIp,
+        fromIpPrefix,
+        fromInterface,
+        fromTransport,
+        fromPorts,
+        fromPortRanges,
+        fromService,
+        index,
+      } = rule
+
+      const actualRule = actualRules.find((r) => ruleEqual(rule, r))
+      if (actualRule && rule.index !== actualRule.index) {
+        await $(`ufw --force delete ${actualRule.index}`, { sudo: true })
+        actualRules = await getActualRules()
+      }
+
+      const interface = isFrom({ direction, route })
+        ? fromInterface
+        : toInterface
+
+      const fromPort = fromPorts
+        ? `port ${fromPorts.join(",")}`
+        : fromPortRanges
+        ? `${
+            fromPortRanges
+              ? `port ${fromPortRanges
+                  .map(({ start, end }) =>
+                    [start === "0" ? "1" : start, end].join(":")
+                  )
+                  .join(",")}`
+              : ""
+          }`
+        : ""
+
+      const toPort = toPorts
+        ? `port ${toPorts.join(",")}`
+        : toPortRanges
+        ? `${
+            toPortRanges
+              ? `port ${toPortRanges
+                  .map(({ start, end }) =>
+                    [start === "0" ? "1" : start, end].join(":")
+                  )
+                  .join(",")}`
+              : ""
+          }`
+        : ""
+
+      const proto = isFrom({ direction, route }) ? fromTransport : toTransport
+      const service = isFrom({ direction, route }) ? fromService : toService
+
+      const insert = index <= actualRules.length ? `insert ${index}` : ""
+
+      const { stdout } = await $(
+        `ufw ${route ? "route" : ""} ${insert} ${action} ${direction} ${
+          interface && !service ? `on ${interface}` : ""
+        } ${proto && !service ? `proto ${proto}` : ""} ${
+          fromIp ? `from ${fromIp}` : ""
+        }${fromIp && fromIpPrefix ? `/${fromIpPrefix}` : ""} ${fromPort} ${
+          toIp ? `to ${toIp}` : ""
+        }${toIp && toIpPrefix ? `/${toIpPrefix}` : ""} ${toPort} ${
+          service ? `app ${service}` : ""
+        } ${comment ? `comment "${comment.replaceAll('"', '\\"')}"` : ""}`,
+        { sudo: true }
+      )
+      if (!stdout.includes("Skipping")) {
+        actualRules = await getActualRules()
+      }
+    }
+  }
+
+  const cleanRules = async ({ rules }) => {
+    const actualRules = await getActualRules()
+    for (const actualRule of actualRules) {
+      const rule = rules.find((r) => ruleEqual(actualRule, r))
+      if (!rule) {
+        await $(`ufw --force delete ${actualRule.index}`, { sudo: true })
+      }
+    }
+  }
+
   return createPlay({
-    async check(vars) {
+    async check(vars, { isPostCheck }) {
       const logger = ctx.getLogger()
 
       let { rules } = vars
       rules = normalizeRules(rules)
 
-      let { rules: actualRules } = await loaders.services.ufw({ cache: true })
-      actualRules = normalizeRules(actualRules)
+      const actualRules = await getActualRules()
 
       // dbug({ actualRules })
       // dbug({ rules })
@@ -198,8 +316,11 @@ module.exports = async ({ loaders }) => {
       const { removeUnlistedRules = false } = vars
       if (removeUnlistedRules) {
         for (const actualRule of actualRules) {
-          if (!rules.some((rule) => isEqual(actualRule, rule))) {
-            logger.debug("an unexpected rule was found", { rule: actualRule })
+          if (!rules.some((rule) => ruleEqual(actualRule, rule))) {
+            logger.debug("an unexpected rule was found", {
+              rule: actualRule,
+              ...(isPostCheck ? { expectedRules: rules } : {}),
+            })
             return false
           }
         }
@@ -210,7 +331,7 @@ module.exports = async ({ loaders }) => {
         let found = false
         let actualIndex = lastFoundIndex
         for (const actualRule of actualRules.slice(lastFoundIndex)) {
-          if (isEqual(rule, actualRule)) {
+          if (ruleEqual(rule, actualRule)) {
             if (actualIndex < lastFoundIndex) {
               logger.debug("rule is missing or is not ordered as expected", {
                 rule,
@@ -237,127 +358,12 @@ module.exports = async ({ loaders }) => {
       let { rules } = vars
       rules = normalizeRules(rules)
 
-      let { rules: actualRules } = await loaders.services.ufw({ cache: true })
-      actualRules = normalizeRules(actualRules)
-
       const { removeUnlistedRules = false } = vars
       if (removeUnlistedRules) {
-        const cleanedRules = []
-        const expectedRules = [...rules]
-        let actualIndex = 0
-        for (const actualRule of [...actualRules]) {
-          if (isEqual(actualRule, expectedRules[0])) {
-            expectedRules.shift()
-            cleanedRules.push(actualRule)
-            actualIndex++
-            continue
-          }
-          await $(`ufw --force delete ${actualIndex + 1}`, { sudo: true })
-        }
-        actualRules = cleanedRules
+        await cleanRules({ rules })
       }
 
-      let lastFoundIndex = 0
-      for (const rule of rules) {
-        let found = false
-        let actualIndex = lastFoundIndex
-        for (const actualRule of actualRules.slice(lastFoundIndex)) {
-          if (isEqual(rule, actualRule)) {
-            found = true
-            lastFoundIndex = actualIndex
-            break
-          }
-          actualIndex++
-        }
-        if (found) {
-          continue
-        }
-
-        // a rule is missing
-
-        const {
-          action,
-          route,
-          direction,
-          // network_protocol: networkProtocol,
-          toInterface,
-          toTransport,
-          toIp,
-          toIpPrefix,
-          toPorts,
-          toPortRanges,
-          toService,
-          comment,
-          fromIp,
-          fromIpPrefix,
-          fromInterface,
-          fromTransport,
-          fromPorts,
-          fromPortRanges,
-          fromService,
-        } = rule
-
-        const interface = isFrom({ direction, route })
-          ? fromInterface
-          : toInterface
-
-        const fromPort = fromPorts
-          ? `port ${fromPorts.join(",")}`
-          : fromPortRanges
-          ? `${
-              fromPortRanges
-                ? `port ${fromPortRanges
-                    .map(({ start, end }) =>
-                      [start === "0" ? "1" : start, end].join(":")
-                    )
-                    .join(",")}`
-                : ""
-            }`
-          : ""
-
-        const toPort = toPorts
-          ? `port ${toPorts.join(",")}`
-          : toPortRanges
-          ? `${
-              toPortRanges
-                ? `port ${toPortRanges
-                    .map(({ start, end }) =>
-                      [start === "0" ? "1" : start, end].join(":")
-                    )
-                    .join(",")}`
-                : ""
-            }`
-          : ""
-
-        const proto = isFrom({ direction, route }) ? fromTransport : toTransport
-        const service = isFrom({ direction, route }) ? fromService : toService
-
-        const { stdout } = await $(
-          `ufw ${route ? "route" : ""} ${
-            lastFoundIndex > 0 && lastFoundIndex + 2 < actualRules.length
-              ? `insert ${lastFoundIndex + 2}`
-              : ""
-          } ${action} ${direction} ${
-            interface && !service ? `on ${interface}` : ""
-          } ${proto && !service ? `proto ${proto}` : ""} ${
-            fromIp ? `from ${fromIp}` : ""
-          }${fromIp && fromIpPrefix ? `/${fromIpPrefix}` : ""} ${fromPort} ${
-            toIp ? `to ${toIp}` : ""
-          }${toIp && toIpPrefix ? `/${toIpPrefix}` : ""} ${toPort} ${
-            service ? `app ${service}` : ""
-          } ${comment ? `comment "${comment.replaceAll('"', '\\"')}"` : ""}`,
-          { sudo: true }
-        )
-
-        if (stdout.includes("Skipping")) {
-          // Skipping adding existing rule, should not be necessary, but safer
-          continue
-        }
-
-        lastFoundIndex++
-      }
-
-      loaders.services.ufw.clearCache()
+      await insertRules({ rules })
     },
   })
 }
