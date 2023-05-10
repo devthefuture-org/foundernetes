@@ -46,6 +46,31 @@ module.exports = async ({ loaders }) =>
         if (version && versions[version]) {
           Object.assign(value, versions[version])
         }
+        if (typeof value.checksum === "string") {
+          value.checksum = { hash: value.checksum }
+        }
+        if (value.checksum?.hash && !value.checksum.algo) {
+          let algo
+          switch (value.checksum.hash.length) {
+            case 128:
+              algo = "sha512"
+              break
+            case 64:
+              algo = "sha256"
+              break
+            case 40:
+              algo = "sha1"
+              break
+            case 32:
+              algo = "md5"
+              break
+            default:
+              throw new Error(
+                `unable to determine checksum algorithm for ${value.checksum.hash}`
+              )
+          }
+          value.checksum.algo = algo
+        }
         acc[key] = value
         return acc
       }, {})
