@@ -242,24 +242,19 @@ module.exports = async ({ loaders }) => {
 
       const { removeUnlistedRules = false } = vars
       if (removeUnlistedRules) {
-        for (let i = actualRules.length; i > 0; i--) {
-          await $(`ufw --force delete ${i}`, { sudo: true })
+        const cleanedRules = []
+        const expectedRules = [...rules]
+        let actualIndex = 0
+        for (const actualRule of [...actualRules]) {
+          if (isEqual(actualRule, expectedRules[0])) {
+            expectedRules.shift()
+            cleanedRules.push(actualRule)
+            actualIndex++
+            continue
+          }
+          await $(`ufw --force delete ${actualIndex + 1}`, { sudo: true })
         }
-        actualRules = []
-        // let actualIndex = 0
-        // let ruleIndex = 0
-        // for (const actualRule of [...actualRules]) {
-        //   if (isEqual(actualRule, rules[ruleIndex])) {
-        //     actualIndex++
-        //     ruleIndex++
-        //     continue
-        //   }
-        //   actualIndex++
-        //   ruleIndex++
-        //   await $(`ufw --force delete ${actualIndex + 1}`, { sudo: true })
-        //   actualRules.splice(actualIndex, 1)
-        //   actualIndex--
-        // }
+        actualRules = cleanedRules
       }
 
       let lastFoundIndex = 0
