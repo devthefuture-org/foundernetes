@@ -6,6 +6,11 @@ module.exports = async ({ children }) => {
   const dependenciesReadyMap = {}
 
   return createComposer(async (vars) => {
+    const { enabled } = vars
+    if (!enabled) {
+      return
+    }
+
     const { installers } = children
 
     const { installer } = vars

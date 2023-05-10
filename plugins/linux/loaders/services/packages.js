@@ -39,6 +39,12 @@ module.exports = async ({ loaders }) =>
         "archAlt",
         "archAlt2",
       ])
+
+      data = Object.entries(data).reduce((acc, [key, value]) => {
+        data[key] = { name: key, ...value }
+        return acc
+      }, {})
+
       data = await loaders.std.eta({
         data,
         defaultVars,
@@ -54,11 +60,18 @@ module.exports = async ({ loaders }) =>
         autoDiscoverDir: true,
       })
 
-      for (const pkg of data) {
+      for (const pkg of Object.values(data)) {
         const file = pkg.file || pkg.download?.url
         if (file && archiveExtensions.some((ext) => file.endsWith(`.${ext}`))) {
           pkg.archive = true
         }
+      }
+
+      if (Array.isArray(data)) {
+        data = data.reduce((acc, v) => {
+          acc[v.name] = v
+          return acc
+        }, {})
       }
 
       return data
@@ -67,7 +80,7 @@ module.exports = async ({ loaders }) =>
       type: "object",
       properties: {
         packages: {
-          type: "array",
+          type: "object",
         },
         platform: {
           type: "string",
@@ -93,20 +106,56 @@ module.exports = async ({ loaders }) =>
       additionalProperties: false,
     },
     validateData: {
-      type: "array",
-      items: {
-        type: "object",
-        properties: {
-          name: { type: "string" },
-          installer: {
-            type: "string",
-            default: "install",
-            enum: ["apt", "deb", "install", "make", "snap"],
+      type: "object",
+      unevaluatedProperties: {
+        $ref: "#/$defs/package",
+      },
+      $defs: {
+        package: {
+          type: "object",
+          properties: {
+            name: { type: "string" },
+            installer: {
+              type: "string",
+              default: "install",
+              enum: ["apt", "deb", "install", "make", "snap"],
+            },
+            sha512: { type: "string" },
+            enabled: { type: "boolean" },
+            download: {
+              type: "object",
+              properties: {
+                url: { type: "string" },
+                checksum: {
+                  type: "object",
+                  properties: {
+                    algo: { type: "string" },
+                    hash: { type: "string" },
+                  },
+                },
+              },
+            },
+            extracted: { type: "string" },
+            checksum: {
+              type: "object",
+              properties: {
+                algo: { type: "string" },
+                hash: { type: "string" },
+              },
+            },
+            check: {
+              type: "object",
+              properties: {
+                command: { type: "string" },
+                expectedContain: { type: "string" },
+                expectedEqual: { type: "string" },
+                expectedRegex: { type: "string" },
+              },
+            },
           },
-          sha512: { type: "string" },
+          required: ["name", "installer"],
+          additionalProperties: true,
         },
-        required: ["name", "installer"],
-        additionalProperties: true,
       },
     },
     memoizeVars: ["file"],

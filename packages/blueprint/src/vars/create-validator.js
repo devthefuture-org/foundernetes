@@ -1,7 +1,9 @@
-const Ajv = require("ajv")
+// https://ajv.js.org/json-schema.html#draft-2020-12
+// https://json-schema.org/understanding-json-schema/structuring.html
+const Ajv2020 = require("ajv/dist/2020")
 
 module.exports = async (schema, options = {}) => {
-  const ajv = new Ajv({
+  const ajv = new Ajv2020({
     verbose: true,
     allErrors: true,
     useDefaults: true,

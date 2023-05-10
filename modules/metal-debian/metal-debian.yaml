@@ -9,121 +9,130 @@ ufw:
     enable: true
     level: low
   rules:
-    - direction: in
+    http:
+      direction: in
       ports: [80,443]
-      comment: http
-    - ports: ["$${{ sshdConfig.port }}"]
-      comment: ssh
-    - service: portsentry1
-    - service: portsentry2
-    - service: portsentry3
-    - service: portsentry4
-    - service: portsentry5
-    - service: portsentry6
-    - direction: "in"
+    ssh:
+      ports: ["$${{ sshdConfig.port }}"]
+    portsentry1:
+      service: portsentry1
+    portsentry2:
+      service: portsentry2
+    portsentry3:
+      service: portsentry3
+    portsentry4:
+      service: portsentry4
+    portsentry5:
+      service: portsentry5
+    portsentry6:
+      service: portsentry6
+    lxdbr0-in:
+      direction: "in"
       interface: lxdbr0
-    - direction: "in"
+    lxdbr0-route-in:
+      direction: "in"
       interface: lxdbr0
       route: true
-    - direction: "out"
+    lxdbr0-route-out:
+      direction: "out"
       interface: lxdbr0
       route: true
     
 packages:
-- name: openssh-server
-  installer: apt
-- name: sshd-config
-  installer: install
-  version: "0.8.1"
-  download:
-    url: https://github.com/devthejo/sshd-config/releases/download/${{version}}/sshd-config_${{version}}_${{platform}}_${{archAlt2}}.tgz
+  openssh-server:
+    installer: apt
+  sshd-config:
+    installer: install
+    version: "0.8.1"
+    download:
+      url: https://github.com/devthejo/sshd-config/releases/download/${{version}}/sshd-config_${{version}}_${{platform}}_${{archAlt2}}.tgz
+      checksum:
+        algo: sha512
+        hash: "3d57abfc8276f06d2d426e075872a478890b311b2be5ed4d0d62bcda3ab398d5f77180e854cee63cc2db024a792a2c406e4a32815a55965c08d4c82e77830dd4"
     checksum:
       algo: sha512
-      hash: "3d57abfc8276f06d2d426e075872a478890b311b2be5ed4d0d62bcda3ab398d5f77180e854cee63cc2db024a792a2c406e4a32815a55965c08d4c82e77830dd4"
-  checksum:
-    algo: sha512
-    hash: "a3f8d872e0c1ed234404e518e12b2f0627c9111b335d7490ae79cd811780e283d237391baaa6bfcc2b412a62213e7ec1260aa9f9c3ba1d4a25207725d1a013a5"
-  check:
-    command: sshd-config --version
-    expected: "${{version}}"
-- name: rsyslog
-  installer: apt
-- name: curl
-  installer: apt
-- name: jc
-  # installer: apt
-  installer: deb
-  version: "1.23.0"
-  download:
-    url: https://github.com/kellyjonbrazil/jc/releases/download/v${{version}}/jc_${{version}}-1_${{archAlt}}.deb
+      hash: "a3f8d872e0c1ed234404e518e12b2f0627c9111b335d7490ae79cd811780e283d237391baaa6bfcc2b412a62213e7ec1260aa9f9c3ba1d4a25207725d1a013a5"
+    check:
+      command: sshd-config --version
+      expected: "${{version}}"
+  rsyslog:
+    installer: apt
+  curl:
+    installer: apt
+  jc:
+    # installer: apt
+    installer: deb
+    version: "1.23.0"
+    download:
+      url: https://github.com/kellyjonbrazil/jc/releases/download/v${{version}}/jc_${{version}}-1_${{archAlt}}.deb
+      checksum:
+        algo: sha512
+        hash: "f4437d4675679db09d2e478ad427d92a02258dc9f40ed2aa28611d50bde2f5e929ff31fc20743357b6e01048b24b41667fbf17dbf0e22946c65b2ffc5c59ad39"
     checksum:
       algo: sha512
-      hash: "f4437d4675679db09d2e478ad427d92a02258dc9f40ed2aa28611d50bde2f5e929ff31fc20743357b6e01048b24b41667fbf17dbf0e22946c65b2ffc5c59ad39"
-  checksum:
-    algo: sha512
-    hash: "5dbeafba0520e908134e03f286c5975959d47636f6f9bfc2e9ec7c1e99a476d407ab12afd1f9ec3224955aaf72a1a1b7038c02c58fd80feb8f955ed5de768c3c"
-  check:
-    command: jc --version
-    expectedContain: "${{version}}"
-- name: iptables
-  installer: apt
-- name: ufw
-  # installer: apt
-  installer: deb
-  version: "0.36-7.1"
-  download:
-    url: https://ftp.debian.org/debian/pool/main/u/ufw/ufw_${{version}}_all.deb
-    checksum:
-      algo: sha512
-      hash: "0f5b99c50516b90d3335e06ab2c4118afb2dbdd103d6c4d3dd984941a5668f3d8e5a74c0f2235a3b7c64c5789124bbedd39d696f7666300c2b498ad37733b18d"
-- name: fail2ban
-  installer: deb
-  version: "1.0.2"
-  download:
-    url: https://github.com/fail2ban/fail2ban/releases/download/${{version}}/fail2ban_${{version}}-1.upstream1_all.deb
-    checksum:
-      algo: sha512
-      hash: "f1e5cf6432bb196df1524cdbbf1042647e820e1971b7af90bfbb5f94eb1381dfe3b769e47e68d5dfcc15bf8312cefbaa72cdddfb91b0f4cf526bb6036757c7d0"
-- name: portsentry
-  installer: apt
-  # version: 1.2-14build1 #apt list -a portsentry
-- name: rkhunter
-  installer: apt
-  # version: 1.4.6-10
-  version: "1.*"
-- name: unattended-upgrades
-  installer: apt
-- name: cron
-  installer: apt
-- name: logrotate
-  installer: apt
+      hash: "5dbeafba0520e908134e03f286c5975959d47636f6f9bfc2e9ec7c1e99a476d407ab12afd1f9ec3224955aaf72a1a1b7038c02c58fd80feb8f955ed5de768c3c"
+    check:
+      command: jc --version
+      expectedContain: "${{version}}"
+  iptables:
+    installer: apt
+  ufw:
+    # installer: apt
+    installer: deb
+    version: "0.36-7.1"
+    download:
+      url: https://ftp.debian.org/debian/pool/main/u/ufw/ufw_${{version}}_all.deb
+      checksum:
+        algo: sha512
+        hash: "0f5b99c50516b90d3335e06ab2c4118afb2dbdd103d6c4d3dd984941a5668f3d8e5a74c0f2235a3b7c64c5789124bbedd39d696f7666300c2b498ad37733b18d"
+  fail2ban:
+    installer: deb
+    version: "1.0.2"
+    download:
+      url: https://github.com/fail2ban/fail2ban/releases/download/${{version}}/fail2ban_${{version}}-1.upstream1_all.deb
+      checksum:
+        algo: sha512
+        hash: "f1e5cf6432bb196df1524cdbbf1042647e820e1971b7af90bfbb5f94eb1381dfe3b769e47e68d5dfcc15bf8312cefbaa72cdddfb91b0f4cf526bb6036757c7d0"
+  portsentry:
+    installer: apt
+    # version: 1.2-14build1 #apt list -a portsentry
+  rkhunter:
+    installer: apt
+    # version: 1.4.6-10
+    version: "1.*"
+  unattended-upgrades:
+    installer: apt
+  cron:
+    installer: apt
+  logrotate:
+    installer: apt
 
-- name: micro
-  installer: install
-  version: "2.0.11"
-  download:
-    url: https://github.com/zyedidia/micro/releases/download/v${{version}}/micro-${{version}}-${{platform}}${{arch.slice(1)}}.tar.gz
+  micro:
+    installer: install
+    version: "2.0.11"
+    download:
+      url: https://github.com/zyedidia/micro/releases/download/v${{version}}/micro-${{version}}-${{platform}}${{arch.slice(1)}}.tar.gz
+      checksum:
+        algo: sha512
+        hash: "5c88d449d760f85a54e844489d88e4dc5a1d1ab8c32d53082cbe81dc42e574faa8e28e7de9147f3689632e6f0cdaba0dd5a99f53f04c5c0f191698bd559e414b"
+    extracted: micro-${{version}}/micro
     checksum:
       algo: sha512
-      hash: "5c88d449d760f85a54e844489d88e4dc5a1d1ab8c32d53082cbe81dc42e574faa8e28e7de9147f3689632e6f0cdaba0dd5a99f53f04c5c0f191698bd559e414b"
-  extracted: micro-${{version}}/micro
-  checksum:
-    algo: sha512
-    hash: "c9661c5c5bdcfaa8e13fc6f1e9710f30a3e4f482e71a7ace1f742bd717e894a87a329fcc860b9198200d7d3339f062875ffd90696a738ec1e787323bc06e4d75"
-  check:
-    command: micro --version
-    expectedContain: "${{version}}"
+      hash: "c9661c5c5bdcfaa8e13fc6f1e9710f30a3e4f482e71a7ace1f742bd717e894a87a329fcc860b9198200d7d3339f062875ffd90696a738ec1e787323bc06e4d75"
+    check:
+      command: micro --version
+      expectedContain: "${{version}}"
 
-- name: lxd
-  installer: deb
-  version: "5.0.2"
-  download:
-    # https://packages.debian.org/sid/amd64/lxd/download
-    url: http://ftp.fr.debian.org/debian/pool/main/l/lxd/lxd_5.0.2-3+b2_amd64.deb
-    checksum:
-      algo: sha256
-      hash: "434eef31f95047173813c53bb64e3959dc401f0d04607cfd75cc8996b2306707"
-  check:
-    command: lxd --version
-    expectedEqual: "${{version}}"
-  
+  lxd:
+    installer: deb
+    version: "5.0.2"
+    download:
+      # https://packages.debian.org/sid/amd64/lxd/download
+      url: http://ftp.fr.debian.org/debian/pool/main/l/lxd/lxd_5.0.2-3+b2_amd64.deb
+      checksum:
+        algo: sha256
+        hash: "434eef31f95047173813c53bb64e3959dc401f0d04607cfd75cc8996b2306707"
+    check:
+      command: lxd --version
+      expectedEqual: "${{version}}"
+    

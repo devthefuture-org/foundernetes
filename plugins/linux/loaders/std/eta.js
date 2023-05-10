@@ -21,12 +21,7 @@ module.exports = (config = {}) =>
         data = deepUnflattenCamelcase(data)
       }
 
-      const isArray = Array.isArray(data)
-      if (!isArray) {
-        data = [data]
-      }
-
-      for (const item of data) {
+      for (const item of Object.values(data)) {
         const itemTemplateVars = cloneDeep(defaultVars)
         if (selfRef) {
           Object.assign(itemTemplateVars, cloneDeep(item))
@@ -37,7 +32,6 @@ module.exports = (config = {}) =>
         )
       }
 
-      const { castArray = false } = options
-      return isArray || castArray ? data : data[0]
+      return data
     },
   })

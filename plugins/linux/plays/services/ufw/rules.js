@@ -119,6 +119,16 @@ module.exports = async ({ loaders }) => {
   }
 
   const normalizeRules = (rules) => {
+    if (!Array.isArray(rules)) {
+      rules = Object.entries(rules).reduce((acc, [k, v]) => {
+        acc.push({
+          comment: k,
+          ...v,
+        })
+        return acc
+      }, [])
+    }
+
     rules = rules.filter((rule) => rule.enabled !== false)
     rules = rules.map(normalizeRule)
     let newRules = []
@@ -161,7 +171,6 @@ module.exports = async ({ loaders }) => {
         toPorts,
         toPortRanges,
         fromPortRanges,
-        // fromInterface,
       } = rule
 
       const proto = isFrom({ direction, route }) ? fromTransport : toTransport
@@ -204,167 +213,166 @@ module.exports = async ({ loaders }) => {
     return rules
   }
 
-  const insertRules = async ({ rules }) => {
-    let actualRules = await getActualRules()
+  return createPlay(async (vars) => {
+    let { rules } = vars
+    rules = normalizeRules(rules)
 
-    for (const rule of rules) {
-      const {
-        action,
-        route,
-        direction,
-        toInterface,
-        toTransport,
-        toIp,
-        toIpPrefix,
-        toPorts,
-        toPortRanges,
-        toService,
-        comment,
-        fromIp,
-        fromIpPrefix,
-        fromInterface,
-        fromTransport,
-        fromPorts,
-        fromPortRanges,
-        fromService,
-        index,
-      } = rule
+    const { removeUnlistedRules = false } = vars
 
-      const actualRule = actualRules.find((r) => ruleEqual(rule, r))
-      if (actualRule && rule.index !== actualRule.index) {
-        await $(`ufw --force delete ${actualRule.index}`, { sudo: true })
-        actualRules = await getActualRules()
-      }
-
-      const interface = isFrom({ direction, route })
-        ? fromInterface
-        : toInterface
-
-      const fromPort = fromPorts
-        ? `port ${fromPorts.join(",")}`
-        : fromPortRanges
-        ? `${
-            fromPortRanges
-              ? `port ${fromPortRanges
-                  .map(({ start, end }) =>
-                    [start === "0" ? "1" : start, end].join(":")
-                  )
-                  .join(",")}`
-              : ""
-          }`
-        : ""
-
-      const toPort = toPorts
-        ? `port ${toPorts.join(",")}`
-        : toPortRanges
-        ? `${
-            toPortRanges
-              ? `port ${toPortRanges
-                  .map(({ start, end }) =>
-                    [start === "0" ? "1" : start, end].join(":")
-                  )
-                  .join(",")}`
-              : ""
-          }`
-        : ""
-
-      const proto = isFrom({ direction, route }) ? fromTransport : toTransport
-      const service = isFrom({ direction, route }) ? fromService : toService
-
-      const insert = index <= actualRules.length ? `insert ${index}` : ""
-
-      const { stdout } = await $(
-        `ufw ${route ? "route" : ""} ${insert} ${action} ${direction} ${
-          interface && !service ? `on ${interface}` : ""
-        } ${proto && !service ? `proto ${proto}` : ""} ${
-          fromIp ? `from ${fromIp}` : ""
-        }${fromIp && fromIpPrefix ? `/${fromIpPrefix}` : ""} ${fromPort} ${
-          toIp ? `to ${toIp}` : ""
-        }${toIp && toIpPrefix ? `/${toIpPrefix}` : ""} ${toPort} ${
-          service ? `app ${service}` : ""
-        } ${comment ? `comment "${comment.replaceAll('"', '\\"')}"` : ""}`,
-        { sudo: true }
-      )
-      if (!stdout.includes("Skipping")) {
-        actualRules = await getActualRules()
-      }
-    }
-  }
-
-  const cleanRules = async ({ rules }) => {
-    const actualRules = await getActualRules()
-    for (const actualRule of actualRules) {
-      const rule = rules.find((r) => ruleEqual(actualRule, r))
-      if (!rule) {
-        await $(`ufw --force delete ${actualRule.index}`, { sudo: true })
-      }
-    }
-  }
-
-  return createPlay({
-    async check(vars, { isPostCheck }) {
-      const logger = ctx.getLogger()
-
-      let { rules } = vars
-      rules = normalizeRules(rules)
-
+    const cleanRules = async () => {
       const actualRules = await getActualRules()
+      for (const actualRule of actualRules.reverse()) {
+        const rule = rules.find((r) => ruleEqual(actualRule, r))
+        if (!rule) {
+          await $(`ufw --force delete ${actualRule.index}`, { sudo: true })
+        }
+      }
+    }
 
-      // dbug({ actualRules })
-      // dbug({ rules })
+    const insertRules = async () => {
+      let actualRules = await getActualRules()
 
-      const { removeUnlistedRules = false } = vars
-      if (removeUnlistedRules) {
-        for (const actualRule of actualRules) {
-          if (!rules.some((rule) => ruleEqual(actualRule, rule))) {
-            logger.debug("an unexpected rule was found", {
-              rule: actualRule,
-              ...(isPostCheck ? { expectedRules: rules } : {}),
+      for (const rule of rules) {
+        const {
+          action,
+          route,
+          direction,
+          toInterface,
+          toTransport,
+          toIp,
+          toIpPrefix,
+          toPorts,
+          toPortRanges,
+          toService,
+          comment,
+          fromIp,
+          fromIpPrefix,
+          fromInterface,
+          fromTransport,
+          fromPorts,
+          fromPortRanges,
+          fromService,
+          index,
+        } = rule
+
+        const actualRule = actualRules.find((r) => ruleEqual(rule, r))
+        if (actualRule && rule.index !== actualRule.index) {
+          await $(`ufw --force delete ${actualRule.index}`, { sudo: true })
+          actualRules = await getActualRules()
+        }
+
+        const interface = isFrom({ direction, route })
+          ? fromInterface
+          : toInterface
+
+        const fromPort = fromPorts
+          ? `port ${fromPorts.join(",")}`
+          : fromPortRanges
+          ? `${
+              fromPortRanges
+                ? `port ${fromPortRanges
+                    .map(({ start, end }) =>
+                      [start === "0" ? "1" : start, end].join(":")
+                    )
+                    .join(",")}`
+                : ""
+            }`
+          : ""
+
+        const toPort = toPorts
+          ? `port ${toPorts.join(",")}`
+          : toPortRanges
+          ? `${
+              toPortRanges
+                ? `port ${toPortRanges
+                    .map(({ start, end }) =>
+                      [start === "0" ? "1" : start, end].join(":")
+                    )
+                    .join(",")}`
+                : ""
+            }`
+          : ""
+
+        const proto = isFrom({ direction, route }) ? fromTransport : toTransport
+        const service = isFrom({ direction, route }) ? fromService : toService
+
+        const insert = index <= actualRules.length ? `insert ${index}` : ""
+
+        const { stdout } = await $(
+          `ufw ${route ? "route" : ""} ${insert} ${action} ${direction} ${
+            interface && !service ? `on ${interface}` : ""
+          } ${proto && !service ? `proto ${proto}` : ""} ${
+            fromIp ? `from ${fromIp}` : ""
+          }${fromIp && fromIpPrefix ? `/${fromIpPrefix}` : ""} ${fromPort} ${
+            toIp ? `to ${toIp}` : ""
+          }${toIp && toIpPrefix ? `/${toIpPrefix}` : ""} ${toPort} ${
+            service ? `app ${service}` : ""
+          } ${comment ? `comment "${comment.replaceAll('"', '\\"')}"` : ""}`,
+          { sudo: true }
+        )
+        if (!stdout.includes("Skipping")) {
+          actualRules = await getActualRules()
+        }
+      }
+    }
+
+    return {
+      async check(_vars, { isPostCheck }) {
+        const logger = ctx.getLogger()
+
+        const actualRules = await getActualRules()
+
+        // dbug({ actualRules })
+        // dbug({ rules })
+
+        if (removeUnlistedRules) {
+          for (const actualRule of actualRules) {
+            if (!rules.some((rule) => ruleEqual(actualRule, rule))) {
+              logger.debug("an unexpected rule was found", {
+                rule: actualRule,
+                ...(isPostCheck ? { expectedRules: rules } : {}),
+              })
+              return false
+            }
+          }
+        }
+
+        let lastFoundIndex = 0
+        for (const rule of rules) {
+          let found = false
+          let actualIndex = lastFoundIndex
+          for (const actualRule of actualRules.slice(lastFoundIndex)) {
+            if (ruleEqual(rule, actualRule)) {
+              if (actualIndex < lastFoundIndex) {
+                logger.debug("rule is missing or is not ordered as expected", {
+                  rule,
+                })
+                return false
+              }
+              found = true
+              lastFoundIndex = actualIndex
+              break
+            }
+            actualIndex++
+          }
+          if (!found) {
+            logger.debug("rule is missing or is not ordered as expected", {
+              rule,
             })
             return false
           }
         }
-      }
 
-      let lastFoundIndex = 0
-      for (const rule of rules) {
-        let found = false
-        let actualIndex = lastFoundIndex
-        for (const actualRule of actualRules.slice(lastFoundIndex)) {
-          if (ruleEqual(rule, actualRule)) {
-            if (actualIndex < lastFoundIndex) {
-              logger.debug("rule is missing or is not ordered as expected", {
-                rule,
-              })
-              return false
-            }
-            found = true
-            lastFoundIndex = actualIndex
-            break
-          }
-          actualIndex++
+        return true
+      },
+      async run() {
+        if (removeUnlistedRules) {
+          await cleanRules()
         }
-        if (!found) {
-          logger.debug("rule is missing or is not ordered as expected", {
-            rule,
-          })
-          return false
-        }
-      }
 
-      return true
-    },
-    async run(vars) {
-      let { rules } = vars
-      rules = normalizeRules(rules)
-
-      const { removeUnlistedRules = false } = vars
-      if (removeUnlistedRules) {
-        await cleanRules({ rules })
-      }
-
-      await insertRules({ rules })
-    },
+        await insertRules()
+      },
+    }
   })
 }
 

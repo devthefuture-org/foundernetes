@@ -84,17 +84,18 @@ module.exports = async () => {
     const packages = await loaders.services.packages({
       packages: data.packages,
     })
-    await iterator.eachSeries(
+    await iterator.eachOfSeries(
       packages,
-      async (pkg) =>
-        plays.services.installPackage(pkg, {
+      async (pkg) => {
+        return plays.services.installPackage(pkg, {
           tags: [
             "packages",
             "install-packages",
             ({ name }) => `f10s:play:package:${name}`,
             ...(pkg.tags || []),
           ],
-        }),
+        })
+      },
       "packages"
     )
 

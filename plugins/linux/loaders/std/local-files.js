@@ -42,7 +42,7 @@ module.exports = async ({
       })
 
       const { data } = vars
-      for (const pkg of data) {
+      for (const pkg of Object.values(data)) {
         const foundLink = localFiles.find((localFile) => {
           const f = pkg.file || pkg.download?.url
           if (!f) {
