@@ -41,7 +41,12 @@ module.exports = async ({ loaders }) =>
       ])
 
       data = Object.entries(data).reduce((acc, [key, value]) => {
-        data[key] = { name: key, ...value }
+        value = { name: key, ...value }
+        const { version, versions = {} } = value
+        if (version && versions[version]) {
+          Object.assign(value, versions[version])
+        }
+        acc[key] = value
         return acc
       }, {})
 
