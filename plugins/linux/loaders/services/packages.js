@@ -4,22 +4,15 @@ const pick = require("lodash/pick")
 
 const { createLoader } = require("@foundernetes/blueprint")
 
+const checksumExpandDefinition = require("@foundernetes/std/checksum-expand-definition")
+const archiveExtensions = require("@foundernetes/std/archive-extensions")
+
 const archAlternatives = {
   x64: "amd64",
 }
 const archAlternatives2 = {
   x64: "x86_64",
 }
-
-const archiveExtensions = [
-  "tar.gz",
-  "tgz",
-  "tar.bz2",
-  "tbz",
-  "tar.xz",
-  "txz",
-  "zip",
-]
 
 module.exports = async ({ loaders }) =>
   createLoader({
@@ -46,30 +39,13 @@ module.exports = async ({ loaders }) =>
         if (version && versions[version]) {
           Object.assign(value, versions[version])
         }
-        if (typeof value.checksum === "string") {
-          value.checksum = { hash: value.checksum }
+        if (value.checksum) {
+          value.checksum = checksumExpandDefinition(value.checksum)
         }
-        if (value.checksum?.hash && !value.checksum.algo) {
-          let algo
-          switch (value.checksum.hash.length) {
-            case 128:
-              algo = "sha512"
-              break
-            case 64:
-              algo = "sha256"
-              break
-            case 40:
-              algo = "sha1"
-              break
-            case 32:
-              algo = "md5"
-              break
-            default:
-              throw new Error(
-                `unable to determine checksum algorithm for ${value.checksum.hash}`
-              )
-          }
-          value.checksum.algo = algo
+        if (value.download?.checksum) {
+          value.download.checksum = checksumExpandDefinition(
+            value.download.checksum
+          )
         }
         acc[key] = value
         return acc
