@@ -10,7 +10,7 @@ RUN apt-get update && \
   && rm -rf /var/lib/apt/lists/*
 
 FROM ubuntu:$UBUNTU_VERSION as node
-ARG NODE_VERSION=18
+ARG NODE_VERSION=20
 ENV NODE_VERSION=$NODE_VERSION
 RUN apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
