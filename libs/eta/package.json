@@ -1,0 +1,8 @@
+{
+  "name": "@foundernetes/eta",
+  "packageManager": "yarn@3.3.0",
+  "main": "eta.js",
+  "dependencies": {
+    "eta": "^2.0.1"
+  }
+}

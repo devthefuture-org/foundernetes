@@ -1,0 +1,32 @@
+{
+  "name": "@foundernetes/execa",
+  "version": "1.3.1",
+  "description": "execa commonjs bridge",
+  "main": ".cjs/execa/index.js",
+  "license": "MIT",
+  "packageManager": "yarn@3.3.0",
+  "dependencies": {
+    "execa": "^7.1.1"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.36.1",
+    "rollup": "^3.20.2"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix"
+    ]
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "postinstall": "yarn build",
+    "build": "EXECA_PATH=\"$(node -e 'process.stdout.write(require.resolve(`execa`))')\" && mkdir -p .cjs/execa && ncc build \"$EXECA_PATH\" -e cross-spawn -e merge-stream -e signal-exit -o .cjs/execa/ncc-dist && rollup .cjs/execa/ncc-dist/index.js --file .cjs/execa/index.js --format cjs"
+  },
+  "files": [
+    ".cjs",
+    "package.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
