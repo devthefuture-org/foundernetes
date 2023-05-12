@@ -7,7 +7,7 @@ const dayjs = require("dayjs")
 
 module.exports = async () => {
   return async (vars) => {
-    const { recursive = true, exclude = [] } = vars
+    const { recursive = true, exclude = [], optional = true } = vars
 
     let { file } = vars
     if (!Array.isArray(file)) {
@@ -22,6 +22,9 @@ module.exports = async () => {
     date.setSeconds(date.getSeconds() + 1)
 
     const compareFileLastModified = async (f, depth = 0) => {
+      if (optional && !(await fs.pathExists(f))) {
+        return false
+      }
       const stat = await fs.stat(f)
       const { mtime, ctime } = stat
       const lastModified = mtime || ctime
