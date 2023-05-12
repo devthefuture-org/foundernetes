@@ -143,12 +143,6 @@ module.exports = async () => {
     await plays.services.logrotate()
 
     await plays.services.disableLoginTerminal()
-
-    // TODO move to lxd-kube
-    // await plays.services.k0sctl({
-    //   authorizedKeys: data.authorizedKeys,
-    //   ...(data.k0sctl || {}),
-    // })
   }
 
   return createPlaybook({
