@@ -4,6 +4,7 @@ module.exports = async ({ plays }) =>
   createComposer(async () => {
     await plays.services.serviceEnable({
       serviceName: "getty@tty1",
+      enable: false,
     })
 
     await plays.services.serviceReloadOnFileChange({
