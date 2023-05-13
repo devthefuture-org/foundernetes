@@ -2,7 +2,8 @@
 
 require("events").EventEmitter.defaultMaxListeners = 0
 
-const { cli, dbug } = require("@foundernetes/blueprint")
+const shellQuote = require("shell-quote")
+const { cli, dbug, ctx } = require("@foundernetes/blueprint")
 const cliMachines = require("@foundernetes/machines/cli-plugin")
 const dayjs = require("dayjs")
 
@@ -13,18 +14,18 @@ const playbooks = require("~/playbooks")
 const loadLocalConfig = require("./.foundernetesrc")
 
 const main = async () => {
-  const config = await loadLocalConfig()
+  const localConfig = await loadLocalConfig()
 
   const now = dayjs().format("YYYY-MM-DD-HH-mm-ss")
 
   await cli(process.argv, {
-    inlineConfigs: [config],
+    inlineConfigs: [localConfig],
     playbookSet: {
       playbooks,
     },
     cliPlugins: [
       cliMachines({
-        cwd: config.remoteCwd,
+        cwd: localConfig.remoteCwd,
         selfUploadTarget: "metal-debian",
         selfUploadDist: true,
         selfUploadDevPath: `${__dirname}/dist-bin/metal-debian`,
@@ -35,15 +36,21 @@ const main = async () => {
           },
         ],
         extraCommands: [
-          {
-            command: "sudo ./metal-debian",
-            logWrap: false,
-            env: {
-              F10S_LOG_LEVEL: "trace",
-              F10S_LOG_FILE: `/var/log/metal-debian/machines-${now}.log`,
-              F10S_LOG_FILE_PLAIN: `/var/log/metal-debian/plain.machines-${now}.log`,
-              FORCE_COLOR: 2,
-            },
+          () => {
+            const config = ctx.getConfig()
+            const tagsArgs = shellQuote.quote(
+              config.tags.map((t) => ["-t", t]).flatMap((a) => a)
+            )
+            return {
+              command: `sudo ./metal-debian ${tagsArgs}`,
+              logWrap: false,
+              env: {
+                F10S_LOG_LEVEL: "trace",
+                F10S_LOG_FILE: `/var/log/metal-debian/machines-${now}.log`,
+                F10S_LOG_FILE_PLAIN: `/var/log/metal-debian/plain.machines-${now}.log`,
+                FORCE_COLOR: 2,
+              },
+            }
           },
         ],
       }),

@@ -163,7 +163,17 @@ module.exports = (params = {}) => {
                   }),
                   ...selfUploadFiles,
                 ],
-                commands: [...inventory.commands, ...extraCommands],
+                commands: [
+                  ...inventory.commands,
+                  ...(await Promise.all(
+                    extraCommands.map(async (extraCommand) => {
+                      if (typeof extraCommand === "function") {
+                        extraCommand = await extraCommand()
+                      }
+                      return extraCommand
+                    })
+                  )),
+                ],
               },
             }
 
