@@ -4,7 +4,8 @@ const matchTags = require("~/std/match-tags")
 const mergeTags = require("~/std/merge-tags")
 const treeName = require("~/tree/name")
 
-module.exports = async (func) => {
+module.exports = async (func, opts = {}) => {
+  Object.assign(func, opts)
   const {
     tags: createTags = [],
     defaultTags: createDefaultTags = [],
