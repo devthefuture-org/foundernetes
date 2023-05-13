@@ -8,7 +8,7 @@ module.exports = async () =>
     let { content } = vars
     const { contentFile } = vars
     if (!content && contentFile) {
-      content = await fs.readFile(contentFile, { encoding: "utf8" })
+      content = await fs.readFile(contentFile, { encoding: "utf-8" })
     }
     const { templateVars = {} } = vars
     content = await render(content, templateVars)

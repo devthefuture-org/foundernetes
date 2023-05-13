@@ -3,6 +3,7 @@ const ctx = require("@foundernetes/ctx")
 const { createPlaybook, createTree } = require("@foundernetes/blueprint")
 const portRangeExcept = require("@foundernetes/linux/lib/port-range-except")
 const traverseAsync = require("@foundernetes/std/traverse-async")
+const deepmerge = require("@foundernetes/std/deepmerge")
 const { render } = require("@foundernetes/eta")
 
 // const iteratorDebugMiddleware = require("~/middlewares/iterator-debug")
@@ -107,41 +108,46 @@ module.exports = async () => {
     )
 
     await plays.services.fail2ban(
-      {
-        templateVars: {
-          port: portRangeExcept(null, [80, 443]),
-          jaild: {
-            sshd: {},
-            portsentry: {},
+      deepmerge(
+        {
+          templateVars: {
+            port: portRangeExcept(null, [80, 443]),
+            jaild: {
+              sshd: {},
+              portsentry: {},
+            },
+            filterd: {},
           },
-          filterd: {},
         },
-      },
+        data.fail2ban
+      ),
       { tags: ["fail2ban"] }
     )
 
-    await plays.services.portsentry(
-      {},
-      { tags: ["portsentry"], if: [conditions.machine] }
-    )
+    await plays.services.portsentry(data.portsentry, {
+      tags: ["portsentry"],
+      if: [conditions.machine],
+    })
 
-    await plays.services.rkhunter(
-      {},
-      { tags: ["rkhunter"], if: [conditions.machine] }
-    )
+    await plays.services.rkhunter(data.rkhunter, {
+      tags: ["rkhunter"],
+      if: [conditions.machine],
+    })
 
-    await plays.services.unattendedUpgrades(
-      {},
-      { tags: ["apt", "unattended-upgrades"] }
-    )
+    await plays.services.unattendedUpgrades(data.unattendedUpgrades, {
+      tags: ["apt", "unattended-upgrades"],
+    })
 
     await plays.services.ufw(data.ufw, { tags: ["not-on-preseed"] })
 
-    await plays.services.cron()
+    await plays.services.cron(data.cron)
 
-    await plays.services.logrotate()
+    await plays.services.logrotate(data.logrotate)
 
-    await plays.services.disableLoginTerminal()
+    await plays.services.disableLoginTerminal(data.disableLoginTerminal)
+
+    // ℹ️ lxd
+    await plays.services.lxd(data.lxd)
   }
 
   return createPlaybook({

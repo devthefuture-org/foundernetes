@@ -6,6 +6,9 @@ module.exports = async ({ loaders, play, getDate, file: defaultFile }) => {
       // console.log({ defaultFile })
       const { file = defaultFile, recursive, exclude, optional } = vars
       const date = await getDate(vars)
+      if (!date) {
+        return false
+      }
       const changed = await loaders.std.fileChangedFrom({
         file,
         date,

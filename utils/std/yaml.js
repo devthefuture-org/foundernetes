@@ -20,7 +20,7 @@ const load = (input, schema = defaultSchema, { isArray } = {}) => {
   return isArray ? yaml.loadAll(input, schema) : loadObject(input, schema)
 }
 
-const dump = (input, schema) => yaml.stringify(input, schema)
+const dump = (input, schema = defaultSchema) => yaml.stringify(input, schema)
 
 const dumpAll = (manifests) =>
   manifests.map((manifest) => dump(manifest)).join("---\n")

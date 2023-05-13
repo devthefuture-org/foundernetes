@@ -132,6 +132,7 @@ module.exports = (command, args, options) => {
   }
   log.setPrefix(`${prefix}${chalk.grey("-")} `)
 
+  // dbug({ execaOptions })
   const child = commandFunction(command, args, execaOptions)
 
   for (const callback of callbacks) {
