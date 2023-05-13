@@ -1,7 +1,7 @@
 {
   "pkg": {
     "targets": [
-      "node20-linux"
+      "node18-linux"
     ],
     "assets": [
       "dist/**",
