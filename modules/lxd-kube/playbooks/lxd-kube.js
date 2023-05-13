@@ -1,9 +1,6 @@
 const path = require("path")
 const ctx = require("@foundernetes/ctx")
 const { createPlaybook, createTree } = require("@foundernetes/blueprint")
-const deepmerge = require("@foundernetes/std/deepmerge")
-const traverseAsync = require("@foundernetes/std/traverse-async")
-const { render } = require("@foundernetes/eta")
 
 const tree = {
   loaders: require("~/loaders"),
@@ -22,18 +19,13 @@ module.exports = async () => {
     const iterator = ctx.require("iterator")
 
     // ℹ️ data
-    const dataFile = process.env.F10S_LXDKUBE_PLAYBOOK_FILE || "lxd-kube.yaml"
-    const defaultData = await loaders.std.yaml({
-      file: path.join(__dirname, "..", "lxd-kube.yaml"),
+    const dataFiles = [
+      path.join(__dirname, "..", "lxd-kube.yaml"),
+      process.env.F10S_LXDKUBE_PLAYBOOK_FILE || "lxd-kube.yaml",
+    ]
+    const data = await loaders.std.yaml({
+      files: dataFiles,
     })
-    let data = await loaders.std.yaml({ file: dataFile })
-    data = deepmerge({}, defaultData, data)
-
-    await traverseAsync(data, async (value) =>
-      typeof value !== "string"
-        ? value
-        : render(value, data, { tags: ["$${{", "}}"] })
-    )
 
     // ℹ️ authorizedKeys
     const authorizedKeys = [
