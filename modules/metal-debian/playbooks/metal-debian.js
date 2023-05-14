@@ -146,6 +146,8 @@ module.exports = async () => {
 
     await plays.services.disableLoginTerminal(data.disableLoginTerminal)
 
+    await plays.services.genSshKey(data.genSshKey)
+
     // ℹ️ lxd
     await plays.services.lxd(data.lxd)
   }

@@ -22,4 +22,5 @@ module.exports = {
   disableLoginTerminal: require("./disable-login-terminal"),
   sysctlSet: require("./sysctl-set"),
   lxd: require("./lxd"),
+  genSshKey: require("./gen-ssh-key"),
 }

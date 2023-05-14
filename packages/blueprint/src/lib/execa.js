@@ -70,13 +70,11 @@ module.exports = (command, args, options) => {
       commandFunction = gosuFactory({
         execaOptions,
         user: process.env.SUDO_USER,
-        group: process.env.SUDO_USER,
       })
     } else {
       commandFunction = sudoFactory({
         execaOptions,
         user: process.env.SUDO_USER,
-        group: process.env.SUDO_USER,
       })
     }
   }

@@ -8,10 +8,18 @@ const { yaml, createLoader } = require("@foundernetes/blueprint")
 module.exports = () =>
   createLoader({
     load: async (vars) => {
-      const { file, files = [file], isArray } = vars
+      const {
+        file,
+        files = [file],
+        data = {},
+        vars: extraVars = {},
+        isArray,
+      } = vars
 
-      const data = {}
       for (const f of files) {
+        if (!f) {
+          continue
+        }
         const content = await fs.readFile(f, { encoding: "utf-8" })
         const mergeData = yaml.load(content, { isArray })
         deepmerge(data, mergeData)
@@ -20,7 +28,9 @@ module.exports = () =>
       await traverseAsync(data, async (value) =>
         typeof value !== "string"
           ? value
-          : render(value, data, { tags: ["$${{", "}}"] })
+          : render(value, deepmerge({}, data, extraVars), {
+              tags: ["$${{", "}}"],
+            })
       )
 
       return data

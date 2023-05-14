@@ -1,0 +1,59 @@
+default:
+  image: images:debian/12/cloud/amd64
+  lxdConfig:
+    # https://linuxcontainers.org/lxd/docs/latest/cloud-init/
+    # https://linuxcontainers.org/lxd/docs/stable-5.0/cloud-init/
+    # https://cloudinit.readthedocs.io/en/latest/reference/examples.html#yaml-examples
+    config:
+      raw.lxc: |
+        lxc.apparmor.profile=unconfined
+        lxc.cap.drop=
+        lxc.cgroup.devices.allow=a
+        lxc.mount.auto=proc:rw sys:rw cgroup:rw
+        lxc.seccomp.profile=
+      # linux.kernel_modules: ip_tables,ip6_tables,netlink_diag,nf_nat,overlay,xt_conntrack
+      linux.kernel_modules: ip_tables,ip6_tables,netlink_diag,nf_nat,overlay
+      security.privileged: "true"
+      security.nesting: "true"
+      cloud-init.user-data:
+        #cloud-config
+        users:
+          - name: j
+            shell: /bin/bash
+            homedir: /home/j
+            sudo: ['ALL=(ALL) NOPASSWD:ALL']
+            ssh_authorized_keys:
+              - "$${{ sshAuthorizedKey }}"
+        timezone: Europe/Paris
+        package_upgrade: true
+        packages:
+          - openssh-server
+          - curl
+        write_files:
+          - path: /etc/rc.local
+            owner: root:root
+            permissions: '0700'
+            content: |
+              #!/bin/sh -e
+              # Kubeadm 1.15 needs /dev/kmsg to be there, but it’s not in lxc, but we can just use /dev/console instead
+              # see: https://github.com/kubernetes-sigs/kind/issues/662
+              if [ ! -e /dev/kmsg ]; then
+                ln -s /dev/console /dev/kmsg
+              fi
+              # https://medium.com/@kvaps/run-kubernetes-in-lxc-container-f04aa94b6c9c
+              mount --make-rshared /
+          - path: /etc/resolv.conf
+            content: |
+              nameserver 1.1.1.1
+              nameserver 1.0.0.1
+              nameserver 2606:4700:4700::1111
+              nameserver 2606:4700:4700::1001
+        runcmd:
+          - [/etc/rc.local]
+          - [touch, /run/cloud.init.ran]
+
+
+nodes:
+  node1: {}
+  node2: {}
+  node3: {}
