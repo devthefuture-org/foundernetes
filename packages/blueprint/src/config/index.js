@@ -9,8 +9,8 @@ const loadStructuredConfig = require("@foundernetes/std/load-structured-config")
 
 const envParserCastArray = require("@foundernetes/std/env-parsers/cast-array")
 const envParserYaml = require("@foundernetes/std/env-parsers/yaml")
-const syncDir = require("~/lib/sync-dir")
-const passwdUser = require("~/lib/passwd-user")
+const syncDir = require("@foundernetes/std/sync-dir")
+const passwdUser = require("@foundernetes/std/linux/passwd-user")
 
 module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
   const rootConfigStructure = {

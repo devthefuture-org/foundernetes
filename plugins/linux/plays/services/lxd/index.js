@@ -6,6 +6,7 @@ module.exports = async ({ children }) =>
       await children.host({}, { tags: ["lxd"] })
       const { preseed } = vars
       await children.init({ preseed }, { tags: ["lxd"] })
+      await children.user({}, { tags: ["lxd"] })
     },
     { tags: ["lxd"] }
   )
@@ -13,4 +14,5 @@ module.exports = async ({ children }) =>
 Object.assign(module.exports, {
   init: require("./init"),
   host: require("./host"),
+  user: require("./user"),
 })

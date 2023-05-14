@@ -3,9 +3,9 @@ const { EventEmitter } = require("node:events")
 const isAbortError = require("@foundernetes/std/is-abort-error")
 const ctx = require("@foundernetes/ctx")
 
+const isRoot = require("@foundernetes/std/is-root")
 const sudoFactory = require("~/lib/sudo-factory")
 const sudoAskPassword = require("~/lib/sudo-ask-password")
-const isRoot = require("~/lib/is-root")
 
 const commandAbortController = require("~/cli/abort-controller")
 

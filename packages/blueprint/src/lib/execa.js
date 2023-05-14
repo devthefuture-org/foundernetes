@@ -6,10 +6,10 @@ const chalk = require("chalk")
 
 const { execa } = require("@foundernetes/execa")
 const ctx = require("@foundernetes/ctx")
-const isRoot = require("~/lib/is-root")
+const isRoot = require("@foundernetes/std/is-root")
 
+const gosuFactory = require("@foundernetes/std/linux/gosu-factory")
 const sudoFactory = require("./sudo-factory")
-const gosuFactory = require("./gosu-factory")
 
 const f10sExecaOptions = [
   "sudo",

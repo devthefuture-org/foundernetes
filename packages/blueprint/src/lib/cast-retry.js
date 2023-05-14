@@ -1,6 +1,6 @@
 const defaults = require("lodash/defaults")
 const ctx = require("@foundernetes/ctx")
-const humanizeDuration = require("~/lib/humanize-duration")
+const humanizeDuration = require("@foundernetes/std/humanize-duration")
 
 const onNewTimeoutCreate =
   (type) =>

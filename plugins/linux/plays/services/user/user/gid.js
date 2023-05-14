@@ -10,6 +10,6 @@ module.exports = async ({ loaders }) =>
 
     async run(vars) {
       const { username, gid } = vars
-      await $(`usermod -g ${gid} ${username}`)
+      await $(`usermod -g ${gid} ${username}`, { sudo: true })
     },
   })

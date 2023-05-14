@@ -523,7 +523,6 @@ __metadata:
     enquirer: ^2.3.6
     form-data: ^4.0.0
     fs-extra: ^11.1.0
-    humanize-duration: ^3.27.3
     jest: ^29.3.1
     jest-specific-snapshot: ^8.0.0
     js-yaml: ^4.1.0
@@ -734,10 +733,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@foundernetes/std@workspace:utils/std"
   dependencies:
+    "@foundernetes/execa": "workspace:^"
     direct-logger: ^2.15.0
     fs-extra: ^11.1.1
+    humanize-duration: ^3.27.3
     lodash: ^4.5.0
     ms: ^2.1.3
+    through2: ^4.0.2
     yaml: ^2.2.2
   languageName: unknown
   linkType: soft

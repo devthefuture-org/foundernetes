@@ -39,7 +39,7 @@ const main = async () => {
           () => {
             const config = ctx.getConfig()
             const tagsArgs = shellQuote.quote(
-              config.tags.map((t) => ["-t", t]).flatMap((a) => a)
+              (config.tags || []).map((t) => ["-t", t]).flatMap((a) => a)
             )
             return {
               command: `sudo ./metal-debian ${tagsArgs}`,
