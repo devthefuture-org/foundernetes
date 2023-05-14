@@ -1,3 +1,5 @@
+hook tags
+
 dryRun
   Changed->NotReady
   dryRunCheck (override check in dryRun, avoid to run check)

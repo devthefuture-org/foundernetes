@@ -137,4 +137,6 @@ packages:
     check:
       command: lxd --version
       expectedEqual: "${{version}}"
-    
+  
+  procps:
+    installer: deb

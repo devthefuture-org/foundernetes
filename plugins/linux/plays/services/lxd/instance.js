@@ -11,7 +11,9 @@ module.exports = async ({ loaders }) => {
   const outputLxdConfig = async (lxdConfig, vars) => {
     const cloudInitUserData = lxdConfig.config?.["cloud-init.user-data"]
     if (cloudInitUserData && typeof cloudInitUserData !== "string") {
-      lxdConfig.config["cloud-init.user-data"] = yaml.dump(cloudInitUserData)
+      lxdConfig.config["cloud-init.user-data"] = `#cloud-config\n${yaml.dump(
+        cloudInitUserData
+      )}`
     }
     let { sshAuthorizedKey, sshAuthorizedKeyFile = "~/.ssh/id_rsa.pub" } = vars
     if (!sshAuthorizedKey && sshAuthorizedKeyFile) {
@@ -35,12 +37,14 @@ module.exports = async ({ loaders }) => {
       const lxdConfigStr = await outputLxdConfig(lxdConfig, vars)
       const nodeFactFile = path.join(config.factsPath, `lxc/nodes/${name}.yaml`)
 
+      const nodeExists = async () => {
+        const { stdout } = await $(`lxc list -f json`)
+        const nodes = JSON.parse(stdout)
+        return nodes.some((n) => n.name === name)
+      }
       return {
         async check() {
-          const { stdout } = await $(`lxc list -f json`)
-          const nodes = JSON.parse(stdout)
-          const node = nodes.find((n) => n.name === name)
-          if (!node) {
+          if (!(await nodeExists())) {
             return false
           }
           const exists = await fs.pathExists(nodeFactFile)
@@ -53,9 +57,11 @@ module.exports = async ({ loaders }) => {
         },
         async run() {
           // dbug({ cmd: `lxc launch ${image} ${name}`, lxdConfigStr }).k()
+          if (await nodeExists()) {
+            await $(`lxc delete --force ${name}`)
+          }
           await $(`lxc launch ${image} ${name}`, {
             input: lxdConfigStr,
-            // sudo: true,
           })
           await fs.ensureDir(path.dirname(nodeFactFile))
           await fs.writeFile(nodeFactFile, lxdConfigStr)

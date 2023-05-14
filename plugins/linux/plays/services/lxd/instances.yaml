@@ -1,5 +1,5 @@
 default:
-  image: images:debian/12/cloud/amd64
+  image: images:debian/12/cloud/amd64 #https://images.linuxcontainers.org/
   lxdConfig:
     # https://linuxcontainers.org/lxd/docs/latest/cloud-init/
     # https://linuxcontainers.org/lxd/docs/stable-5.0/cloud-init/
@@ -16,7 +16,6 @@ default:
       security.privileged: "true"
       security.nesting: "true"
       cloud-init.user-data:
-        #cloud-config
         users:
           - name: j
             shell: /bin/bash
