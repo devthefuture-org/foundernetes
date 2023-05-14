@@ -22,7 +22,6 @@ module.exports = async ({ loaders }) => {
         encoding: "utf-8",
       })
     }
-
     const data = await loaders.std.yaml({
       data: lxdConfig,
       vars: { sshAuthorizedKey },
@@ -38,7 +37,7 @@ module.exports = async ({ loaders }) => {
       const nodeFactFile = path.join(config.factsPath, `lxc/nodes/${name}.yaml`)
 
       const nodeExists = async () => {
-        const { stdout } = await $(`lxc list -f json`)
+        const { stdout } = await $(`lxc list -f json`, { logStdout: false })
         const nodes = JSON.parse(stdout)
         return nodes.some((n) => n.name === name)
       }

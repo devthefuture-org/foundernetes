@@ -7,7 +7,8 @@ module.exports = async ({ children }) =>
       const { preseed } = vars
       await children.init({ preseed }, { tags: ["lxd"] })
       await children.user({}, { tags: ["lxd"] })
-      await children.instances(vars.instances, { tags: ["lxd"] })
+      const { instances } = vars
+      await children.instances({ instances }, { tags: ["lxd"] })
     },
     { tags: ["lxd"] }
   )
