@@ -1,8 +1,17 @@
 const { createComposer } = require("@foundernetes/blueprint")
 
-module.exports = async ({ children }) =>
+module.exports = async ({ children, plays }) =>
   createComposer(
     async (vars = {}) => {
+      const { storageDir = "/storage" } = vars
+      await plays.std.ensureDir(
+        {
+          dir: storageDir,
+          sudoWrite: true,
+        },
+        { tags: ["lxd"] }
+      )
+
       await children.host({}, { tags: ["lxd"] })
       const { preseed } = vars
       await children.init({ preseed }, { tags: ["lxd"] })

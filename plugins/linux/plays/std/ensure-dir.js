@@ -72,7 +72,9 @@ module.exports = async ({ loaders }) =>
           })
           return
         }
-        return false
+        await $(`mkdir -p ${dir}`, {
+          sudo: sudoWrite,
+        })
       }
       if (files) {
         let actualFiles = await loaders.std.dir({

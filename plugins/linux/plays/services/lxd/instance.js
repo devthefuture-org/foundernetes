@@ -22,10 +22,12 @@ module.exports = async ({ loaders }) => {
         encoding: "utf-8",
       })
     }
+    const { index } = vars
     const data = await loaders.std.yaml({
       data: lxdConfig,
-      vars: { sshAuthorizedKey },
+      vars: { sshAuthorizedKey, index },
     })
+
     return yaml.dump(data)
   }
   const config = ctx.getConfig()
@@ -41,6 +43,7 @@ module.exports = async ({ loaders }) => {
         const nodes = JSON.parse(stdout)
         return nodes.some((n) => n.name === name)
       }
+
       return {
         async check() {
           if (!(await nodeExists())) {

@@ -17,13 +17,18 @@ module.exports = async ({ mod }) => {
     const defaultInstances = yaml.load(defaultInstancesYaml)
 
     const instances = deepmerge({}, defaultInstances, userInstances)
+
+    let index = 0
     await iterator.eachOfSeries(instances.nodes, async (instance, name) => {
-      return mod.instance(
-        deepmerge({}, instances.default, {
-          name,
-          ...instance,
-        })
-      )
+      index++
+
+      const instanceVars = deepmerge({}, instances.default, {
+        name,
+        index,
+        ...instance,
+      })
+
+      return mod.instance(instanceVars)
     })
   })
 }

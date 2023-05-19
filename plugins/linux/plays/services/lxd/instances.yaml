@@ -4,6 +4,12 @@ default:
     # https://linuxcontainers.org/lxd/docs/latest/cloud-init/
     # https://linuxcontainers.org/lxd/docs/stable-5.0/cloud-init/
     # https://cloudinit.readthedocs.io/en/latest/reference/examples.html#yaml-examples
+    devices:
+      eth0:
+        ipv4.address: "12.0.0.$${{ 100 + index }}"
+        name: eth0
+        network: lxdbr0
+        type: nic
     config:
       raw.lxc: |
         lxc.apparmor.profile=unconfined
@@ -11,6 +17,7 @@ default:
         lxc.cgroup.devices.allow=a
         lxc.mount.auto=proc:rw sys:rw cgroup:rw
         lxc.seccomp.profile=
+        lxc.mount.entry=/storage storage none rw,bind,create=dir 0 0
       # linux.kernel_modules: ip_tables,ip6_tables,netlink_diag,nf_nat,overlay,xt_conntrack
       linux.kernel_modules: ip_tables,ip6_tables,netlink_diag,nf_nat,overlay
       security.privileged: "true"
