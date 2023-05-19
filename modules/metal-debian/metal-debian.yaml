@@ -141,5 +141,8 @@ packages:
   procps:
     installer: apt
 
+  # simple real-time monitoring tools
   bmon:
+    installer: apt
+  htop:
     installer: apt
