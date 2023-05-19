@@ -606,27 +606,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@foundernetes/lxd-kube@workspace:modules/lxd-kube":
-  version: 0.0.0-use.local
-  resolution: "@foundernetes/lxd-kube@workspace:modules/lxd-kube"
-  dependencies:
-    "@foundernetes/async": "workspace:^"
-    "@foundernetes/axios": "workspace:^"
-    "@foundernetes/blueprint": "workspace:^"
-    "@foundernetes/ctx": "workspace:^"
-    "@foundernetes/eta": "workspace:^"
-    "@foundernetes/execa": "workspace:^"
-    "@foundernetes/linux": "workspace:^"
-    "@foundernetes/machines": "workspace:^"
-    "@foundernetes/match": "workspace:^"
-    "@foundernetes/std": "workspace:^"
-    "@vercel/ncc": ^0.36.1
-    fs-extra: ^11.1.0
-    link-module-alias: ^1.2.0
-    pkg: ^5.8.0
-  languageName: unknown
-  linkType: soft
-
 "@foundernetes/machines@workspace:^, @foundernetes/machines@workspace:modules/machines":
   version: 0.0.0-use.local
   resolution: "@foundernetes/machines@workspace:modules/machines"
