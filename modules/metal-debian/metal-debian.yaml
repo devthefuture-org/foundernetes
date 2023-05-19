@@ -139,4 +139,7 @@ packages:
       expectedEqual: "${{version}}"
   
   procps:
-    installer: deb
+    installer: apt
+
+  bmon:
+    installer: apt
