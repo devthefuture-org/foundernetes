@@ -11,7 +11,9 @@ ufw:
   rules:
     http:
       direction: in
-      ports: [80,443]
+      ports: [80, 443]
+    gitSSH:
+      ports: [22]
     ssh:
       ports: ["$${{ sshdConfig.port }}"]
     portsentry1:
