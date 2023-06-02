@@ -16,6 +16,7 @@ module.exports = async ({ plays }) =>
         "net.netfilter.nf_conntrack_buckets": { min: 32768 },
         "net.ipv4.neigh.default.gc_thresh3": { min: 8192 },
         "net.ipv6.neigh.default.gc_thresh3": { min: 8192 },
+        "net.ipv4.ip_forward": 1,
       }
       deepmerge(systctlConfig, vars.sysctlConfig || {})
 
