@@ -4,6 +4,7 @@ default:
     # https://linuxcontainers.org/lxd/docs/latest/cloud-init/
     # https://linuxcontainers.org/lxd/docs/stable-5.0/cloud-init/
     # https://cloudinit.readthedocs.io/en/latest/reference/examples.html#yaml-examples
+    # https://canonical.com/blog/running-kubernetes-inside-lxd
     devices:
       eth0:
         ipv4.address: "12.0.0.$${{ 100 + index }}"
