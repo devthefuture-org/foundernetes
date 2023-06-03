@@ -25,6 +25,9 @@ module.exports = async ({ plays }) => {
       localDirRoot = "foundernetes.d",
     } = vars
 
+    const config = ctx.getConfig()
+    const { cwd } = config
+
     let { source } = vars
 
     if (!Array.isArray(source)) {
@@ -34,8 +37,8 @@ module.exports = async ({ plays }) => {
     if (localDirOverride) {
       const localSource =
         localDirOverride === true
-          ? path.join(process.cwd(), localDirRoot, target)
-          : path.join(process.cwd(), localDirRoot, localDirOverride)
+          ? path.join(cwd, localDirRoot, target)
+          : path.join(cwd, localDirRoot, localDirOverride)
       source.push(localSource)
     }
 
