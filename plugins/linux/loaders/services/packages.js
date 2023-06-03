@@ -5,6 +5,7 @@ const pick = require("lodash/pick")
 const { createLoader } = require("@foundernetes/blueprint")
 
 const checksumExpandDefinition = require("@foundernetes/std/checksum-expand-definition")
+const deepmerge = require("@foundernetes/std/deepmerge")
 const archiveExtensions = require("@foundernetes/std/archive-extensions")
 
 const archAlternatives = {
@@ -37,7 +38,7 @@ module.exports = async ({ loaders }) =>
         value = { name: key, ...value }
         const { version, versions = {} } = value
         if (version && versions[version]) {
-          Object.assign(value, versions[version])
+          deepmerge(value, versions[version])
         }
         if (value.checksum) {
           value.checksum = checksumExpandDefinition(value.checksum)
