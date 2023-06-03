@@ -11,7 +11,6 @@ const removeExtname = require("@foundernetes/std/remove-extname")
 module.exports = async ({ plays }) => {
   return async (vars) => {
     const {
-      source,
       target,
       template = true,
       templateVars = {},
@@ -22,11 +21,28 @@ module.exports = async ({ plays }) => {
       sudoWrite,
       mode,
       validateFile,
+      localDirOverride,
+      localDirRoot = "foundernetes.d",
     } = vars
+
+    let { source } = vars
+
+    if (!Array.isArray(source)) {
+      source = [source]
+    }
+
+    if (localDirOverride) {
+      const localSource =
+        localDirOverride === true
+          ? path.join(process.cwd(), localDirRoot, target)
+          : path.join(process.cwd(), localDirRoot, localDirOverride)
+      source.push(localSource)
+    }
 
     const ensureFileOptions = omit(vars, [
       "source",
       "target",
+      "localDirOverride",
       "template",
       "templateVars",
       "templateVarsByGroup",
@@ -78,18 +94,25 @@ module.exports = async ({ plays }) => {
       return filename
     }
 
-    let files = []
-    if (await fs.pathExists(source)) {
-      files = await fs.readdir(source)
-      if (filterHiddenFiles) {
-        files = files.filter((file) => !file.startsWith("."))
+    const filesBySource = {}
+    for (const src of source) {
+      let files = []
+      if (await fs.pathExists(src)) {
+        files = await fs.readdir(src)
+        if (filterHiddenFiles) {
+          files = files.filter((file) => !file.startsWith("."))
+        }
       }
+      filesBySource[src] = files
     }
 
     if (removeUnlistedFiles) {
       await plays.std.ensureDir({
         dir: target,
-        files: await async.mapSeries(files, renameFile),
+        files: await async.mapSeries(
+          Object.values(filesBySource).flatMap((f) => f),
+          renameFile
+        ),
         sudo,
         sudoRead,
         sudoWrite,
@@ -97,38 +120,40 @@ module.exports = async ({ plays }) => {
       })
     }
 
-    await iterator.each(files, async (file) => {
-      const variables = {
-        confDir: { prefix: convention || "" },
-        ...templateVars,
-        ...(templateVarsByGroup[removeExtname(file)] || {}),
-      }
+    await iterator.each(source, async (src) => {
+      await iterator.each(filesBySource[src], async (file) => {
+        const variables = {
+          confDir: { prefix: convention || "" },
+          ...templateVars,
+          ...(templateVarsByGroup[removeExtname(file)] || {}),
+        }
 
-      const dest = await renameFile(file)
+        const dest = await renameFile(file)
 
-      const destFile = path.join(target, dest)
+        const destFile = path.join(target, dest)
 
-      await plays.std.ensureFile({
-        file: destFile,
-        contentFile: path.join(source, file),
-        template,
-        templateVars: variables,
-        sudo,
-        sudoRead,
-        sudoWrite,
-        validateFile,
-        ...ensureFileOptions,
-      })
-
-      if (mode) {
-        await plays.std.chmod({
+        await plays.std.ensureFile({
           file: destFile,
-          mode,
+          contentFile: path.join(src, file),
+          template,
+          templateVars: variables,
           sudo,
           sudoRead,
           sudoWrite,
+          validateFile,
+          ...ensureFileOptions,
         })
-      }
+
+        if (mode) {
+          await plays.std.chmod({
+            file: destFile,
+            mode,
+            sudo,
+            sudoRead,
+            sudoWrite,
+          })
+        }
+      })
     })
   }
 }
