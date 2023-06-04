@@ -1,11 +1,12 @@
 const dns = require("dns/promises")
 const { setTimeout: sleep } = require("timers/promises")
 
+const { createComposer } = require("@foundernetes/blueprint")
 const ctx = require("@foundernetes/ctx")
 const yaRetry = require("ya-retry")
 
 module.exports = async () => {
-  return async () => {
+  return createComposer(async () => {
     const logger = ctx.getLogger()
     await yaRetry(
       async (_bail) => {
@@ -22,5 +23,5 @@ module.exports = async () => {
         retries: 10,
       }
     )
-  }
+  })
 }
