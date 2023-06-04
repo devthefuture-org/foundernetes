@@ -596,8 +596,10 @@ __metadata:
     decompress: ^4.2.1
     fs-extra: ^11.1.1
     ini: ^4.1.0
+    ipaddr.js: ^2.1.0
     link-module-alias: ^1.2.0
     lodash: ^4.5.0
+    matrix-expand: ^1.0.242
     micromatch: ^4.0.5
     shell-quote: ^1.8.1
     which: ^3.0.1
@@ -4254,6 +4256,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ipaddr.js@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "ipaddr.js@npm:2.1.0"
+  checksum: 807a054f2bd720c4d97ee479d6c9e865c233bea21f139fb8dabd5a35c4226d2621c42e07b4ad94ff3f82add926a607d8d9d37c625ad0319f0e08f9f2bd1968e2
+  languageName: node
+  linkType: hard
+
 "is-arrayish@npm:^0.2.1":
   version: 0.2.1
   resolution: "is-arrayish@npm:0.2.1"
@@ -5412,6 +5421,13 @@ __metadata:
   version: 4.3.0
   resolution: "map-obj@npm:4.3.0"
   checksum: fbc554934d1a27a1910e842bc87b177b1a556609dd803747c85ece420692380827c6ae94a95cce4407c054fa0964be3bf8226f7f2cb2e9eeee432c7c1985684e
+  languageName: node
+  linkType: hard
+
+"matrix-expand@npm:^1.0.242":
+  version: 1.0.242
+  resolution: "matrix-expand@npm:1.0.242"
+  checksum: b4a745342033bf9f40689f80572b7786f8c03f4d1a4e3e3aef060d35aed7dbedea323f22b906ac6b95ff41cca0444be33ae05b6f865b488be61e137085a45db6
   languageName: node
   linkType: hard
 
