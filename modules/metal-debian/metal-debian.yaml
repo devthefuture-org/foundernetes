@@ -159,5 +159,9 @@ packages:
     installer: apt
   htop:
     installer: apt
+  glances:
+    installer: apt
+  duf:
+    installer: apt
   
   
