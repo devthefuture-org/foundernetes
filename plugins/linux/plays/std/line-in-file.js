@@ -1,18 +1,9 @@
 const { createPlay, $, async } = require("@foundernetes/blueprint")
 const matchCondition = require("@foundernetes/match/condition")
 const execFileExists = require("~/lib/exec-file-exists")
+const loadLines = require("./utils/load-lines")
 
 module.exports = async () => {
-  const loadLines = async ({ file, sudo, sudoRead = sudo }) => {
-    const { stdout: actualContent } = await $(`cat ${file}`, {
-      sudo: sudoRead,
-      logStdout: false,
-      stripFinalNewline: false,
-    })
-    const lines = actualContent.split("\n")
-    return lines
-  }
-
   return createPlay(async (vars) => {
     const { normalizer = (line) => line, find, listSeparator = " " } = vars
 

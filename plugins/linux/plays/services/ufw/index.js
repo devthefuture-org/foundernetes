@@ -11,10 +11,27 @@ module.exports = async ({ plays, children }) =>
 
     await children.applications(vars)
 
+    await children.iptablesRules({
+      file: "/etc/ufw/before.rules",
+      rules: vars.before,
+    })
+    await children.iptablesRules({
+      file: "/etc/ufw/before6.rules",
+      rules: vars.before6,
+    })
+
     await children.rules({
       rules: [],
       removeUnlistedRules: true,
       ...vars,
+    })
+    await children.iptablesRules({
+      file: "/etc/ufw/after.rules",
+      rules: vars.after,
+    })
+    await children.iptablesRules({
+      file: "/etc/ufw/after6.rules",
+      rules: vars.after6,
     })
 
     await children.default(vars)
@@ -39,4 +56,5 @@ Object.assign(module.exports, {
   logging: require("./logging"),
   rules: require("./rules"),
   applications: require("./applications"),
+  iptablesRules: require("./iptables-rules"),
 })

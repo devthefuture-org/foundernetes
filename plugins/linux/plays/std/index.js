@@ -4,6 +4,7 @@ module.exports = {
   ensureSymlink: require("./ensure-symlink"),
   lineInFile: require("./line-in-file"),
   configFile: require("./config-file"),
+  configBlock: require("./config-block"),
   confDir: require("./conf-dir"),
   cmd: require("./cmd"),
   dirExists: require("./dir-exists"),
