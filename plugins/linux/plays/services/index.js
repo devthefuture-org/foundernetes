@@ -23,4 +23,5 @@ module.exports = {
   sysctlSet: require("./sysctl-set"),
   lxd: require("./lxd"),
   genSshKey: require("./gen-ssh-key"),
+  disks: require("./disks"),
 }

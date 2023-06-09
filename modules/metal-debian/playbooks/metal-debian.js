@@ -63,6 +63,9 @@ module.exports = async () => {
     // ℹ️ systemdPager
     await plays.services.setSystemdPager({})
 
+    // ℹ️ disks
+    await plays.services.disks({ disks: data.disks })
+
     // ℹ️ dns
     await plays.services.dns({
       dns: data.dns,
