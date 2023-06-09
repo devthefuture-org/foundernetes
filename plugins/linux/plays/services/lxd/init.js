@@ -36,7 +36,6 @@ module.exports = async () => {
           }
 
           const network = await $("lxc query local:/1.0/networks/lxdbr0", {
-            sudo: true,
             reject: false,
           })
           if (network.exitCode !== 0) {
@@ -45,10 +44,7 @@ module.exports = async () => {
           const { managed: hasNetDevice } = JSON.parse(network.stdout)
 
           const { stdout: storageJSON } = await $(
-            "lxc query local:/1.0/storage-pools",
-            {
-              sudo: true,
-            }
+            "lxc query local:/1.0/storage-pools"
           )
           const storage = JSON.parse(storageJSON)
           if (!(hasNetDevice && storage.length > 0)) {
@@ -70,7 +66,7 @@ module.exports = async () => {
           return true
         },
         async run() {
-          await $("lxd init --preseed", { sudo: true, input: preseedYaml })
+          await $("lxd init --preseed", { input: preseedYaml })
           await fs.ensureDir(path.dirname(preseedFactFile))
           await fs.writeFile(preseedFactFile, preseedYaml)
         },

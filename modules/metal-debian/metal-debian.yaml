@@ -136,20 +136,21 @@ packages:
       expectedContain: "${{version}}"
 
   lxd:
-    installer: deb
-    version: "5.0.2"
-    versions:
-      "5.0.2":
-        download:
-          checksum:
-            algo: sha256
-            hash: "434eef31f95047173813c53bb64e3959dc401f0d04607cfd75cc8996b2306707"
-    download:
-      # https://packages.debian.org/sid/amd64/lxd/download
-      url: http://ftp.fr.debian.org/debian/pool/main/l/lxd/lxd_5.0.2-3+b2_amd64.deb
-    check:
-      command: lxd --version
-      expectedEqual: "${{version}}"
+    installer: apt
+    # installer: deb
+    # version: "5.0.2"
+    # versions:
+    #   "5.0.2":
+    #     download:
+    #       checksum:
+    #         algo: sha256
+    #         hash: "434eef31f95047173813c53bb64e3959dc401f0d04607cfd75cc8996b2306707"
+    # download:
+    #   # https://packages.debian.org/sid/amd64/lxd/download
+    #   url: http://ftp.fr.debian.org/debian/pool/main/l/lxd/lxd_5.0.2-3+b2_amd64.deb
+    # check:
+    #   command: lxd --version
+    #   expectedEqual: "${{version}}"
   
   procps:
     installer: apt
@@ -158,6 +159,8 @@ packages:
   bmon:
     installer: apt
   htop:
+    installer: apt
+  iotop:
     installer: apt
   glances:
     installer: apt
