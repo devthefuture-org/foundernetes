@@ -10,7 +10,7 @@ module.exports = async () => {
     },
     async run({ file, uid }) {
       const ssh = ctx.getSSH()
-      await ssh.execCommand(`chown ${uid} ${file}`)
+      await ssh.execCommandSudo(`sudo chown ${uid} ${file}`)
     },
   })
 }

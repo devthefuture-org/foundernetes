@@ -56,9 +56,10 @@ module.exports = async ({ mod }) => {
       throw new Error("Cannot use gidRecursive without gid")
     }
 
-    const files = isDirMain
-      ? await listFilesRecursive(sourceMain, true)
-      : [sourceMain]
+    const files = [sourceMain]
+    if (isDirMain) {
+      files.push(...(await listFilesRecursive(sourceMain, true)))
+    }
 
     const iterator = ctx.getIterator()
 
@@ -73,7 +74,7 @@ module.exports = async ({ mod }) => {
       let uid
       if (uidMap[file]) {
         uid = uidMap[file]
-      } else if (uidMain && uidRecursive) {
+      } else if (uidMain && (uidRecursive || file === "")) {
         uid = uidMain
       } else if (uidFromLocal) {
         stat = stat || (await fs.stat(sourceFile))
@@ -83,7 +84,7 @@ module.exports = async ({ mod }) => {
       let gid
       if (gidMap[file]) {
         gid = gidMap[file]
-      } else if (gidMain && gidRecursive) {
+      } else if (gidMain && (gidRecursive || file === "")) {
         gid = gidMain
       } else if (gidFromLocal) {
         stat = stat || (await fs.stat(sourceFile))
@@ -93,7 +94,7 @@ module.exports = async ({ mod }) => {
       let mode
       if (modeMap[file]) {
         mode = modeMap[file]
-      } else if (modeMain && modeRecursive) {
+      } else if (modeMain && (modeRecursive || file === "")) {
         mode = modeMain
       } else if (modeFromLocal) {
         stat = stat || (await fs.stat(sourceFile))
@@ -113,7 +114,9 @@ module.exports = async ({ mod }) => {
 
     const { delete: deleteUnlisted = false } = vars
     if (isDirMain && deleteUnlisted) {
-      const targetFiles = relativeFiles.map((file) => `${targetMain}/${file}`)
+      const targetFiles = relativeFiles
+        .filter((file) => file !== "")
+        .map((file) => `${targetMain}/${file}`)
       const targetDirs = [
         targetMain,
         ...targetFiles.filter((file) => file.endsWith("/")),

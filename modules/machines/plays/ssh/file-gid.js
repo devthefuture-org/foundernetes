@@ -10,7 +10,7 @@ module.exports = async () => {
     },
     async run({ file, gid }) {
       const ssh = ctx.getSSH()
-      await ssh.execCommand(`chgrp ${gid} ${file}`)
+      await ssh.execCommandSudo(`sudo chgrp ${gid} ${file}`)
     },
   })
 }
