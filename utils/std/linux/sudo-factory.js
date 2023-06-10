@@ -1,6 +1,7 @@
 const os = require("os")
 const { randomUUID } = require("node:crypto")
 const { setTimeout } = require("timers/promises")
+const { Readable } = require("stream")
 const through2 = require("through2")
 const { execa } = require("@foundernetes/execa")
 const Deferred = require("../deferred")
@@ -86,8 +87,12 @@ module.exports = (options = {}) => {
             await passwordTyped.promise
           }
         }
-        child.stdin.write(input)
-        child.stdin.end()
+        if (input instanceof Readable) {
+          input.pipe(child.stdin)
+        } else {
+          child.stdin.write(input)
+          child.stdin.end()
+        }
       })()
     }
 
