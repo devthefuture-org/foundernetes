@@ -18,7 +18,10 @@ default:
         lxc.cgroup.devices.allow=a
         lxc.mount.auto=proc:rw sys:rw cgroup:rw
         lxc.seccomp.profile=
-        lxc.mount.entry=/storage storage none rw,bind,create=dir 0 0
+        lxc.mount.entry=/storage/shared storage/shared none rw,bind,create=dir 0 0
+        lxc.mount.entry=/storage/nodes/node$${{ index }} storage/node none rw,bind,create=dir 0 0
+        lxc.mount.entry=/storage2/shared storage2/shared none rw,bind,create=dir 0 0
+        lxc.mount.entry=/storage2/nodes/node$${{ index }} storage2/node none rw,bind,create=dir 0 0
       # linux.kernel_modules: ip_tables,ip6_tables,netlink_diag,nf_nat,overlay,xt_conntrack
       linux.kernel_modules: ip_tables,ip6_tables,netlink_diag,nf_nat,overlay
       security.privileged: "true"
