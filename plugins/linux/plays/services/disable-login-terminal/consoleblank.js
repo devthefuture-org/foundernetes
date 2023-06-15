@@ -16,5 +16,6 @@ module.exports = async ({ plays }) => {
       },
       sudoWrite: true,
     })
+    await plays.services.updateGrubOnDefaultChange()
   })
 }

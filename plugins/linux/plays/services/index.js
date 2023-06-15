@@ -24,4 +24,5 @@ module.exports = {
   lxd: require("./lxd"),
   genSshKey: require("./gen-ssh-key"),
   disks: require("./disks"),
+  updateGrubOnDefaultChange: require("./update-grub-on-default-change"),
 }
