@@ -63,9 +63,6 @@ module.exports = async () => {
     // ℹ️ systemdPager
     await plays.services.setSystemdPager({})
 
-    // ℹ️ disks
-    await plays.services.disks({ disks: data.disks })
-
     // ℹ️ dns
     await plays.services.dns({
       dns: data.dns,
@@ -150,6 +147,9 @@ module.exports = async () => {
     await plays.services.disableLoginTerminal(data.disableLoginTerminal)
 
     await plays.services.genSshKey(data.genSshKey)
+
+    // ℹ️ disks
+    await plays.services.disks({ disks: data.disks })
 
     // ℹ️ lxd
     await plays.services.lxd(data.lxd)
