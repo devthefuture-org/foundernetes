@@ -16,6 +16,7 @@ module.exports = async () => {
       await $('su - -c "setterm --blank force --term linux </dev/tty1"', {
         sudo: true,
       })
+      await fs.ensureDir(path.dirname(checkFile))
       await fs.writeFile(checkFile, "1", "utf-8")
     },
   })
