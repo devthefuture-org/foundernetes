@@ -25,7 +25,7 @@ module.exports = async ({ children, plays }) =>
         await plays.std.ensureDir(
           {
             dir: `${storageDir}/shared`,
-            sudoWrite: true,
+            sudo: true,
           },
           { tags: ["lxd"] }
         )
@@ -33,7 +33,7 @@ module.exports = async ({ children, plays }) =>
           await plays.std.ensureDir(
             {
               dir: `${storageDir}/nodes/${name}`,
-              sudoWrite: true,
+              sudo: true,
             },
             { tags: ["lxd"] }
           )

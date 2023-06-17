@@ -10,4 +10,6 @@ module.exports = async ({ children }) =>
 
 Object.assign(module.exports, {
   disk: require("./disk"),
+  mount: require("./mount"),
+  fstab: require("./fstab"),
 })
