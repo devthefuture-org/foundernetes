@@ -3,6 +3,7 @@ module.exports = {
     "!.versionrc.js",
     "!.foundernetesrc.js",
     "**/dist/**",
+    "**/build/**",
     ".cjs",
   ],
   settings: {

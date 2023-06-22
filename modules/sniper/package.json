@@ -25,6 +25,7 @@
   "engines": {
     "node": ">=20"
   },
+  "bin": "./sniper",
   "scripts": {
     "build": "yarn build:clean && yarn build:prepare && yarn build:ncc && yarn build:pkg",
     "build:clean": "rm -rf ./dist",

@@ -6,6 +6,9 @@ const fs = require("fs-extra")
 const { cli, dbug } = require("@foundernetes/blueprint")
 const yarn = require("~/utils/yarn")
 
+// eslint-disable-next-line import/no-unresolved, import/extensions
+const requireMap = require("~/build/require-map")
+
 dbug.registerGlobal()
 
 const main = async () => {
@@ -15,6 +18,7 @@ const main = async () => {
 
   await cli(process.argv, {
     defaultCommand: "snippet",
+    requireMap,
   })
 }
 

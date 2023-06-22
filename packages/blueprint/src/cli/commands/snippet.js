@@ -4,6 +4,7 @@ const runContextCommand = require("~/process/run-context-command")
 const loadInputPayload = require("~/process/load-input-payload")
 
 const createContextPlaybook = require("~/playbook/create-context-playbook")
+const snippetRequire = require("~/snippet/require")
 
 const options = require("../options")
 
@@ -30,7 +31,10 @@ module.exports = (program, projectConfig) =>
           playbook = await createPlaybook({ name: `snippet ${snippetFile}` }),
         ] = playbooks
         const playbookCallback = async () => {
-          await snippet(input, playbook)
+          await snippet(input, {
+            playbook,
+            require: snippetRequire(projectConfig.requireMap),
+          })
         }
         const { definition } = playbook
         const runPlaybook = await createContextPlaybook(

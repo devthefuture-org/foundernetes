@@ -49,6 +49,7 @@
   "engines": {
     "node": ">=20"
   },
+  "bin": "./metal-debian",
   "scripts": {
     "start": "yarn playbook",
     "build": "yarn build:clean && yarn build:ncc && yarn build:pkg",
