@@ -2,23 +2,19 @@
 
 require("events").EventEmitter.defaultMaxListeners = 0
 
+const fs = require("fs-extra")
 const { cli, dbug } = require("@foundernetes/blueprint")
+const yarn = require("~/utils/yarn")
 
 dbug.registerGlobal()
 
-const playbooks = require("~/playbooks")
-
-const loadLocalConfig = require("./.foundernetesrc")
-
 const main = async () => {
-  const config = await loadLocalConfig()
+  if (await fs.pathExists(`${process.cwd()}/package.json`)) {
+    await yarn()
+  }
 
   await cli(process.argv, {
-    defaultCommand: "playbooks",
-    inlineConfigs: [config],
-    playbookSet: {
-      playbooks,
-    },
+    defaultCommand: "snippet",
   })
 }
 

@@ -21,7 +21,10 @@ const getPlaybookSet = async () => {
 
   let index
 
-  const ls = await getList(playbooksPath)
+  const ls = (await fs.pathExists(playbooksPath))
+    ? await getList(playbooksPath)
+    : []
+
   for (const f of ls) {
     let key
     const playbookInc = `${playbooksPath}/${f}`

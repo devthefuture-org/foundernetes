@@ -12,7 +12,7 @@ const options = require("./options")
 module.exports = async (projectConfig) => {
   const program = new Command()
 
-  const { cliPlugins } = projectConfig
+  const { cliPlugins = [] } = projectConfig
 
   program
     .name("foundernetes")

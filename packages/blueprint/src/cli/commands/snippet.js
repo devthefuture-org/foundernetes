@@ -1,4 +1,4 @@
-const get = require("lodash/get")
+const createPlaybook = require("~/playbook/create")
 
 const runContextCommand = require("~/process/run-context-command")
 const loadInputPayload = require("~/process/load-input-payload")
@@ -9,8 +9,10 @@ const options = require("../options")
 
 module.exports = (program, projectConfig) =>
   program
-    .command("play", { isDefault: projectConfig.defaultCommand === "play" })
-    .description("run play with payload")
+    .command("snippet", {
+      isDefault: projectConfig.defaultCommand === "snippet",
+    })
+    .description("run snippet js file")
     .addOption(options.cwd)
     .addOption(options.gracefullShutdownTimeout)
     .addOption(options.defaultPlayRetry)
@@ -18,17 +20,19 @@ module.exports = (program, projectConfig) =>
     .addOption(options.skipTags)
     .addOption(options.playbook)
     .addOption(options.payload)
-    .argument("<playName>", "play name (support dot notation)")
-    .action(async (playName, opts, _command) => {
+    .argument("<snippetFile>", "snippet js file (extension is optional)")
+    .action(async (snippetFile, opts, _command) => {
       const input = await loadInputPayload(opts.I)
+      const snippet = require(`${process.cwd()}/${snippetFile}`)
 
       const processCallback = async (playbooks) => {
-        const [playbook] = playbooks
-        const { definition, plays } = playbook
+        const [
+          playbook = await createPlaybook({ name: `snippet ${snippetFile}` }),
+        ] = playbooks
         const playbookCallback = async () => {
-          const play = get(plays, playName)
-          await play(input)
+          await snippet(input, playbook)
         }
+        const { definition } = playbook
         const runPlaybook = await createContextPlaybook(
           definition,
           playbookCallback

@@ -9,9 +9,9 @@ const createContextPlaybook = require("~/playbook/create-context-playbook")
 
 const options = require("../options")
 
-module.exports = (program) =>
+module.exports = (program, projectConfig) =>
   program
-    .command("loader")
+    .command("loader", { isDefault: projectConfig.defaultCommand === "loader" })
     .alias("load")
     .description("run loader with payload")
     .addOption(options.cwd)

@@ -19,6 +19,7 @@ const main = async () => {
   const now = dayjs().format("YYYY-MM-DD-HH-mm-ss")
 
   await cli(process.argv, {
+    defaultCommand: "playbooks",
     inlineConfigs: [localConfig],
     playbookSet: {
       playbooks,

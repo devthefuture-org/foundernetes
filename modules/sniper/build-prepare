@@ -1,0 +1,29 @@
+#!/usr/bin/env node
+const fs = require("fs-extra")
+
+const main = async () => {
+  const nodeModulePaths = ["../../node_modules", "node_modules"]
+  const buildPath = "build"
+
+  const files = []
+  for (const nodeModulePath of nodeModulePaths) {
+    const yarnpkgPath = `${nodeModulePath}/@yarnpkg`
+    if (!(await fs.pathExists(yarnpkgPath))) {
+      continue
+    }
+    const addFiles = await fs.readdir(yarnpkgPath)
+    files.push(...addFiles)
+  }
+
+  const lines = files
+    .filter((file) => file.startsWith("plugin-"))
+    .map((file) => `  "${file}": require("@yarnpkg/${file}"),`)
+    .join("\n")
+
+  const content = `module.exports = {\n${lines}\n};`
+
+  await fs.ensureDir(buildPath)
+  await fs.writeFile(`${buildPath}/require-yarnpkg-plugins.js`, content)
+}
+
+main()

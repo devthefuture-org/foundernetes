@@ -13,9 +13,11 @@ const action = async (targets, opts, _command) => {
   }
 }
 
-module.exports = (program) =>
+module.exports = (program, projectConfig) =>
   program
-    .command("playbook", { isDefault: true })
+    .command("playbook", {
+      isDefault: projectConfig.defaultCommand === "playbook",
+    })
     .description("run playbooks")
     .addOption(options.cwd)
     .addOption(options.gracefullShutdownTimeout)

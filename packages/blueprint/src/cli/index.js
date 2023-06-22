@@ -6,6 +6,7 @@ const addCommands = [
   require("./commands/play"),
   require("./commands/loader"),
   require("./commands/init"),
+  require("./commands/snippet"),
 ]
 
 module.exports = async (args = process.argv, projectConfig = {}) => {
@@ -13,7 +14,7 @@ module.exports = async (args = process.argv, projectConfig = {}) => {
     ctx.set("projectConfig", projectConfig)
 
     const program = await createProgram(projectConfig)
-    const { cliPlugins } = projectConfig
+    const { cliPlugins = [] } = projectConfig
     for (const cliPlugin of cliPlugins) {
       if (cliPlugin.program) {
         await cliPlugin.program(program)
