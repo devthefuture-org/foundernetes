@@ -2,7 +2,6 @@
 
 require("events").EventEmitter.defaultMaxListeners = 0
 
-const fs = require("fs-extra")
 const { cli, dbug } = require("@foundernetes/blueprint")
 const yarn = require("~/utils/yarn")
 
@@ -12,9 +11,7 @@ const requireMap = require("~/build/require-map")
 dbug.registerGlobal()
 
 const main = async () => {
-  if (await fs.pathExists(`${process.cwd()}/package.json`)) {
-    await yarn()
-  }
+  await yarn()
 
   await cli(process.argv, {
     defaultCommand: "snippet",

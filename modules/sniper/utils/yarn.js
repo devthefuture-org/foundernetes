@@ -5,12 +5,21 @@ const { Configuration, Project, StreamReport, Cache } = require("@yarnpkg/core")
 const yarnpkgPlugins = require("~/build/require-yarnpkg-plugins")
 
 module.exports = async (options = {}) => {
+  if (!(await fs.pathExists(`${process.cwd()}/package.json`))) {
+    return
+  }
+
   const {
     stdout = process.stdout,
     cwd = process.cwd(),
     defaultNodeLinker = process.env.SNIPER_DEFAULT_NODE_LINKER ||
       "node-modules",
+    skipYarn = process.env.SNIPER_SKIP_YARN || false,
   } = options
+
+  if (skipYarn) {
+    return
+  }
 
   const modules = new Map()
   const plugins = new Set()

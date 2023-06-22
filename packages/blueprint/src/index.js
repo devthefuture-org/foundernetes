@@ -13,6 +13,9 @@ const createPlay = require("~/play/create")
 const createComposer = require("~/composer/create")
 const createPlaybook = require("~/playbook/create")
 
+const loader = require("~/loader/short")
+const play = require("~/play/short")
+
 const validate = require("~/vars/validate")
 const createValidator = require("~/vars/create-validator")
 
@@ -36,6 +39,10 @@ module.exports = {
   createComposer,
   createPlaybook,
   createTree,
+
+  // shorts (useful in snippets or simple workflows)
+  loader,
+  play,
 
   // vars
   createValidator,
