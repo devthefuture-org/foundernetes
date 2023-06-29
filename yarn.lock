@@ -855,9 +855,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@foundernetes/orgz@workspace:modules/orgz":
+"@foundernetes/projekto@workspace:modules/projekto":
   version: 0.0.0-use.local
-  resolution: "@foundernetes/orgz@workspace:modules/orgz"
+  resolution: "@foundernetes/projekto@workspace:modules/projekto"
   dependencies:
     "@foundernetes/async": "workspace:^"
     "@foundernetes/axios": "workspace:^"
@@ -872,7 +872,7 @@ __metadata:
     link-module-alias: ^1.2.0
     pkg: ^5.8.0
   bin:
-    orgz: ./orgz
+    projekto: ./projekto
   languageName: unknown
   linkType: soft
 

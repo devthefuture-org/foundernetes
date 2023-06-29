@@ -1,8 +1,8 @@
 {
-  "name": "@foundernetes/orgz",
+  "name": "@foundernetes/projekto",
   "version": "1.0.0",
   "license": "MIT",
-  "description": "🚀 Setup your multi-tenants on Kubernetes with Forgejo and ArgoCD",
+  "description": "☸️  Setup your multi-tenants on Kubernetes with Forgejo and ArgoCD",
   "dependencies": {
     "@foundernetes/async": "workspace:^",
     "@foundernetes/axios": "workspace:^",
@@ -22,12 +22,12 @@
   "engines": {
     "node": ">=20"
   },
-  "bin": "./orgz",
+  "bin": "./projekto",
   "scripts": {
     "build": "yarn build:clean && yarn build:ncc && yarn build:pkg",
     "build:clean": "rm -rf ./dist",
-    "build:ncc": "cd ../../ && ncc build modules/orgz/orgz --out modules/orgz/dist --source-map --v8-cache",
-    "build:pkg": "cd ../../ && pkg -c modules/orgz/.pkg.json -o modules/orgz/dist-bin/orgz --compress=GZip modules/orgz/dist/index.js",
+    "build:ncc": "cd ../../ && ncc build modules/projekto/projekto --out modules/projekto/dist --source-map --v8-cache",
+    "build:pkg": "cd ../../ && pkg -c modules/projekto/.pkg.json -o modules/projekto/dist-bin/projekto --compress=GZip modules/projekto/dist/index.js",
     "lint": "eslint .",
     "postinstall": "link-module-alias && yarn build:prepare"
   },
