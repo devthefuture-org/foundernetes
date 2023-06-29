@@ -8,12 +8,20 @@ const yarn = require("~/utils/yarn")
 // eslint-disable-next-line import/no-unresolved, import/extensions
 const requireMap = require("~/build/require-map")
 
+const pk = require("./package.json")
+
 dbug.registerGlobal()
 
 const main = async () => {
   await yarn()
 
   await cli(process.argv, {
+    customProgram: {
+      name: "sniper",
+      version: pk.version,
+      description: pk.description,
+      enabledCommands: ["snippet"],
+    },
     defaultCommand: "snippet",
     requireMap,
   })

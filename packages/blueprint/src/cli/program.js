@@ -12,12 +12,19 @@ const options = require("./options")
 module.exports = async (projectConfig) => {
   const program = new Command()
 
-  const { cliPlugins = [] } = projectConfig
+  const { cliPlugins = [], customProgram = {} } = projectConfig
+
+  const programDefinition = {
+    name: "foundernetes",
+    description: "Infra Idempotence As A Framework ☀️",
+    version: require(`../../package.json`).version,
+    ...customProgram,
+  }
 
   program
-    .name("foundernetes")
-    .description("Infra Idempotence As A Framework ☀️")
-    .version(require(`../../package.json`).version)
+    .name(programDefinition.name)
+    .description(programDefinition.description)
+    .version(programDefinition.version)
     .addOption(options.debug)
     .addOption(options.inlineConfig)
     .addOption(options.configSet)

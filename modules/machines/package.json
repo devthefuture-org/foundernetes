@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "main": "main/index.js",
+  "description": "🖥️  Provision a pool of machines through ssh, ensuring files and running remote commands",
   "dependencies": {
     "@foundernetes/async": "workspace:^",
     "@foundernetes/axios": "workspace:^",

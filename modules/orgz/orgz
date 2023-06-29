@@ -4,11 +4,19 @@ require("events").EventEmitter.defaultMaxListeners = 0
 
 const { cli, dbug } = require("@foundernetes/blueprint")
 
+const pk = require("./package.json")
+
 dbug.registerGlobal()
 
 const main = async () => {
   await cli(process.argv, {
-    defaultCommand: "playbooks",
+    customProgram: {
+      name: "orgz",
+      version: pk.version,
+      description: pk.description,
+      enabledCommands: ["playbook"],
+    },
+    defaultCommand: "playbook",
   })
 }
 

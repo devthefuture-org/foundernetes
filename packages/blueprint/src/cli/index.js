@@ -1,13 +1,13 @@
 const ctx = require("@foundernetes/ctx")
 const createProgram = require("./program")
 
-const addCommands = [
-  require("./commands/playbook"),
-  require("./commands/play"),
-  require("./commands/loader"),
-  require("./commands/init"),
-  require("./commands/snippet"),
-]
+const addCommands = {
+  playbook: require("./commands/playbook"),
+  play: require("./commands/play"),
+  loader: require("./commands/loader"),
+  init: require("./commands/init"),
+  snippet: require("./commands/snippet"),
+}
 
 module.exports = async (args = process.argv, projectConfig = {}) => {
   return ctx.provide(async () => {
@@ -21,11 +21,17 @@ module.exports = async (args = process.argv, projectConfig = {}) => {
       }
     }
 
-    for (const addCommand of addCommands) {
+    const { customProgram = {} } = projectConfig
+    const { enabledCommands = null } = customProgram
+
+    for (const [commandName, addCommand] of Object.entries(addCommands)) {
+      if (enabledCommands && !enabledCommands.includes(commandName)) {
+        continue
+      }
       const command = await addCommand(program, projectConfig)
+      // const commandName = command.name()
 
       for (const cliPlugin of cliPlugins) {
-        const commandName = command.name()
         if (cliPlugin.commands?.[commandName]) {
           await cliPlugin.commands[commandName](command, addCommand, program)
         }

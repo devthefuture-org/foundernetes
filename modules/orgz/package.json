@@ -2,6 +2,7 @@
   "name": "@foundernetes/orgz",
   "version": "1.0.0",
   "license": "MIT",
+  "description": "🚀 Setup your multi-tenants on Kubernetes with Forgejo and ArgoCD",
   "dependencies": {
     "@foundernetes/async": "workspace:^",
     "@foundernetes/axios": "workspace:^",

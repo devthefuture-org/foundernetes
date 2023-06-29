@@ -2,6 +2,7 @@
   "name": "@foundernetes/sniper",
   "version": "1.0.0",
   "license": "MIT",
+  "description": "🔫 Run arbitraty js scripts with @foundernetes/blueprint framework and embedded yarn autoinstaller",
   "dependencies": {
     "@foundernetes/async": "workspace:^",
     "@foundernetes/axios": "workspace:^",

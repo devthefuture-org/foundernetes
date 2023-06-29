@@ -12,6 +12,7 @@ dbug.registerGlobal()
 const playbooks = require("~/playbooks")
 
 const loadLocalConfig = require("./.foundernetesrc")
+const pk = require("./package.json")
 
 const main = async () => {
   const localConfig = await loadLocalConfig()
@@ -19,7 +20,13 @@ const main = async () => {
   const now = dayjs().format("YYYY-MM-DD-HH-mm-ss")
 
   await cli(process.argv, {
-    defaultCommand: "playbooks",
+    customProgram: {
+      name: "metal-debian",
+      version: pk.version,
+      description: pk.description,
+      enabledCommands: ["playbook"],
+    },
+    defaultCommand: "playbook",
     inlineConfigs: [localConfig],
     playbookSet: {
       playbooks,

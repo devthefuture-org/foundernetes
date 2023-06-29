@@ -2,6 +2,7 @@
   "name": "@foundernetes/metal-debian",
   "version": "1.0.0",
   "license": "MIT",
+  "description": "🌍 Setup a bare-metal debian machine with security, lxd and all requirements to run a kubernetes cluster",
   "dependencies": {
     "@foundernetes/async": "workspace:^",
     "@foundernetes/axios": "workspace:^",
