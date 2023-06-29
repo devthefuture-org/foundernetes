@@ -855,6 +855,27 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@foundernetes/orgz@workspace:modules/orgz":
+  version: 0.0.0-use.local
+  resolution: "@foundernetes/orgz@workspace:modules/orgz"
+  dependencies:
+    "@foundernetes/async": "workspace:^"
+    "@foundernetes/axios": "workspace:^"
+    "@foundernetes/blueprint": "workspace:^"
+    "@foundernetes/ctx": "workspace:^"
+    "@foundernetes/eta": "workspace:^"
+    "@foundernetes/execa": "workspace:^"
+    "@foundernetes/match": "workspace:^"
+    "@foundernetes/std": "workspace:^"
+    "@vercel/ncc": ^0.36.1
+    fs-extra: ^11.1.1
+    link-module-alias: ^1.2.0
+    pkg: ^5.8.0
+  bin:
+    orgz: ./orgz
+  languageName: unknown
+  linkType: soft
+
 "@foundernetes/sniper@workspace:modules/sniper":
   version: 0.0.0-use.local
   resolution: "@foundernetes/sniper@workspace:modules/sniper"

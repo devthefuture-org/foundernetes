@@ -1,6 +1,5 @@
 {
   "name": "@foundernetes/std",
-  "packageManager": "yarn@3.3.0",
   "dependencies": {
     "@foundernetes/execa": "workspace:^",
     "direct-logger": "^2.15.0",

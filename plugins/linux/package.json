@@ -1,6 +1,5 @@
 {
   "name": "@foundernetes/linux",
-  "packageManager": "yarn@3.3.0",
   "dependencies": {
     "@foundernetes/async": "workspace:^",
     "@foundernetes/axios": "workspace:^",

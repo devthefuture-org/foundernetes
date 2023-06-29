@@ -4,7 +4,6 @@
   "description": "execa commonjs bridge",
   "main": ".cjs/execa/index.js",
   "license": "MIT",
-  "packageManager": "yarn@3.3.0",
   "dependencies": {
     "execa": "^7.1.1"
   },

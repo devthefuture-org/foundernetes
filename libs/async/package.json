@@ -1,6 +1,5 @@
 {
   "name": "@foundernetes/async",
-  "packageManager": "yarn@3.3.0",
   "main": "index.js",
   "dependencies": {
     "async": "^3.2.4"

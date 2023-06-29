@@ -1,5 +1,5 @@
 {
-  "name": "@foundernetes/sniper",
+  "name": "@foundernetes/orgz",
   "version": "1.0.0",
   "license": "MIT",
   "dependencies": {
@@ -9,12 +9,8 @@
     "@foundernetes/ctx": "workspace:^",
     "@foundernetes/eta": "workspace:^",
     "@foundernetes/execa": "workspace:^",
-    "@foundernetes/linux": "workspace:^",
     "@foundernetes/match": "workspace:^",
     "@foundernetes/std": "workspace:^",
-    "@yarnpkg/cli": "^4.0.0-rc.46",
-    "@yarnpkg/core": "^4.0.0-rc.46",
-    "@yarnpkg/plugin-essentials": "^4.0.0-rc.46",
     "fs-extra": "^11.1.1",
     "link-module-alias": "^1.2.0"
   },
@@ -25,13 +21,12 @@
   "engines": {
     "node": ">=20"
   },
-  "bin": "./sniper",
+  "bin": "./orgz",
   "scripts": {
-    "build": "yarn build:clean && yarn build:prepare && yarn build:ncc && yarn build:pkg",
+    "build": "yarn build:clean && yarn build:ncc && yarn build:pkg",
     "build:clean": "rm -rf ./dist",
-    "build:prepare": "./build-prepare",
-    "build:ncc": "cd ../../ && ncc build modules/sniper/sniper --out modules/sniper/dist --source-map --v8-cache",
-    "build:pkg": "cd ../../ && pkg -c modules/sniper/.pkg.json -o modules/sniper/dist-bin/sniper --compress=GZip modules/sniper/dist/index.js",
+    "build:ncc": "cd ../../ && ncc build modules/orgz/orgz --out modules/orgz/dist --source-map --v8-cache",
+    "build:pkg": "cd ../../ && pkg -c modules/orgz/.pkg.json -o modules/orgz/dist-bin/orgz --compress=GZip modules/orgz/dist/index.js",
     "lint": "eslint .",
     "postinstall": "link-module-alias && yarn build:prepare"
   },
