@@ -1,5 +1,7 @@
 sshdConfig:
   port: 54567
+hairpinning:
+  hostIP: 10.0.0.10
 ufw:
   default:
     incoming: deny
@@ -9,16 +11,25 @@ ufw:
     enable: true
     level: low
   after:
-    filter:
-      - -A FORWARD -p tcp -d 12.0.0.80 --dport 443 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
-      - -A FORWARD -p tcp -d 12.0.0.80 --dport 80 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
-      - -A FORWARD -p tcp -d 12.0.0.82 --dport 22 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+    # filter:
+    #   - -A FORWARD -p tcp -d 12.0.0.80 --dport 443 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+    #   - -A FORWARD -p tcp -d 12.0.0.80 --dport 80 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+    #   - -A FORWARD -p tcp -d 12.0.0.82 --dport 22 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
     nat:
       - :PREROUTING ACCEPT [0:0]
       - :POSTROUTING ACCEPT [0:0]
-      - -A PREROUTING -i enp2s0 -p tcp -m tcp --dport 443 -j DNAT --to-destination 12.0.0.80:443
-      - -A PREROUTING -i enp2s0 -p tcp -m tcp --dport 80 -j DNAT --to-destination 12.0.0.80:80
-      - -A PREROUTING -i enp2s0 -p tcp -m tcp --dport 22 -j DNAT --to-destination 12.0.0.82:22
+      # - -A PREROUTING -i enp2s0 -p tcp -m tcp --dport 443 -j DNAT --to-destination 12.0.0.80:443
+      # - -A PREROUTING -i enp2s0 -p tcp -m tcp --dport 80 -j DNAT --to-destination 12.0.0.80:80
+      # - -A PREROUTING -i enp2s0 -p tcp -m tcp --dport 22 -j DNAT --to-destination 12.0.0.82:22
+      # hairpinning
+      - -A PREROUTING -p tcp --dport 80 -d $${{ hairpinning.hostIP }}/32 -j DNAT --to-destination 12.0.0.80
+      - -A OUTPUT -p tcp --dport 80 -d $${{ hairpinning.hostIP }}/32 -j DNAT --to-destination 12.0.0.80
+      - -A PREROUTING -p tcp --dport 443 -d $${{ hairpinning.hostIP }}/32 -j DNAT --to-destination 12.0.0.80
+      - -A OUTPUT -p tcp --dport 443 -d $${{ hairpinning.hostIP }}/32 -j DNAT --to-destination 12.0.0.80
+      - -A PREROUTING -p tcp --dport 22 -d $${{ hairpinning.hostIP }}/32 -j DNAT --to-destination 12.0.0.82
+      - -A OUTPUT -p tcp --dport 22 -d $${{ hairpinning.hostIP }}/32 -j DNAT --to-destination 12.0.0.82
+      - -A POSTROUTING -s $${{ [...hairpinning.hostIP.split(".").slice(0,3),"0"].join(".") }}/24 -d 12.0.0.80/32 -j MASQUERADE
+      - -A POSTROUTING -s $${{ [...hairpinning.hostIP.split(".").slice(0,3),"0"].join(".") }}/24 -d 12.0.0.82/32 -j MASQUERADE
   rules:
     http:
       direction: in
