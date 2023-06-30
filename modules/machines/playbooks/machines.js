@@ -1,4 +1,5 @@
 const tmp = require("tmp")
+const wildstring = require("wildstring")
 
 const deepmerge = require("@foundernetes/std/deepmerge")
 const { createPlaybook, createTree } = require("@foundernetes/blueprint")
@@ -41,10 +42,22 @@ module.exports = async () => {
           },
           files: [],
           commands: [],
+          exportEnv: ["F10S_*"],
+          extraExportEnv: [],
         },
         hostDefaults,
         h
       )
+
+      const exportEnvPatterns = [...host.exportEnv, ...host.extraExportEnv]
+      const env = Object.entries(process.env)
+        .filter(([key]) =>
+          exportEnvPatterns.some((pattern) => wildstring.match(pattern, key))
+        )
+        .reduce((acc, [key, value]) => {
+          acc[key] = value
+          return acc
+        }, {})
 
       const logger = ctx.getLogger()
 
@@ -69,6 +82,7 @@ module.exports = async () => {
         if (typeof command === "string") {
           command = { command }
         }
+        command.env = env
         return plays.ssh.command(command)
       })
 

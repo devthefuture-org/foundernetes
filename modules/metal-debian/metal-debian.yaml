@@ -1,7 +1,7 @@
 sshdConfig:
   port: 54567
 hairpinning:
-  hostIP: 10.0.0.10
+  hostIP: "${{ process.env.F10S_METALDEBIAN_HOST_IP || `10.0.0.8` }}"
 ufw:
   default:
     incoming: deny

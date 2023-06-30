@@ -14,6 +14,7 @@ module.exports = async ({ check }) => {
         "logStd",
         "logStderr",
         "logStdout",
+        "sudo",
       ])
 
       const ssh = ctx.getSSH()
@@ -66,7 +67,7 @@ module.exports = async ({ check }) => {
 
       logger.info(`▶️  ${command} ...`)
       let result
-      if (command.sudo && !command.startsWith("sudo ")) {
+      if (vars.sudo && !command.startsWith("sudo ")) {
         command = `sudo ${command}`
       }
       if (command.startsWith("sudo ")) {

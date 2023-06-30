@@ -14,7 +14,7 @@ module.exports = async () => {
         if (exitCode !== 0) {
           return false
         }
-        return stdout === device
+        return stdout.split("\n").includes(device)
       },
       async run() {
         await $(`mkdir -p ${mountPath}`, { sudo: true })

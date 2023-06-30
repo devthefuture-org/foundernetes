@@ -1,6 +1,13 @@
 #!/bin/bash
 set -e
 cd /opt/metal-debian
+
+if [ -f .env ]; then
+  set -o allexport
+  source .env
+  set +o allexport
+fi
+
 export F10S_LOG_LEVEL=trace
 export F10S_LOG_FILE=/var/log/metal-debian/boot-$(date '+%Y-%m-%d-%H-%M-%S').log
 export F10S_LOG_FILE_PLAIN=/var/log/metal-debian/plain.boot-$(date '+%Y-%m-%d-%H-%M-%S').log

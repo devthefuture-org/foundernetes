@@ -1,4 +1,5 @@
 const path = require("path")
+const shellQuote = require("shell-quote")
 
 const { createComposer } = require("@foundernetes/blueprint")
 
@@ -14,6 +15,21 @@ module.exports = async ({ plays }) =>
     await plays.std.chmod({
       file: "/opt/metal-debian-boot.sh",
       mode: "755",
+      sudo: true,
+    })
+
+    const envContent = Object.entries(process.env)
+      .filter(([key]) => key.startsWith("F10S_METALDEBIAN_"))
+      .map(([key, val]) => {
+        key = shellQuote.quote([key])
+        val = shellQuote.quote([val])
+        return `${key}=${val}`
+      })
+      .join("\n")
+
+    await plays.std.ensureFile({
+      file: "/opt/metal-debian/.env",
+      content: envContent,
       sudo: true,
     })
 
