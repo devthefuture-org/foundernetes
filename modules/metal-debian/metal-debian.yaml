@@ -1,7 +1,8 @@
 sshdConfig:
   port: 54567
+hostIP: "$${{ process.env.F10S_METALDEBIAN_HOST_IP || `10.0.0.8` }}"
 hairpinning:
-  hostIP: "$${{ process.env.F10S_METALDEBIAN_HOST_IP || `10.0.0.8` }}"
+  hostIP: "$${{ hostIP }}"
 ufw:
   default:
     incoming: deny
@@ -22,14 +23,14 @@ ufw:
       # - -A PREROUTING -i enp2s0 -p tcp -m tcp --dport 80 -j DNAT --to-destination 12.0.0.80:80
       # - -A PREROUTING -i enp2s0 -p tcp -m tcp --dport 22 -j DNAT --to-destination 12.0.0.82:22
       # expose + hairpinning
-      - -A PREROUTING -p tcp --dport 80 -d $${{ hairpinning.hostIP }}/32 -j DNAT --to-destination 12.0.0.80
-      - -A OUTPUT -p tcp --dport 80 -d $${{ hairpinning.hostIP }}/32 -j DNAT --to-destination 12.0.0.80
-      - -A PREROUTING -p tcp --dport 443 -d $${{ hairpinning.hostIP }}/32 -j DNAT --to-destination 12.0.0.80
-      - -A OUTPUT -p tcp --dport 443 -d $${{ hairpinning.hostIP }}/32 -j DNAT --to-destination 12.0.0.80
-      - -A PREROUTING -p tcp --dport 22 -d $${{ hairpinning.hostIP }}/32 -j DNAT --to-destination 12.0.0.82
-      - -A OUTPUT -p tcp --dport 22 -d $${{ hairpinning.hostIP }}/32 -j DNAT --to-destination 12.0.0.82
-      - -A POSTROUTING -s $${{ [...hairpinning.hostIP.split(".").slice(0,3),"0"].join(".") }}/24 -d 12.0.0.80/32 -j MASQUERADE
-      - -A POSTROUTING -s $${{ [...hairpinning.hostIP.split(".").slice(0,3),"0"].join(".") }}/24 -d 12.0.0.82/32 -j MASQUERADE
+      - -A PREROUTING -p tcp --dport 80 -d $${{ hostIP }}/32 -j DNAT --to-destination 12.0.0.80
+      - -A OUTPUT -p tcp --dport 80 -d $${{ hostIP }}/32 -j DNAT --to-destination 12.0.0.80
+      - -A PREROUTING -p tcp --dport 443 -d $${{ hostIP }}/32 -j DNAT --to-destination 12.0.0.80
+      - -A OUTPUT -p tcp --dport 443 -d $${{ hostIP }}/32 -j DNAT --to-destination 12.0.0.80
+      - -A PREROUTING -p tcp --dport 22 -d $${{ hostIP }}/32 -j DNAT --to-destination 12.0.0.82
+      - -A OUTPUT -p tcp --dport 22 -d $${{ hostIP }}/32 -j DNAT --to-destination 12.0.0.82
+      - -A POSTROUTING -s $${{ [...hostIP.split(".").slice(0,3),"0"].join(".") }}/24 -d 12.0.0.80/32 -j MASQUERADE
+      - -A POSTROUTING -s $${{ [...hostIP.split(".").slice(0,3),"0"].join(".") }}/24 -d 12.0.0.82/32 -j MASQUERADE
   rules:
     http:
       direction: in
