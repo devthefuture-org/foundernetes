@@ -21,7 +21,7 @@ ufw:
       # - -A PREROUTING -i enp2s0 -p tcp -m tcp --dport 443 -j DNAT --to-destination 12.0.0.80:443
       # - -A PREROUTING -i enp2s0 -p tcp -m tcp --dport 80 -j DNAT --to-destination 12.0.0.80:80
       # - -A PREROUTING -i enp2s0 -p tcp -m tcp --dport 22 -j DNAT --to-destination 12.0.0.82:22
-      # hairpinning
+      # expose + hairpinning
       - -A PREROUTING -p tcp --dport 80 -d $${{ hairpinning.hostIP }}/32 -j DNAT --to-destination 12.0.0.80
       - -A OUTPUT -p tcp --dport 80 -d $${{ hairpinning.hostIP }}/32 -j DNAT --to-destination 12.0.0.80
       - -A PREROUTING -p tcp --dport 443 -d $${{ hairpinning.hostIP }}/32 -j DNAT --to-destination 12.0.0.80
