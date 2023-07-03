@@ -1,4 +1,4 @@
-const tmp = require("tmp")
+const tmp = require("tmp-promise")
 const wildstring = require("wildstring")
 
 const deepmerge = require("@foundernetes/std/deepmerge")

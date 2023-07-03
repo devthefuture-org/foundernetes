@@ -1,6 +1,6 @@
 const path = require("path")
 const fs = require("fs-extra")
-const tmp = require("tmp")
+const tmp = require("tmp-promise")
 const defaults = require("lodash/defaults")
 
 const { createPlay } = require("@foundernetes/blueprint")

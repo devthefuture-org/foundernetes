@@ -788,7 +788,7 @@ __metadata:
     slugify: ^1.6.5
     sonic-boom: ^3.2.0
     tiged: ^2.12.3
-    tmp: ^0.2.1
+    tmp-promise: ^3.0.3
     which: ^3.0.0
     wildstring: ^1.0.9
     ya-retry: ^1.2.0
@@ -897,7 +897,7 @@ __metadata:
     fs-extra: ^11.1.1
     link-module-alias: ^1.2.0
     pkg: ^5.8.0
-    tmp: ^0.2.1
+    tmp-promise: ^3.0.3
   bin:
     sniper: ./sniper
   languageName: unknown
@@ -8897,7 +8897,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tmp@npm:^0.2.1":
+"tmp-promise@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "tmp-promise@npm:3.0.3"
+  dependencies:
+    tmp: ^0.2.0
+  checksum: f854f5307dcee6455927ec3da9398f139897faf715c5c6dcee6d9471ae85136983ea06662eba2edf2533bdcb0fca66d16648e79e14381e30c7fb20be9c1aa62c
+  languageName: node
+  linkType: hard
+
+"tmp@npm:^0.2.0":
   version: 0.2.1
   resolution: "tmp@npm:0.2.1"
   dependencies:
