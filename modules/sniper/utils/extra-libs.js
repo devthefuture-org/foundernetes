@@ -1,1 +1,1 @@
-module.exports = ["fs-extra", "axios"]
+module.exports = ["fs-extra", "axios", "tmp"]
