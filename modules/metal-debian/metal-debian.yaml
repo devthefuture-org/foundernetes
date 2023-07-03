@@ -68,14 +68,19 @@ packages:
     installer: apt
   sshd-config:
     installer: install
-    version: "0.8.1"
+    version: "0.9.1"
     versions:
-      "0.8.1":
+      "0.9.1":
         download:
-          checksum: "3d57abfc8276f06d2d426e075872a478890b311b2be5ed4d0d62bcda3ab398d5f77180e854cee63cc2db024a792a2c406e4a32815a55965c08d4c82e77830dd4"
-        checksum: "a3f8d872e0c1ed234404e518e12b2f0627c9111b335d7490ae79cd811780e283d237391baaa6bfcc2b412a62213e7ec1260aa9f9c3ba1d4a25207725d1a013a5"
+          checksum: "7307e6d486f4881ae8ef219cb595e640f0f40e46e6aeeecd997cfddbf5e753fa4e2148cbd726e77ad618fa2ad2a3cb000d62d21d86823f087189f4e1bb915285"
+        checksum: "cbc4107566f66f4ce5dd0fd2fbc7f13ea1148c431ce7d8aa5ca8ba612cbec73e494125d888b04b535a6f37a38cf9071c8af21d85fb6d92c7faa2bcb11057a625"
+      # "0.8.1":
+      #   download:
+      #     url: https://github.com/devthejo/sshd-config/releases/download/${{version}}/sshd-config_${{version}}_${{platform}}_${{archAlt2}}.tgz
+      #     checksum: "3d57abfc8276f06d2d426e075872a478890b311b2be5ed4d0d62bcda3ab398d5f77180e854cee63cc2db024a792a2c406e4a32815a55965c08d4c82e77830dd4"
+      #   checksum: "a3f8d872e0c1ed234404e518e12b2f0627c9111b335d7490ae79cd811780e283d237391baaa6bfcc2b412a62213e7ec1260aa9f9c3ba1d4a25207725d1a013a5"
     download:
-      url: https://github.com/devthejo/sshd-config/releases/download/${{version}}/sshd-config_${{version}}_${{platform}}_${{archAlt2}}.tgz
+      url: https://github.com/josegonzalez/sshd-config/releases/download/${{version}}/sshd-config_${{version}}_${{platform}}_${{archAlt}}.tgz
     check:
       command: sshd-config --version
       expected: "${{version}}"
