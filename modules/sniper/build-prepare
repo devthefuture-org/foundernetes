@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 const fs = require("fs-extra")
 
+const extraLibs = require("~/utils/extra-libs")
+
 const main = async () => {
   const buildPath = "build"
 
@@ -38,7 +40,10 @@ const main = async () => {
       )
     )
     const dependencies = [
-      ...new Set(packages.flatMap((pk) => Object.keys(pk.dependencies || {}))),
+      ...new Set([
+        ...packages.flatMap((pk) => Object.keys(pk.dependencies || {})),
+        ...extraLibs,
+      ]),
     ]
 
     const lines = dependencies
