@@ -58,7 +58,10 @@ const create = async (definition) => {
 
   const play = async (vars = {}, options = {}) =>
     ctx.fork(async () => {
-      const name = getPluginName(definition, play)
+      let name = getPluginName(definition, play)
+      if (typeof name === "function") {
+        name = await name(vars)
+      }
       definition = { ...definition, name }
 
       const contextPlay = {

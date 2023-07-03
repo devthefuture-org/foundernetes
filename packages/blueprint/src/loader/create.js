@@ -52,7 +52,10 @@ module.exports = async (definition) => {
 
   const loader = async (vars = {}, options = {}) =>
     ctx.fork(async () => {
-      const name = getPluginName(definition, loader)
+      let name = getPluginName(definition, loader)
+      if (typeof name === "function") {
+        name = await name(vars)
+      }
       definition = { ...definition, name }
 
       const contextLoader = {
