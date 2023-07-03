@@ -29,8 +29,8 @@ ufw:
       - -A OUTPUT -p tcp --dport 443 -d $${{ hostIP }}/32 -j DNAT --to-destination 12.0.0.80
       - -A PREROUTING -p tcp --dport 22 -d $${{ hostIP }}/32 -j DNAT --to-destination 12.0.0.82
       - -A OUTPUT -p tcp --dport 22 -d $${{ hostIP }}/32 -j DNAT --to-destination 12.0.0.82
-      - -A POSTROUTING -s $${{ [...hostIP.split(".").slice(0,3),"0"].join(".") }}/24 -d 12.0.0.80/32 -j MASQUERADE
-      - -A POSTROUTING -s $${{ [...hostIP.split(".").slice(0,3),"0"].join(".") }}/24 -d 12.0.0.82/32 -j MASQUERADE
+      # - -A POSTROUTING -s $${{ [...hostIP.split(".").slice(0,3),"0"].join(".") }}/24 -d 12.0.0.80/32 -j MASQUERADE
+      # - -A POSTROUTING -s $${{ [...hostIP.split(".").slice(0,3),"0"].join(".") }}/24 -d 12.0.0.82/32 -j MASQUERADE
   rules:
     http:
       direction: in
