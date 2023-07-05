@@ -153,6 +153,9 @@ module.exports = async () => {
 
     // ℹ️ lxd
     await plays.services.lxd(data.lxd)
+
+    // ℹ️ devops/debug sugars
+    await plays.services.bash()
   }
 
   return createPlaybook({

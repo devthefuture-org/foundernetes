@@ -25,4 +25,5 @@ module.exports = {
   genSshKey: require("./gen-ssh-key"),
   disks: require("./disks"),
   updateGrubOnDefaultChange: require("./update-grub-on-default-change"),
+  bash: require("./bash"),
 }
