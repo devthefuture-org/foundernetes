@@ -82,7 +82,7 @@ module.exports = async () => {
         if (typeof command === "string") {
           command = { command }
         }
-        command.env = env
+        command.env = { ...(command.env || {}), ...env }
         return plays.ssh.command(command)
       })
 
