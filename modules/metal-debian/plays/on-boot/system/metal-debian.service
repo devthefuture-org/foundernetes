@@ -1,6 +1,7 @@
 [Unit]
 Description=Foundernetes Metal Debian
-After=nss-lookup.target
+After=systemd-resolved.service remote-fs.target network-online.target
+Wants=network-online.target
 
 [Service]
 ExecStart=/opt/metal-debian-boot.sh
