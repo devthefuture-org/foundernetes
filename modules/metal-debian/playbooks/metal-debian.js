@@ -144,7 +144,7 @@ module.exports = async () => {
 
     await plays.services.logrotate(data.logrotate)
 
-    await plays.services.disableLoginTerminal(data.disableLoginTerminal)
+    // await plays.services.disableLoginTerminal(data.disableLoginTerminal)
 
     await plays.services.genSshKey(data.genSshKey)
 
