@@ -18,10 +18,14 @@ module.exports = async (options = {}) => {
   const logger = ctx.getLogger()
 
   const ssh = new NodeSSH()
+  let { password } = options
+  const { passwordFromEnv } = options
+  if (!password && passwordFromEnv) {
+    password = process.env[passwordFromEnv]
+  }
   const {
     address,
     user,
-    password,
     tryKeyboard = true,
     sudoPassword = password,
     sudoPasswordNeeded: sudoPasswordNeededDefault,
