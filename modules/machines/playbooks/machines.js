@@ -1,6 +1,7 @@
 const tmp = require("tmp-promise")
 const wildstring = require("wildstring")
 
+const { render } = require("@foundernetes/eta")
 const deepmerge = require("@foundernetes/std/deepmerge")
 const { createPlaybook, createTree } = require("@foundernetes/blueprint")
 
@@ -74,6 +75,15 @@ module.exports = async () => {
         async (file) => {
           if (typeof file === "string") {
             file = { source: file }
+          }
+          const templateVars = {
+            host,
+          }
+          if (file.source) {
+            file.source = await render(file.source, templateVars)
+          }
+          if (file.target) {
+            file.target = await render(file.target, templateVars)
           }
           return plays.ssh.sync(file)
         }
