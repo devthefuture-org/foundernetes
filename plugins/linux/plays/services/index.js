@@ -7,6 +7,8 @@ module.exports = {
   serviceEnable: require("./service-enable"),
   aptUpdateOnSourceChanges: require("./apt-update-on-sources-change"),
   sshd: require("./sshd"),
+  kernelModules: require("./kernel-modules"),
+  networkInterfaces: require("./network-interfaces"),
   aptUpdate: require("./apt-update"),
   aptSources: require("./apt-sources"),
   fail2ban: require("./fail2ban"),

@@ -107,6 +107,11 @@ module.exports = async () => {
       { tags: ["sshd"] }
     )
 
+    await plays.services.kernelModules(data.kernelModules, {
+      tags: ["kernel", "modules"],
+    })
+    await plays.services.networkInterfaces({}, { tags: ["network"] })
+
     await plays.services.fail2ban(
       deepmerge(
         {

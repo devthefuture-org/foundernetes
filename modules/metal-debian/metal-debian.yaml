@@ -66,6 +66,8 @@ ufw:
 packages:
   openssh-server:
     installer: apt
+  ifenslave:
+    installer: apt
   sshd-config:
     installer: install
     version: "0.9.1"
@@ -137,6 +139,8 @@ packages:
   logrotate:
     installer: apt
 
+  console-data: # keyboard layout utilities
+    installer: apt
   micro:
     installer: install
     version: "2.0.11"
@@ -183,5 +187,5 @@ packages:
     installer: apt
   duf:
     installer: apt
-  
-  
+  tcpdump:
+    installer: apt
