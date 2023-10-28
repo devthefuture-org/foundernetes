@@ -32,9 +32,9 @@ module.exports = ({ loaders }) =>
       }
 
       const date =
-        dateFromSystemCtl > dateFromJournalCtl
-          ? dateFromSystemCtl
-          : dateFromJournalCtl
+        dateFromJournalCtl && dateFromJournalCtl > dateFromSystemCtl
+          ? dateFromJournalCtl
+          : dateFromSystemCtl
 
       return date
     },
