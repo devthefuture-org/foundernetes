@@ -25,8 +25,11 @@ module.exports = ({ loaders }) =>
         .split("\n")
         .reverse()
         .find((line) => line.includes("Starting") || line.includes("Reloaded"))
-      const [lastRestartIsoTime] = lastRestartLine.split(" ")
-      const dateFromJournalCtl = dayjs(lastRestartIsoTime).toDate()
+      let dateFromJournalCtl
+      if (lastRestartLine) {
+        const [lastRestartIsoTime] = lastRestartLine.split(" ")
+        dateFromJournalCtl = dayjs(lastRestartIsoTime).toDate()
+      }
 
       const date =
         dateFromSystemCtl > dateFromJournalCtl
