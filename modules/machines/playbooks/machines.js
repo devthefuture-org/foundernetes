@@ -1,4 +1,5 @@
 const tmp = require("tmp-promise")
+const fs = require("fs-extra")
 const wildstring = require("wildstring")
 
 const { render } = require("@foundernetes/eta")
@@ -84,6 +85,9 @@ module.exports = async () => {
           }
           if (file.target) {
             file.target = await render(file.target, templateVars)
+          }
+          if (file.optional && !(await fs.pathExists(file.source))) {
+            return
           }
           return plays.ssh.sync(file)
         }
