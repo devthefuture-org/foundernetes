@@ -10,7 +10,7 @@ module.exports = async ({ plays, children }) =>
       list,
       async (line) => {
         const [modname] = line.split(/\s+/)
-        return children.modprobe(modname)
+        return children.modprobe({ name: modname })
       },
       "modprobe"
     )
