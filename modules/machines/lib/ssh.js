@@ -71,7 +71,7 @@ module.exports = async (options = {}) => {
       logger.info(`🤝 connected ${user}@${address}:${p}`)
       break
     } catch (err) {
-      if (err.code !== "ECONNREFUSED") {
+      if (err.code !== "ECONNREFUSED" && err.code !== "ECONNRESET") {
         throw err
       }
     }
