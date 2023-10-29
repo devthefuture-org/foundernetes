@@ -23,5 +23,6 @@ module.exports = async ({ plays }) =>
     await plays.services.serviceReloadOnFileChange({
       file: ["/etc/network/interfaces", "/etc/network/interfaces.d"],
       serviceName: "networking",
+      restart: true,
     })
   })
