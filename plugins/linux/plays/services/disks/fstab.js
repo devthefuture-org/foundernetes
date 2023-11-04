@@ -15,7 +15,7 @@ module.exports = async ({ loaders }) => {
       updateUUID = device.startsWith("UUID="),
     } = disk
 
-    if (useUUID && (!device.startsWith("UUID=") || updateUUID)) {
+    if (useUUID && !device.startsWith("UUID=") && updateUUID) {
       const { stdout } = await $(`blkid ${device} -o export`, { sudo: true })
       const blkidLines = stdout.split("\n")
       const deviceUUID = blkidLines.find((line) => line.startsWith("UUID="))
