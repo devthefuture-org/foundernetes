@@ -11,26 +11,26 @@ ufw:
   logging:
     enable: true
     level: low
-  after:
-    # filter:
-    #   - -A FORWARD -p tcp -d 12.0.0.80 --dport 443 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
-    #   - -A FORWARD -p tcp -d 12.0.0.80 --dport 80 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
-    #   - -A FORWARD -p tcp -d 12.0.0.82 --dport 22 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+  before:
+    # expose + hairpinning
+    filter:
+      - -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+      - -A FORWARD -d 12.0.0.80/32 -o lxdbr0 -p tcp --dport 443 -j ACCEPT
+      - -A FORWARD -d 12.0.0.80/32 -o lxdbr0 -p tcp --dport 80 -j ACCEPT
+      - -A FORWARD -d 12.0.0.82/32 -o lxdbr0 -p tcp --dport 22 -j ACCEPT
     nat:
       - :PREROUTING ACCEPT [0:0]
       - :POSTROUTING ACCEPT [0:0]
-      # - -A PREROUTING -i enp2s0 -p tcp -m tcp --dport 443 -j DNAT --to-destination 12.0.0.80:443
-      # - -A PREROUTING -i enp2s0 -p tcp -m tcp --dport 80 -j DNAT --to-destination 12.0.0.80:80
-      # - -A PREROUTING -i enp2s0 -p tcp -m tcp --dport 22 -j DNAT --to-destination 12.0.0.82:22
-      # expose + hairpinning
-      - -A PREROUTING -p tcp --dport 80 -d $${{ hostIP }}/32 -j DNAT --to-destination 12.0.0.80
-      - -A OUTPUT -p tcp --dport 80 -d $${{ hostIP }}/32 -j DNAT --to-destination 12.0.0.80
-      - -A PREROUTING -p tcp --dport 443 -d $${{ hostIP }}/32 -j DNAT --to-destination 12.0.0.80
-      - -A OUTPUT -p tcp --dport 443 -d $${{ hostIP }}/32 -j DNAT --to-destination 12.0.0.80
-      - -A PREROUTING -p tcp --dport 22 -d $${{ hostIP }}/32 -j DNAT --to-destination 12.0.0.82
-      - -A OUTPUT -p tcp --dport 22 -d $${{ hostIP }}/32 -j DNAT --to-destination 12.0.0.82
-      # - -A POSTROUTING -s $${{ [...hostIP.split(".").slice(0,3),"0"].join(".") }}/24 -d 12.0.0.80/32 -j MASQUERADE
-      # - -A POSTROUTING -s $${{ [...hostIP.split(".").slice(0,3),"0"].join(".") }}/24 -d 12.0.0.82/32 -j MASQUERADE
+      - -A POSTROUTING -o bond0 -j MASQUERADE
+      - -A PREROUTING -d $${{ hostIP }} -p tcp --dport 443 -j DNAT --to 12.0.0.80:443
+      - -A PREROUTING -d $${{ hostIP }} -p tcp --dport 80 -j DNAT --to 12.0.0.80:80
+      - -A PREROUTING -d $${{ hostIP }} -p tcp --dport 22 -j DNAT --to 12.0.0.82:22
+      - -A POSTROUTING -s 12.0.0.80 -d 12.0.0.80 -j MASQUERADE
+      - -A POSTROUTING -s 12.0.0.82 -d 12.0.0.82 -j MASQUERADE
+  after:
+    filter: []
+    nat: []
+
   rules:
     http:
       direction: in
