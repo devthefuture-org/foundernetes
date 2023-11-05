@@ -14,22 +14,23 @@ ufw:
   before:
     # expose + hairpinning
     filter:
-      - -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-      - -A FORWARD -d 12.0.0.80/32 -o lxdbr0 -p tcp --dport 443 -j ACCEPT
-      - -A FORWARD -d 12.0.0.80/32 -o lxdbr0 -p tcp --dport 80 -j ACCEPT
-      - -A FORWARD -d 12.0.0.82/32 -o lxdbr0 -p tcp --dport 22 -j ACCEPT
-    nat:
-      - :PREROUTING ACCEPT [0:0]
-      - :POSTROUTING ACCEPT [0:0]
-      - -A POSTROUTING -o bond0 -j MASQUERADE
-      - -A PREROUTING -d $${{ hostIP }} -p tcp --dport 443 -j DNAT --to 12.0.0.80:443
-      - -A PREROUTING -d $${{ hostIP }} -p tcp --dport 80 -j DNAT --to 12.0.0.80:80
-      - -A PREROUTING -d $${{ hostIP }} -p tcp --dport 22 -j DNAT --to 12.0.0.82:22
-      - -A POSTROUTING -s 12.0.0.80 -d 12.0.0.80 -j MASQUERADE
-      - -A POSTROUTING -s 12.0.0.82 -d 12.0.0.82 -j MASQUERADE
+      # Allow forwarded packets from LXD containers
+      - -A ufw-before-forward -s 12.0.0.0/24 -j ACCEPT
+      - -A ufw-before-forward -d 12.0.0.80 -p tcp --dport 80 -j ACCEPT
+      - -A ufw-before-forward -d 12.0.0.80 -p tcp --dport 443 -j ACCEPT
+      - -A ufw-before-forward -d 12.0.0.82 -p tcp --dport 22 -j ACCEPT
+    nat: []
+
   after:
     filter: []
-    nat: []
+    nat:
+      - -A POSTROUTING -s 12.0.0.0/24 -d 12.0.0.80 -o lxdbr0 -j MASQUERADE
+      - -A PREROUTING -s 12.0.0.0/24 -d ${{ hostIP }} -p tcp --dport 80 -j DNAT --to-destination 12.0.0.80:80
+      - -A PREROUTING -s 12.0.0.0/24 -d ${{ hostIP }} -p tcp --dport 443 -j DNAT --to-destination 12.0.0.80:443
+      - -A POSTROUTING -s 12.0.0.80 -d 12.0.0.0/24 -j MASQUERADE
+      - -A PREROUTING -i bond0 -p tcp --dport 80 -j DNAT --to-destination 12.0.0.80:80
+      - -A PREROUTING -i bond0 -p tcp --dport 443 -j DNAT --to-destination 12.0.0.80:443
+      - -A PREROUTING -i bond0 -p tcp --dport 22 -j DNAT --to-destination 12.0.0.82:22
 
   rules:
     http:
@@ -65,6 +66,8 @@ ufw:
     
 packages:
   openssh-server:
+    installer: apt
+  conntrack:
     installer: apt
   ifenslave:
     installer: apt
