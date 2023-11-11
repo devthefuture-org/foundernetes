@@ -6,6 +6,7 @@ const symbols = require("./symbols")
 const treeRecursiveFactory = async (
   factories,
   factoriesParams,
+  commonParams,
   parentDeps,
   parentScope = [],
   values = {},
@@ -13,7 +14,13 @@ const treeRecursiveFactory = async (
 ) => {
   parentScope = parentScope.filter((s) => s)
 
-  const deps = { mod: {}, children: {}, ...parentDeps, ...rootValues }
+  const deps = {
+    ...commonParams,
+    mod: {},
+    children: {},
+    ...parentDeps,
+    ...rootValues,
+  }
 
   await async.eachOfSeries(Object.keys(factories), async (name) => {
     const factory = factories[name]
@@ -40,6 +47,7 @@ const treeRecursiveFactory = async (
     const branch = await treeRecursiveFactory(
       factory,
       factoriesParams,
+      commonParams,
       deps,
       scope,
       {},
@@ -53,8 +61,8 @@ const treeRecursiveFactory = async (
   return values
 }
 
-module.exports = async (tree, treeParams = {}) => {
-  const composition = await treeRecursiveFactory(tree, treeParams)
+module.exports = async (tree, treeParams = {}, commonParams = {}) => {
+  const composition = await treeRecursiveFactory(tree, treeParams, commonParams)
   // dbug(composition).k()
   return composition
 }
