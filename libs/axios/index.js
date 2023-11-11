@@ -15,4 +15,7 @@ if (process.env.DEBUG_AXIOS) {
   curlirize(client)
 }
 
+client.curlirize = curlirize
+client.axiosRetry = axiosRetry
+
 module.exports = client
