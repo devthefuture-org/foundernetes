@@ -27,7 +27,9 @@ ufw:
       - -A POSTROUTING -s 12.0.0.0/24 -d 12.0.0.80 -o lxdbr0 -j MASQUERADE
       - -A PREROUTING -s 12.0.0.0/24 -d ${{ hostIP }} -p tcp --dport 80 -j DNAT --to-destination 12.0.0.80:80
       - -A PREROUTING -s 12.0.0.0/24 -d ${{ hostIP }} -p tcp --dport 443 -j DNAT --to-destination 12.0.0.80:443
+      - -A PREROUTING -s 12.0.0.0/24 -d ${{ hostIP }} -p tcp --dport 22 -j DNAT --to-destination 12.0.0.82:22
       - -A POSTROUTING -s 12.0.0.80 -d 12.0.0.0/24 -j MASQUERADE
+      - -A POSTROUTING -s 12.0.0.82 -d 12.0.0.0/24 -j MASQUERADE
       - -A PREROUTING -i bond0 -p tcp --dport 80 -j DNAT --to-destination 12.0.0.80:80
       - -A PREROUTING -i bond0 -p tcp --dport 443 -j DNAT --to-destination 12.0.0.80:443
       - -A PREROUTING -i bond0 -p tcp --dport 22 -j DNAT --to-destination 12.0.0.82:22
