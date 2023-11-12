@@ -10,7 +10,7 @@ module.exports = async (options = {}) => {
   }
 
   const {
-    stdout = process.stdout,
+    stdout = process.stderr,
     cwd = process.cwd(),
     defaultNodeLinker = process.env.SNIPER_DEFAULT_NODE_LINKER ||
       "node-modules",
