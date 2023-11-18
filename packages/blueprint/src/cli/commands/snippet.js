@@ -24,7 +24,10 @@ module.exports = (program, projectConfig) =>
     .argument("<snippetFile>", "snippet js file (extension is optional)")
     .action(async (snippetFile, opts, _command) => {
       const input = await loadInputPayload(opts.I)
-      const snippet = require(`${process.cwd()}/${snippetFile}`)
+      const snippetPath = snippetFile.startsWith("/")
+        ? snippetFile
+        : `${process.cwd()}/${snippetFile}`
+      const snippet = require(`${snippetPath}`)
 
       const processCallback = async (playbooks) => {
         const [
