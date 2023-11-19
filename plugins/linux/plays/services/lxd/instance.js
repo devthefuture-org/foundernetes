@@ -31,10 +31,11 @@ module.exports = async ({ loaders }) => {
     return yaml.dump(data)
   }
   const config = ctx.getConfig()
+  const logger = ctx.getLogger()
 
   return createPlay(
     async (vars) => {
-      const { name, image, lxdConfig } = vars
+      const { name, image, lxdConfig, forceDeleteOnChanged = false } = vars
       const lxdConfigStr = await outputLxdConfig(lxdConfig, vars)
       const nodeFactFile = path.join(config.factsPath, `lxc/nodes/${name}.yaml`)
 
@@ -55,12 +56,19 @@ module.exports = async ({ loaders }) => {
                 encoding: "utf-8",
               })
             : null
-          return lxdConfigStr === previousNode
+          return lxdConfigStr === previousNode || !forceDeleteOnChanged
         },
         async run() {
           // dbug({ cmd: `lxc launch ${image} ${name}`, lxdConfigStr }).k()
           if (await nodeExists()) {
-            await $(`lxc delete --force ${name}`)
+            if (forceDeleteOnChanged) {
+              await $(`lxc delete --force ${name}`)
+            } else {
+              logger.warn(
+                `LXD node already exists, init config has changed, "forceDeleteOnChanged" is set to false and no method is actually implemented to upgrade the LXD container without having to detroy it, so it will be left in it's current state, you can always configure it manually according to the new definition`
+              )
+              return
+            }
           }
           await $(`lxc launch ${image} ${name}`, {
             input: lxdConfigStr,
