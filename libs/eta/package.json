@@ -1,6 +1,6 @@
 {
   "name": "@foundernetes/eta",
-  "version": "1.4.7",
+  "version": "1.4.8",
   "main": "eta.js",
   "dependencies": {
     "eta": "^2.0.1"

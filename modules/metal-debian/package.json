@@ -1,6 +1,6 @@
 {
   "name": "@foundernetes/metal-debian",
-  "version": "1.4.7",
+  "version": "1.4.8",
   "license": "MIT",
   "description": "🌍 Setup a bare-metal debian machine with security, lxd and all requirements to run a kubernetes cluster",
   "dependencies": {

@@ -1,7 +1,7 @@
 {
   "name": "@foundernetes/dbug",
   "description": "A simple debug helper to replace console.log, using the power of util.inspect",
-  "version": "1.4.7",
+  "version": "1.4.8",
   "type": "commonjs",
   "main": "index.js",
   "author": "devthejo",

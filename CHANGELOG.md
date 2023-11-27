@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+### [1.4.8](https://codeberg.org/devthefuture/foundernetes/compare/v1.4.7...v1.4.8) (2023-11-27)
+
 ### [1.4.7](https://codeberg.org/devthefuture/foundernetes/compare/v1.4.6...v1.4.7) (2023-11-27)
 
 
