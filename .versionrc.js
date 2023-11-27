@@ -6,7 +6,7 @@ const getTreeDirSync = (source) =>
     .filter((dirent) => dirent.isDirectory() || dirent.isSymbolicLink())
     .map((dirent) => dirent.name)
 
-const workspaces = ["packages", "modules"]
+const workspaces = ["packages", "modules", "plugins", "libs", "utils"]
 
 const bumpFiles = [
   { filename: "package.json", type: "json" },
