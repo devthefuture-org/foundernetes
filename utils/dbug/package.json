@@ -1,0 +1,29 @@
+{
+  "name": "@foundernetes/dbug",
+  "description": "A simple debug helper to replace console.log, using the power of util.inspect",
+  "version": "1.4.5",
+  "type": "commonjs",
+  "main": "index.js",
+  "author": "devthejo",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://codeberg.org/devthefuture/foundernetes.git"
+  },
+  "bugs": {
+    "url": "https://codeberg.org/devthefuture/foundernetes/issues"
+  },
+  "homepage": "https://codeberg.org/devthefuture/foundernetes",
+  "keywords": [
+    "dbug",
+    "debug",
+    "console",
+    "console.log",
+    "console.dir",
+    "helper"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "private": false
+}
