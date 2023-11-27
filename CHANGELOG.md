@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+### [1.4.7](https://codeberg.org/devthefuture/foundernetes/compare/v1.4.6...v1.4.7) (2023-11-27)
+
+
+### Bug Fixes
+
+* execa ([ac97e9e](https://codeberg.org/devthefuture/foundernetes/commit/ac97e9e2edc49ba4ad9f31d4c4e798e9bbb36f78))
+
 ### [1.4.6](https://codeberg.org/devthefuture/foundernetes/compare/v1.4.5...v1.4.6) (2023-11-27)
 
 ### [1.4.5](https://codeberg.org/devthefuture/foundernetes/compare/v1.4.3...v1.4.5) (2023-11-27)
