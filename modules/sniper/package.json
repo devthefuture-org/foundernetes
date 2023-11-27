@@ -1,6 +1,6 @@
 {
   "name": "@foundernetes/sniper",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "license": "MIT",
   "description": "🔫 Run arbitraty js scripts with @foundernetes/blueprint framework and embedded yarn autoinstaller",
   "dependencies": {

@@ -1,6 +1,6 @@
 {
   "name": "@foundernetes/machines",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "license": "MIT",
   "main": "main/index.js",
   "description": "🖥️  Provision a pool of machines through ssh, ensuring files and running remote commands",
