@@ -1,6 +1,6 @@
 {
   "name": "@foundernetes/execa",
-  "version": "1.4.8",
+  "version": "1.4.9",
   "description": "execa commonjs bridge",
   "main": ".cjs/execa/index.js",
   "license": "MIT",
