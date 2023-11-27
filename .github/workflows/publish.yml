@@ -1,34 +1,34 @@
-name: Publish NPM and Github
+# name: Publish NPM and Github
 
-on:
-  push:
-    tags:
-      - v*.*
+# on:
+#   push:
+#     tags:
+#       - v*.*
 
-concurrency:
-  cancel-in-progress: true
-  group: release-${{ github.ref_name }}
+# concurrency:
+#   cancel-in-progress: true
+#   group: release-${{ github.ref_name }}
 
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+# jobs:
+#   release:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v3
       
-      - id: publish
-        uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          # package: package.json
+#       - id: publish
+#         uses: JS-DevTools/npm-publish@v1
+#         with:
+#           token: ${{ secrets.NPM_TOKEN }}
+#           # package: package.json
       
-      - if: steps.publish.outputs.type != 'none'
-        run: |
-          echo "Version changed: ${{ steps.publish.outputs.old-version }} => ${{ steps.publish.outputs.version }}"
+#       - if: steps.publish.outputs.type != 'none'
+#         run: |
+#           echo "Version changed: ${{ steps.publish.outputs.old-version }} => ${{ steps.publish.outputs.version }}"
       
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          generate_release_notes: true
+#       - name: Release
+#         uses: softprops/action-gh-release@v1
+#         if: startsWith(github.ref, 'refs/tags/')
+#         with:
+#           token: ${{ secrets.GITHUB_TOKEN }}
+#           generate_release_notes: true
