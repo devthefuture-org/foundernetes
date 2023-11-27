@@ -14,7 +14,7 @@
   "scripts": {
     "lint": "eslint .",
     "postinstall": "yarn build",
-    "build": "EXECA_PATH=\"$(node -e 'process.stdout.write(require.resolve(`execa`))')\" && mkdir -p .cjs/execa && ncc build \"$EXECA_PATH\" -e cross-spawn -e merge-stream -e signal-exit -o .cjs/execa/ncc-dist && rollup .cjs/execa/ncc-dist/index.js --file .cjs/execa/index.js --format cjs"
+    "build": "EXECA_PATH=\"$(node -e 'process.stdout.write(require.resolve(`execa`))')\" && mkdir -p .cjs/execa && yarn ncc build \"$EXECA_PATH\" -e cross-spawn -e merge-stream -e signal-exit -o .cjs/execa/ncc-dist && rollup .cjs/execa/ncc-dist/index.js --file .cjs/execa/index.js --format cjs"
   },
   "files": [
     ".cjs",
