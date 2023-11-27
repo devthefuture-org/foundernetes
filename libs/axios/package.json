@@ -1,7 +1,7 @@
 {
   "name": "@foundernetes/axios",
   "dependencies": {
-    "@foundernetes/ctx": "^1.4.1",
+    "@foundernetes/ctx": "workspace:^",
     "axios": "^1.4.0",
     "axios-retry": "^3.4.0"
   },
