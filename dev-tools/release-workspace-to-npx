@@ -45,10 +45,15 @@ const releaseWorkspaceToNpx = async (command = "publish") => {
         pkg.devDependencies[dep] = setVersion
       }
     }
-    await fs.writeFile(workspacePackageFile, JSON.stringify(pkg, null, 2))
+    await fs.writeFile(
+      workspacePackageFile,
+      `${JSON.stringify(pkg, null, 2)}\n`
+    )
   }
 
-  process.stdout.write(`workspace package setted up to version ${setVersion}\n`)
+  process.stdout.write(
+    `workspaces packages dependencies setted up to version ${setVersion}\n`
+  )
 }
 
 releaseWorkspaceToNpx(process.argv[2])
