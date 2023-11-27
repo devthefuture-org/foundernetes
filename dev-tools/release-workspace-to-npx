@@ -1,0 +1,54 @@
+#!/usr/bin/env node
+
+const path = require("path")
+const fs = require("fs/promises")
+const util = require("util")
+const childProcess = require("child_process")
+
+const exec = util.promisify(childProcess.exec)
+
+const getWorkspaces = async (cwd) => {
+  const { stdout: list } = await exec(`yarn workspaces list --json`, {
+    cwd,
+  })
+  const workspaces = {}
+  for (const item of list.split("\n")) {
+    if (!item) {
+      continue
+    }
+    const ws = JSON.parse(item)
+    workspaces[ws.name] = ws.location
+  }
+  return workspaces
+}
+
+const releaseWorkspaceToNpx = async (command = "publish") => {
+  const workspaces = await getWorkspaces()
+  const jsonRootPkg = await fs.readFile("package.json", { encoding: "utf-8" })
+  const rootPkg = JSON.parse(jsonRootPkg)
+  const setVersion =
+    command === "publish" ? `^${rootPkg.version}` : "workspace:^"
+  const workspaceNames = Object.keys(workspaces)
+  for (const dir of Object.values(workspaces)) {
+    const workspacePackageFile = path.join(dir, "package.json")
+    const jsonPackage = await fs.readFile(workspacePackageFile, {
+      encoding: "utf-8",
+    })
+    const pkg = JSON.parse(jsonPackage)
+    for (const dep of Object.keys(pkg.dependencies || {})) {
+      if (workspaceNames.includes(dep)) {
+        pkg.dependencies[dep] = setVersion
+      }
+    }
+    for (const dep of Object.keys(pkg.devDependencies || {})) {
+      if (workspaceNames.includes(dep)) {
+        pkg.devDependencies[dep] = setVersion
+      }
+    }
+    await fs.writeFile(workspacePackageFile, JSON.stringify(pkg, null, 2))
+  }
+
+  process.stdout.write(`workspace package setted up to version ${setVersion}\n`)
+}
+
+releaseWorkspaceToNpx(process.argv[2])
