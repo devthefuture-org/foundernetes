@@ -4,16 +4,16 @@
   "license": "MIT",
   "description": "🌍 Setup a bare-metal debian machine with security, lxd and all requirements to run a kubernetes cluster",
   "dependencies": {
-    "@foundernetes/async": "workspace:^",
-    "@foundernetes/axios": "workspace:^",
-    "@foundernetes/blueprint": "workspace:^",
-    "@foundernetes/ctx": "workspace:^",
-    "@foundernetes/eta": "workspace:^",
-    "@foundernetes/execa": "workspace:^",
-    "@foundernetes/linux": "workspace:^",
-    "@foundernetes/machines": "workspace:^",
-    "@foundernetes/match": "workspace:^",
-    "@foundernetes/std": "workspace:^",
+    "@foundernetes/async": "^1.4.1",
+    "@foundernetes/axios": "^1.4.1",
+    "@foundernetes/blueprint": "^1.4.1",
+    "@foundernetes/ctx": "^1.4.1",
+    "@foundernetes/eta": "^1.4.1",
+    "@foundernetes/execa": "^1.4.1",
+    "@foundernetes/linux": "^1.4.1",
+    "@foundernetes/machines": "^1.4.1",
+    "@foundernetes/match": "^1.4.1",
+    "@foundernetes/std": "^1.4.1",
     "async-retry": "^1.3.3",
     "commander": "^9.4.1",
     "dayjs": "^1.11.7",
@@ -65,5 +65,8 @@
   "type": "commonjs",
   "_moduleAliases": {
     "~": "."
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

@@ -3,5 +3,8 @@
   "main": "eta.js",
   "dependencies": {
     "eta": "^2.0.1"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

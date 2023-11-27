@@ -2,5 +2,8 @@
   "name": "@foundernetes/ctx",
   "dependencies": {
     "nctx": "^2.1.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

@@ -4,15 +4,15 @@
   "license": "MIT",
   "description": "🔫 Run arbitraty js scripts with @foundernetes/blueprint framework and embedded yarn autoinstaller",
   "dependencies": {
-    "@foundernetes/async": "workspace:^",
-    "@foundernetes/axios": "workspace:^",
-    "@foundernetes/blueprint": "workspace:^",
-    "@foundernetes/ctx": "workspace:^",
-    "@foundernetes/eta": "workspace:^",
-    "@foundernetes/execa": "workspace:^",
-    "@foundernetes/linux": "workspace:^",
-    "@foundernetes/match": "workspace:^",
-    "@foundernetes/std": "workspace:^",
+    "@foundernetes/async": "^1.4.1",
+    "@foundernetes/axios": "^1.4.1",
+    "@foundernetes/blueprint": "^1.4.1",
+    "@foundernetes/ctx": "^1.4.1",
+    "@foundernetes/eta": "^1.4.1",
+    "@foundernetes/execa": "^1.4.1",
+    "@foundernetes/linux": "^1.4.1",
+    "@foundernetes/match": "^1.4.1",
+    "@foundernetes/std": "^1.4.1",
     "@yarnpkg/cli": "^4.0.1",
     "@yarnpkg/core": "^4.0.1",
     "@yarnpkg/plugin-essentials": "^4.0.1",
@@ -41,5 +41,8 @@
   "type": "commonjs",
   "_moduleAliases": {
     "~": "."
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

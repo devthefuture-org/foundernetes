@@ -2,5 +2,8 @@
   "name": "@foundernetes/match",
   "dependencies": {
     "wildstring": "^1.0.9"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
