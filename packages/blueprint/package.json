@@ -1,6 +1,6 @@
 {
   "name": "@foundernetes/blueprint",
-  "version": "1.4.9",
+  "version": "1.5.0",
   "description": "Infra Idempotence As A Framework",
   "main": "src/index.js",
   "repository": "https://codeberg.org/devthefuture/foundernetes.git",
