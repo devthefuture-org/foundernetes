@@ -44,7 +44,7 @@
     "push": "git push -f --follow-tags origin master",
     "delivery": "yarn release && yarn push && yarn publish:all",
     "prepublish": "dev-tools/release-workspace-to-npx publish",
-    "publish:all": "yarn prepublish && yarn workspaces foreach --no-private --parallel npm publish --tolerate-republish && yarn postpublish",
+    "publish:all": "yarn prepublish && yarn workspaces foreach -A --no-private --parallel npm publish --tolerate-republish && yarn postpublish",
     "postpublish": "dev-tools/release-workspace-to-npx dev",
     "dev:docs": "docsify serve docs",
     "docker:foundernetes:build": "DOCKER_BUILDKIT=1 docker build -f Dockerfile -t foundernetes .",
