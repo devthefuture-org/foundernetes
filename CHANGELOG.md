@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+### [1.5.1](https://codeberg.org/devthefuture/foundernetes/compare/v1.5.0...v1.5.1) (2023-12-04)
+
+
+### Bug Fixes
+
+* dry-run logless ([51ba655](https://codeberg.org/devthefuture/foundernetes/commit/51ba655904fb38b1606f0d5d88ed078e9e65c1f2))
+
 ## [1.5.0](https://codeberg.org/devthefuture/foundernetes/compare/v1.4.9...v1.5.0) (2023-12-04)
 
 
