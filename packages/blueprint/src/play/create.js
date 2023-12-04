@@ -336,7 +336,9 @@ const create = async (definition) => {
           retryOnErrors: runRetryOnErrors,
           func: async () => run(vars, extraContext),
         })
-        logger.info(`🏃 ${chalk.cyanBright(`[${itemName}] running ...`)}`)
+        if (!dryRun) {
+          logger.info(`🏃 ${chalk.cyanBright(`[${itemName}] running ...`)}`)
+        }
         try {
           const runResult = await runRetryer()
           if (!dryRun) {
