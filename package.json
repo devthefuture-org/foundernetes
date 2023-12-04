@@ -14,7 +14,7 @@
     "libs/*",
     "modules/*"
   ],
-  "packageManager": "yarn@3.3.0",
+  "packageManager": "yarn@4.0.2",
   "devDependencies": {
     "commit-and-tag-version": "^10.1.0",
     "eslint": "^8.28.0",
