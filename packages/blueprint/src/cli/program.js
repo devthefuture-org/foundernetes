@@ -28,6 +28,8 @@ module.exports = async (projectConfig) => {
     .addOption(options.debug)
     .addOption(options.inlineConfig)
     .addOption(options.configSet)
+    .addOption(options.dryRun)
+    .addOption(options.breakpoint)
     .hook("preAction", async (_thisCommand, actionCommand) => {
       const opts = actionCommand.optsWithGlobals()
 

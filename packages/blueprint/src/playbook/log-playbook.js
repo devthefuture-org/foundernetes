@@ -47,15 +47,20 @@ const report = ({ log = true }) => {
     return
   }
   const { counter } = ctx.require("playbook")
+  const config = ctx.require("config")
+  const { dryRun } = config
+
   const totalOk = counter.unchanged + counter.changed
   const totalPlayed = totalOk + counter.failed
   const msg = `🚩 report: ${chalk.blue(
     `Played=${totalPlayed}`
-  )} ${chalk.cyanBright(`Changed=${counter.changed}`)} ${chalk.green(
-    `Unchanged=${counter.unchanged}`
-  )} ${chalk.greenBright(`OK=${totalOk}`)} ${chalk.red(
-    `Failed=${counter.failed}`
-  )} ${counter.retried > 0 ? chalk.yellow(`Retried=${counter.retried}`) : ""}`
+  )} ${chalk.cyanBright(
+    `${dryRun ? "WillChange" : "Changed"}=${counter.changed}`
+  )} ${chalk.green(`Unchanged=${counter.unchanged}`)} ${chalk.greenBright(
+    `OK=${totalOk}`
+  )} ${chalk.red(`Failed=${counter.failed}`)} ${
+    counter.retried > 0 ? chalk.yellow(`Retried=${counter.retried}`) : ""
+  }`
   const logger = ctx.require("parentLogger")
   logger.info(msg, {
     datetime: dayjs().format("YYYY-MM-DD HH:mm:ss"),
@@ -86,6 +91,8 @@ const endAll = (playbooks) => {
     return
   }
   const logger = ctx.require("logger")
+  const config = ctx.require("config")
+  const { dryRun } = config
 
   const counter = {
     unchanged: 0,
@@ -104,11 +111,13 @@ const endAll = (playbooks) => {
   const totalPlayed = totalOk + counter.failed
   const msg = `🌍 total report: ${chalk.blue(
     `Played=${totalPlayed}`
-  )} ${chalk.cyanBright(`Changed=${counter.changed}`)} ${chalk.green(
-    `Unchanged=${counter.unchanged}`
-  )} ${chalk.greenBright(`OK=${totalOk}`)} ${chalk.red(
-    `Failed=${counter.failed}`
-  )} ${counter.retried > 0 ? chalk.yellow(`Retried=${counter.retried}`) : ""}`
+  )} ${chalk.cyanBright(
+    `${dryRun ? "WillChange" : "Changed"}=${counter.changed}`
+  )} ${chalk.green(`Unchanged=${counter.unchanged}`)} ${chalk.greenBright(
+    `OK=${totalOk}`
+  )} ${chalk.red(`Failed=${counter.failed}`)} ${
+    counter.retried > 0 ? chalk.yellow(`Retried=${counter.retried}`) : ""
+  }`
   logger.info(msg, {
     datetime: dayjs().format("YYYY-MM-DD HH:mm:ss"),
     playbooks: getPlaybooksList(playbooks),

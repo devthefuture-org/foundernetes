@@ -22,6 +22,7 @@ const castRetry = require("~/lib/cast-retry")
 const logPlay = require("./log-play")
 
 const castArrayAsFunction = require("./cast-array-as-function")
+const byPassFunc = require("./by-pass-func")
 
 const create = async (definition) => {
   const {
@@ -37,6 +38,9 @@ const create = async (definition) => {
     if: createIfConditions = [],
   } = definition
 
+  const config = ctx.getConfig()
+  const { dryRun } = config
+
   let { run } = definition
 
   let { preCheck, postCheck } = definition
@@ -48,8 +52,8 @@ const create = async (definition) => {
   }
 
   preCheck = preCheck ? castArrayAsFunction(preCheck) : null
-  postCheck = castArrayAsFunction(postCheck)
-  run = run ? castArrayAsFunction(run) : null
+  postCheck = dryRun ? byPassFunc : castArrayAsFunction(postCheck)
+  run = dryRun ? byPassFunc : run ? castArrayAsFunction(run) : null
 
   let { validate } = definition
   if (validate && typeof validate === "object") {
@@ -335,7 +339,15 @@ const create = async (definition) => {
         logger.info(`🏃 ${chalk.cyanBright(`[${itemName}] running ...`)}`)
         try {
           const runResult = await runRetryer()
-          logger.info(`🔚 ${chalk.cyanBright(`[${itemName}] ran`)}`)
+          if (!dryRun) {
+            logger.info(`🔚 ${chalk.cyanBright(`[${itemName}] ran`)}`)
+          } else {
+            logger.info(
+              `🔚 ${chalk.cyanBright(
+                `[${itemName}] will run when not in dry-run mode`
+              )}`
+            )
+          }
           if (runResult === false) {
             return handleFail(
               new FoundernetesPlayRunError("run returned false", {
@@ -369,9 +381,11 @@ const create = async (definition) => {
                 return postCheck(vars, extraContext, event)
               },
             })
-            logger.info(
-              `🕵️  ${chalk.cyanBright(`[${itemName}] post-checking ...`)}`
-            )
+            if (!dryRun) {
+              logger.info(
+                `🕵️  ${chalk.cyanBright(`[${itemName}] post-checking ...`)}`
+              )
+            }
             postCheckResult = await postCheckRetryer()
           } catch (error) {
             if (isAbortError(error)) {
@@ -386,7 +400,9 @@ const create = async (definition) => {
           return handleFail(new FoundernetesPlayPostCheckError(postCheckError))
         }
         if (postCheck) {
-          logger.info(`✅ ${chalk.cyanBright(`[${itemName}] checked ready`)}`)
+          if (!dryRun) {
+            logger.info(`✅ ${chalk.cyanBright(`[${itemName}] checked ready`)}`)
+          }
           counter.changed++
           if (onChanged) {
             await onChanged(vars)

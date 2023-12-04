@@ -29,6 +29,8 @@ const FoundernetesPlayCheckError = require("~/error/play-check")
 const FoundernetesPlayPreCheckError = require("~/error/play-pre-check")
 const FoundernetesPlayPostCheckError = require("~/error/play-post-check")
 
+const breakpoint = require("~/breakpoint")
+
 module.exports = {
   cli,
 
@@ -47,6 +49,9 @@ module.exports = {
   // vars
   createValidator,
   validate,
+
+  // breakpoint
+  breakpoint,
 
   // context
   ctx,

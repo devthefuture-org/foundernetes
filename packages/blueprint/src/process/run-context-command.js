@@ -12,6 +12,7 @@ const commandAbortController = require("~/cli/abort-controller")
 const FoundernetesPlayPostCheckError = require("~/error/play-post-check")
 
 const { exitCodes } = require("~/error/constants")
+const FoundernetesBeakpointError = require("~/error/breakpoint")
 
 const { getPlaybookSet } = require("~/playbook/load-cwd")
 const logError = require("~/error/log-error")
@@ -88,6 +89,8 @@ module.exports = async ({ callback, targets = [] }) => {
     } else if (error instanceof FoundernetesPlayPostCheckError) {
       logError(error)
       exitCode = exitCodes.FAILED_POST_CHECK
+    } else if (error instanceof FoundernetesBeakpointError) {
+      exitCode = exitCodes.SUCCESS
     } else {
       logError(error)
       exitCode = exitCodes.FAILED

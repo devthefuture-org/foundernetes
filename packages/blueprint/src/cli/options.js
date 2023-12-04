@@ -48,3 +48,13 @@ module.exports.output = new Option(
   "--output, -o <format>",
   "output format: yaml (default), json"
 ).choices(["yaml", "json"])
+
+module.exports.dryRun = new Option(
+  "--dry-run",
+  "don't exec the run function from plays and bypass postCheck"
+)
+
+module.exports.breakpoint = new Option(
+  "--breakpoint <breakpoint>",
+  "specify a breakpoint in the playbook to stop the execution"
+)

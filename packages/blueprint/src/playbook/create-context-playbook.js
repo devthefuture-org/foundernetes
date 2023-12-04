@@ -5,6 +5,7 @@ const logError = require("~/error/log-error")
 const defaultIterator = require("~/iterator/default-iterator")
 
 const FoundernetesPlayPostCheckError = require("~/error/play-post-check")
+const FoundernetesBeakpointError = require("~/error/breakpoint")
 
 const logPlaybook = require("./log-playbook")
 
@@ -35,13 +36,17 @@ module.exports = async (definition, callback) => {
 
       const logPlaybookContext = logPlaybook.start({ ...definition, name })
 
+      const logger = ctx.getLogger()
+
       let failedError
       let playingError
       try {
         await callback(...params)
       } catch (error) {
         if (!(error instanceof FoundernetesPlayPostCheckError)) {
-          if (!isAbortError(error)) {
+          if (error instanceof FoundernetesBeakpointError) {
+            logger.info(error.message)
+          } else if (!isAbortError(error)) {
             logError(error)
             playingError = error
           }

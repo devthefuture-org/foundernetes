@@ -222,6 +222,17 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
         return untildify(factsPath, config.user.homedir || os.homedir())
       },
     },
+    dryRun: {
+      default: false,
+      option: "dry-run",
+      env: "F10S_DRY_RUN",
+      envParser: envParserYaml,
+    },
+    breakpoint: {
+      default: false,
+      option: "breakpoint",
+      env: "F10S_BREAKPOINT",
+    },
   }
 
   const { cwd } = rootConfig
