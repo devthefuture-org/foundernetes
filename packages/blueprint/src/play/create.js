@@ -22,7 +22,7 @@ const castRetry = require("~/lib/cast-retry")
 const logPlay = require("./log-play")
 
 const castArrayAsFunction = require("./cast-array-as-function")
-const byPassFunc = require("./by-pass-func")
+const bypassFunc = require("./bypass-func")
 
 const create = async (definition) => {
   const {
@@ -52,8 +52,8 @@ const create = async (definition) => {
   }
 
   preCheck = preCheck ? castArrayAsFunction(preCheck) : null
-  postCheck = dryRun ? byPassFunc : castArrayAsFunction(postCheck)
-  run = dryRun ? byPassFunc : run ? castArrayAsFunction(run) : null
+  postCheck = dryRun ? bypassFunc : castArrayAsFunction(postCheck)
+  run = dryRun ? bypassFunc : run ? castArrayAsFunction(run) : null
 
   let { validate } = definition
   if (validate && typeof validate === "object") {
