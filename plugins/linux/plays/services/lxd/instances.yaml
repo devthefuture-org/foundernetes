@@ -7,7 +7,7 @@ default:
     # https://canonical.com/blog/running-kubernetes-inside-lxd
     devices:
       eth0:
-        ipv4.address: "12.0.0.$${{ 100 + index }}"
+        ipv4.address: "172.21.0.$${{ 100 + index }}"
         name: eth0
         network: lxdbr0
         type: nic
