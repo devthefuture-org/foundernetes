@@ -15,25 +15,25 @@ ufw:
     # expose + hairpinning
     filter:
       # Allow forwarded packets from LXD containers
-      - -A ufw-before-forward -s 172.21.0.0/24 -j ACCEPT
-      - -A ufw-before-forward -d 172.21.0.80 -p tcp --dport 80 -j ACCEPT
-      - -A ufw-before-forward -d 172.21.0.80 -p tcp --dport 443 -j ACCEPT
-      - -A ufw-before-forward -d 172.21.0.82 -p tcp --dport 22 -j ACCEPT
+      - -A ufw-before-forward -s 172.20.0.0/24 -j ACCEPT
+      - -A ufw-before-forward -d 172.20.0.80 -p tcp --dport 80 -j ACCEPT
+      - -A ufw-before-forward -d 172.20.0.80 -p tcp --dport 443 -j ACCEPT
+      - -A ufw-before-forward -d 172.20.0.22 -p tcp --dport 22 -j ACCEPT
     nat: []
 
   after:
     filter: []
     nat:
-      - -A POSTROUTING -s 172.21.0.0/24 -d 172.21.0.80 -o lxdbr0 -j MASQUERADE
-      - -A POSTROUTING -s 172.21.0.0/24 -d 172.21.0.82 -o lxdbr0 -j MASQUERADE
-      - -A PREROUTING -s 172.21.0.0/24 -d $${{ hostIP }} -p tcp --dport 80 -j DNAT --to-destination 172.21.0.80:80
-      - -A PREROUTING -s 172.21.0.0/24 -d $${{ hostIP }} -p tcp --dport 443 -j DNAT --to-destination 172.21.0.80:443
-      - -A PREROUTING -s 172.21.0.0/24 -d $${{ hostIP }} -p tcp --dport 22 -j DNAT --to-destination 172.21.0.82:22
-      - -A POSTROUTING -s 172.21.0.80 -d 172.21.0.0/24 -j MASQUERADE
-      - -A POSTROUTING -s 172.21.0.82 -d 172.21.0.0/24 -j MASQUERADE
-      - -A PREROUTING -i bond0 -p tcp --dport 80 -j DNAT --to-destination 172.21.0.80:80
-      - -A PREROUTING -i bond0 -p tcp --dport 443 -j DNAT --to-destination 172.21.0.80:443
-      - -A PREROUTING -i bond0 -p tcp --dport 22 -j DNAT --to-destination 172.21.0.82:22
+      - -A POSTROUTING -s 172.20.0.0/24 -d 172.20.0.80 -o lxdbr0 -j MASQUERADE
+      - -A POSTROUTING -s 172.20.0.0/24 -d 172.20.0.22 -o lxdbr0 -j MASQUERADE
+      - -A PREROUTING -s 172.20.0.0/24 -d $${{ hostIP }} -p tcp --dport 80 -j DNAT --to-destination 172.20.0.80:80
+      - -A PREROUTING -s 172.20.0.0/24 -d $${{ hostIP }} -p tcp --dport 443 -j DNAT --to-destination 172.20.0.80:443
+      - -A PREROUTING -s 172.20.0.0/24 -d $${{ hostIP }} -p tcp --dport 22 -j DNAT --to-destination 172.20.0.22:22
+      - -A POSTROUTING -s 172.20.0.80 -d 172.20.0.0/24 -j MASQUERADE
+      - -A POSTROUTING -s 172.20.0.22 -d 172.20.0.0/24 -j MASQUERADE
+      - -A PREROUTING -i bond0 -p tcp --dport 80 -j DNAT --to-destination 172.20.0.80:80
+      - -A PREROUTING -i bond0 -p tcp --dport 443 -j DNAT --to-destination 172.20.0.80:443
+      - -A PREROUTING -i bond0 -p tcp --dport 22 -j DNAT --to-destination 172.20.0.22:22
 
   rules:
     http:
