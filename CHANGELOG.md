@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+### [1.5.2](https://codeberg.org/devthefuture/foundernetes/compare/v1.5.1...v1.5.2) (2023-12-07)
+
+
+### Bug Fixes
+
+* cross os ([81acb0c](https://codeberg.org/devthefuture/foundernetes/commit/81acb0c0af47fa2dbe87e153133b72224af7bd66))
+* normalize ip cidr ([0be7dbe](https://codeberg.org/devthefuture/foundernetes/commit/0be7dbe12d0abcdeb6bff185c01f811290b487fa))
+
 ### [1.5.1](https://codeberg.org/devthefuture/foundernetes/compare/v1.5.0...v1.5.1) (2023-12-04)
 
 
