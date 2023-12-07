@@ -219,7 +219,7 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
     factsPath: {
       default: "~/.foundernetes/facts",
       transform: async (factsPath, config) => {
-        return untildify(factsPath, config.user.homedir || os.homedir())
+        return untildify(factsPath, config.user?.homedir || os.homedir())
       },
     },
     dryRun: {
