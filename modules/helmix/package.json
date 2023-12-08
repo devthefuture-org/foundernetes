@@ -1,0 +1,32 @@
+{
+  "name": "@foundernetes/helmix",
+  "version": "1.5.2",
+  "license": "MIT",
+  "description": "☸️ dropin replacement for helm in argocd that will allow to use custom `post-renderer` and `values` executables",
+  "main": "index.js",
+  "scripts": {
+    "build:sniper": "yarn workspace @foundernetes/sniper build",
+    "build:sniper:lazy": "[ -f ../sniper/dist-bin/sniper ] || yarn build:sniper",
+    "download:helm": "curl --fail -sL https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz | tar xz -C /tmp/ && mv /tmp/linux-amd64/helm bin/",
+    "download:helm:lazy": "[ -f bin/helm ] || HELM_VERSION=3.13.2 yarn download:helm",
+    "build:deps": "yarn download:helm:lazy && yarn build:sniper:lazy",
+    "build": "yarn build:clean && yarn build:deps && yarn build:ncc && yarn build:pkg",
+    "build:clean": "rm -rf ./dist",
+    "build:ncc": "cd ../../ && ncc build modules/helmix/index.js --out modules/helmix/dist --source-map --v8-cache",
+    "build:pkg": "cd ../../ && pkg -c modules/helmix/.pkg.json -o modules/helmix/dist-bin/helmix --compress=GZip modules/helmix/dist/index.js",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.36.1",
+    "pkg": "^5.8.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "yarn@4.0.2",
+  "dependencies": {
+    "@foundernetes/std": "workspace:^",
+    "fs-extra": "^11.2.0",
+    "shell-quote": "^1.8.1"
+  }
+}
