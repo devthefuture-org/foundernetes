@@ -1,16 +1,18 @@
 const os = require("os")
 const path = require("path")
 const { mkdtemp } = require("fs/promises")
-const untildify = require("@foundernetes/std/untildify")
+
 const fs = require("fs-extra")
 const parseDuration = require("parse-duration")
 
+const untildify = require("@foundernetes/std/untildify")
 const loadStructuredConfig = require("@foundernetes/std/load-structured-config")
 
 const envParserCastArray = require("@foundernetes/std/env-parsers/cast-array")
 const envParserYaml = require("@foundernetes/std/env-parsers/yaml")
-const syncDir = require("@foundernetes/std/sync-dir")
 const passwdUser = require("@foundernetes/std/linux/passwd-user")
+
+const extractBin = require("@foundernetes/std/extract-bin")
 
 module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
   const rootConfigStructure = {
@@ -123,26 +125,7 @@ module.exports = async (opts = {}, inlineConfigs = [], env = process.env) => {
     extractBinPath: {
       default: [],
       sideEffect: async (extractBinPath) => {
-        if (!Array.isArray(extractBinPath)) {
-          extractBinPath = [extractBinPath]
-        }
-        const envPath = process.env.PATH.split(path.delimiter)
-        for (let p of extractBinPath) {
-          if (typeof p === "string") {
-            p = { source: p }
-          }
-          const { source } = p
-          if (!(await fs.pathExists(source))) {
-            continue
-          }
-          let { target = "~/.foundernetes/bin" } = p
-          target = untildify(target)
-          await syncDir(source, target)
-          if (!envPath.includes(target)) {
-            envPath.push(target)
-          }
-        }
-        process.env.PATH = envPath.join(path.delimiter)
+        await extractBin(extractBinPath)
       },
     },
     logLevel: {
