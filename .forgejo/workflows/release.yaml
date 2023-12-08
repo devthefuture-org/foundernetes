@@ -1,0 +1,26 @@
+name: release
+
+on: 
+  push:
+    tags:
+      - '*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - shell: bash
+        run: |
+          # yarn workspace @foundernetes/helmix build
+          yarn workspace @foundernetes/metal-debian build
+          yarn workspace @foundernetes/machine build
+          yarn workspace @foundernetes/sniper build
+      - uses: https://gitea.com/actions/release-action@main
+        with:
+          files: |-
+            modules/**/dist-bin/*
+          api_key: '${{secrets.RELEASE_TOKEN}}'
