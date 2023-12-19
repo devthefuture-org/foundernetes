@@ -2,7 +2,7 @@
   "name": "@foundernetes/std",
   "version": "1.5.2",
   "dependencies": {
-    "@foundernetes/execa": "workspace:^",
+    "@foundernetes/execa": "*",
     "direct-logger": "^2.15.0",
     "fs-extra": "^11.1.1",
     "humanize-duration": "^3.27.3",
