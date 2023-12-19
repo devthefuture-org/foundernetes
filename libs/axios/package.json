@@ -2,7 +2,7 @@
   "name": "@foundernetes/axios",
   "version": "1.5.2",
   "dependencies": {
-    "@foundernetes/ctx": "workspace:^",
+    "@foundernetes/ctx": "*",
     "axios": "^1.4.0",
     "axios-retry": "^3.4.0"
   },

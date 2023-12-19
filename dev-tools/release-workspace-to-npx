@@ -27,7 +27,7 @@ const releaseWorkspaceToNpx = async (command = "publish") => {
   const jsonRootPkg = await fs.readFile("package.json", { encoding: "utf-8" })
   const rootPkg = JSON.parse(jsonRootPkg)
   const setVersion =
-    command === "publish" ? `^${rootPkg.version}` : "workspace:^"
+    command === "publish" ? `^${rootPkg.version}` : "*"
   const workspaceNames = Object.keys(workspaces)
   for (const dir of Object.values(workspaces)) {
     const workspacePackageFile = path.join(dir, "package.json")
