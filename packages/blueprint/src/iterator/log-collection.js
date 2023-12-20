@@ -3,6 +3,7 @@ const ctx = require("@foundernetes/ctx")
 
 const getContextLoggerOptions = require("~/log/get-context-logger-options")
 const setIndentationContext = require("~/log/set-context-indentation")
+const FoundernetesPlayCheckError = require("~/error/play-check")
 
 const collectionId = weakmapIdRegistryFactory()
 
@@ -25,6 +26,12 @@ module.exports = () => {
       getContextLoggerOptions()
     )
   )
+
+  if (collection === undefined || collection === null) {
+    throw new FoundernetesPlayCheckError(
+      `iterator collection is undefined or null: ${collectionName}`
+    )
+  }
   logger.info(
     `🔁 looping ${methodName}: ${collectionName}(${
       collection.length !== undefined ? collection.length : "*"
