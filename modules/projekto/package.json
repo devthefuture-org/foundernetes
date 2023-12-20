@@ -29,7 +29,7 @@
     "build:ncc": "cd ../../ && ncc build modules/projekto/projekto --out modules/projekto/dist --source-map --v8-cache",
     "build:pkg": "cd ../../ && pkg -c modules/projekto/.pkg.json -o modules/projekto/dist-bin/projekto --compress=GZip modules/projekto/dist/index.js",
     "lint": "eslint .",
-    "postinstall": "link-module-alias && yarn build:prepare"
+    "postinstall": "link-module-alias"
   },
   "type": "commonjs",
   "_moduleAliases": {
