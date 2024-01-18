@@ -74,6 +74,8 @@ packages:
     installer: apt
   ifenslave:
     installer: apt
+  quota:
+    installer: apt
   sshd-config:
     installer: install
     version: "0.9.1"
