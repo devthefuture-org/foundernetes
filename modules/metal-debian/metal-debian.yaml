@@ -76,6 +76,8 @@ packages:
     installer: apt
   quota:
     installer: apt
+  quotatool:
+    installer: apt
   sshd-config:
     installer: install
     version: "0.9.1"
