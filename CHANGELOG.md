@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.6.0](https://codeberg.org/devthefuture/foundernetes/compare/v1.5.2...v1.6.0) (2024-06-10)
+
+
+### Features
+
+* add quota ([456f8fe](https://codeberg.org/devthefuture/foundernetes/commit/456f8febffad3cb8099fbbb9b4f88043bf0802a4))
+* ext4 quota + refacto ([9d462ef](https://codeberg.org/devthefuture/foundernetes/commit/9d462efbe35988c8901d7d1aa999ed332b9895eb))
+* forgejo release binaries ([b43aeda](https://codeberg.org/devthefuture/foundernetes/commit/b43aedae4d6b5a1b67c3a928169733030a58452e))
+* helmix module ([fef5786](https://codeberg.org/devthefuture/foundernetes/commit/fef5786b64002af75a4766baa030735090852ced))
+
+
+### Bug Fixes
+
+* cidr ([108eb2d](https://codeberg.org/devthefuture/foundernetes/commit/108eb2dace3c4012e1e4231f11d5da4fd7074ca8))
+* cidr ([6b1036d](https://codeberg.org/devthefuture/foundernetes/commit/6b1036d7745c6deeea8d2231c14f419814bc0e1b))
+* clean ([8c39fba](https://codeberg.org/devthefuture/foundernetes/commit/8c39fbaaca6c20cc3941770617e9c1af37fe196c))
+* helmix ([8f83eec](https://codeberg.org/devthefuture/foundernetes/commit/8f83eec9f9a8c9f4d7d9ecd0c6723a98861628fd))
+* missing postinstall build execa ([75a1ba5](https://codeberg.org/devthefuture/foundernetes/commit/75a1ba57933d952d9514785920ca820a325014a0))
+* up helm version ([fb162ed](https://codeberg.org/devthefuture/foundernetes/commit/fb162ed0353f9b52758f239cff74281fd5d0995b))
+* use * instead of workspace:^ for portal use ([7d323da](https://codeberg.org/devthefuture/foundernetes/commit/7d323dac88f52649bc27ff0c2b84a270bfd26d50))
+* use * instead of workspace:^ for portal use ([12caf71](https://codeberg.org/devthefuture/foundernetes/commit/12caf71c61d4970e32f1b5d0d930a2e4beea6234))
+
 ### [1.5.2](https://codeberg.org/devthefuture/foundernetes/compare/v1.5.1...v1.5.2) (2023-12-07)
 
 
