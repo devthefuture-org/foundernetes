@@ -8,7 +8,7 @@
     "build:sniper": "yarn workspace @foundernetes/sniper build",
     "build:sniper:lazy": "[ -f ../sniper/dist-bin/sniper ] || yarn build:sniper",
     "download:helm": "curl --fail -sL https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz | tar xz -C /tmp/ && mv /tmp/linux-amd64/helm bin/",
-    "download:helm:lazy": "[ -f bin/helm ] || HELM_VERSION=3.13.2 yarn download:helm",
+    "download:helm:lazy": "[ -f bin/helm ] || HELM_VERSION=3.14.3 yarn download:helm",
     "build:deps": "yarn download:helm:lazy && yarn build:sniper:lazy",
     "build": "yarn build:clean && yarn build:deps && yarn build:ncc && yarn build:pkg",
     "build:clean": "rm -rf ./dist",
