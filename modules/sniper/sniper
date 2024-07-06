@@ -1,7 +1,6 @@
 #!/usr/bin/env -S node --no-warnings --stack-trace-limit=1000
 
 require("events").EventEmitter.defaultMaxListeners = 0
-const fs = require("fs-extra")
 
 const { cli, dbug } = require("@foundernetes/blueprint")
 const yarn = require("~/utils/yarn")
@@ -13,7 +12,20 @@ const pk = require("./package.json")
 
 dbug.registerGlobal()
 
-global.stdinReadBuffer = fs.readFile(process.stdin.fd, { encoding: "utf-8" })
+global.stdinReadBuffer = new Promise((res, rej) => {
+  const { stdin } = process
+  const chunks = []
+  stdin.on("data", (chunk) => {
+    chunks.push(Buffer.from(chunk))
+  })
+  stdin.on("end", () => {
+    const buffer = Buffer.concat(chunks)
+    res(buffer)
+  })
+  stdin.on("error", (err) => {
+    rej(err)
+  })
+})
 
 const main = async () => {
   await yarn()
