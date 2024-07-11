@@ -1,0 +1,40 @@
+{
+  "name": "@foundernetes/kubemarker",
+  "version": "1.6.0",
+  "license": "MIT",
+  "description": "🏷️ Define and apply easily a strategy on sets of kubernetes resources",
+  "dependencies": {
+    "@foundernetes/execa": "*",
+    "@foundernetes/std": "*",
+    "commander": "^12.1.0"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.38.1",
+    "postject": "^1.0.0-alpha.6"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": "./build/kubemarker",
+  "scripts": {
+    "start": "node kubemarker.js",
+    "dry": "node kubemarker.js --dry-run",
+    "build": "yarn build:ncc && yarn build:blob && yarn build:node && yarn build:postject",
+    "build:ncc": "rm -rf ./build/ncc && ncc build kubemarker.js --out build/ncc",
+    "build:blob": "node --experimental-sea-config sea-config.json",
+    "build:node": "node -e \"require('fs').copyFileSync(process.execPath, 'build/kubemarker')\"",
+    "build:postject": "npx postject build/kubemarker NODE_SEA_BLOB build/kubemarker.blob --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2",
+    "lint": "eslint .",
+    "postinstall": "yarn build"
+  },
+  "type": "commonjs",
+  "files": [
+    "kubemarker.js",
+    "sea-config.json",
+    "README.md",
+    "package.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -734,6 +734,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@foundernetes/kubemarker@workspace:modules/kubemarker":
+  version: 0.0.0-use.local
+  resolution: "@foundernetes/kubemarker@workspace:modules/kubemarker"
+  dependencies:
+    "@foundernetes/execa": "npm:*"
+    "@foundernetes/std": "npm:*"
+    "@vercel/ncc": "npm:^0.38.1"
+    commander: "npm:^12.1.0"
+    postject: "npm:^1.0.0-alpha.6"
+  bin:
+    kubemarker: ./build/kubemarker
+  languageName: unknown
+  linkType: soft
+
 "@foundernetes/linux@npm:*, @foundernetes/linux@workspace:plugins/linux":
   version: 0.0.0-use.local
   resolution: "@foundernetes/linux@workspace:plugins/linux"
@@ -1692,6 +1706,17 @@ __metadata:
   bin:
     ncc: dist/ncc/cli.js
   checksum: 8282cbe94096af36a66cf6175b8bae0afb0310d832284a1bd7bd6d4b4ff111820341a2d3aa909dbf897b06cce4af3fb473f9195e2524eea236dd4de2a86d6ca2
+  languageName: node
+  linkType: hard
+
+"@vercel/ncc@npm:^0.38.1":
+  version: 0.38.1
+  resolution: "@vercel/ncc@npm:0.38.1"
+  dependencies:
+    node-gyp: "npm:latest"
+  bin:
+    ncc: dist/ncc/cli.js
+  checksum: 2ed9dff34ba2e7c2ba7113ed075effd023549d5041d355a367f5bf749b20916f68d2adad6737f7a2d03f0d92237f948ce8dfbc9429bdf3febc18d4fa5159d9b4
   languageName: node
   linkType: hard
 
@@ -3185,6 +3210,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"commander@npm:^12.1.0":
+  version: 12.1.0
+  resolution: "commander@npm:12.1.0"
+  checksum: cdaeb672d979816853a4eed7f1310a9319e8b976172485c2a6b437ed0db0a389a44cfb222bfbde772781efa9f215bdd1b936f80d6b249485b465c6cb906e1f93
+  languageName: node
+  linkType: hard
+
 "commander@npm:^2.8.1":
   version: 2.20.3
   resolution: "commander@npm:2.20.3"
@@ -3196,6 +3228,13 @@ __metadata:
   version: 3.0.2
   resolution: "commander@npm:3.0.2"
   checksum: f42053569f5954498246783465b39139917a51284bf3361574c9f731fea27a4bd6452dbb1755cc2d923c7b47dfea67930037c7b7e862288f2c397cec9a74da87
+  languageName: node
+  linkType: hard
+
+"commander@npm:^9.4.0":
+  version: 9.5.0
+  resolution: "commander@npm:9.5.0"
+  checksum: 41c49b3d0f94a1fbeb0463c85b13f15aa15a9e0b4d5e10a49c0a1d58d4489b549d62262b052ae0aa6cfda53299bee487bfe337825df15e342114dde543f82906
   languageName: node
   linkType: hard
 
@@ -7576,6 +7615,17 @@ __metadata:
   bin:
     pkg: lib-es5/bin.js
   checksum: 917cee784f8928ecb443b11f51a618fca238af5783a42244b873d8ac455c1e2000497f888eb78be4cfe9ec9193cafe127eb00553ec80f7035d1b6dc94a3e688a
+  languageName: node
+  linkType: hard
+
+"postject@npm:^1.0.0-alpha.6":
+  version: 1.0.0-alpha.6
+  resolution: "postject@npm:1.0.0-alpha.6"
+  dependencies:
+    commander: "npm:^9.4.0"
+  bin:
+    postject: dist/cli.js
+  checksum: deda89e3cb623332f477a7d9ab75c5aebf3338cb305adb9420f37fc50930f3eb46782fe3b2ab2dc22a59da91ea1a011c7edfe2b3d2e225a9cd6b0e745c51061d
   languageName: node
   linkType: hard
 
