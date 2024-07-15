@@ -1,4 +1,5 @@
 const deepMerge = require("./deepMerge")
+const cleanupManifest = require("./cleanupManifest")
 
 module.exports = function clone(params) {
   const {
@@ -19,6 +20,8 @@ module.exports = function clone(params) {
   if (!sourceObject) {
     throw new Error(`clone error: ${sourceFullPath} not found`)
   }
+
+  cleanupManifest(sourceObject)
   const result = create(
     deepMerge(sourceObject, {
       metadata: {

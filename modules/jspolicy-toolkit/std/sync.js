@@ -1,6 +1,7 @@
 const cloneObject = require("./cloneObject")
 const deepMerge = require("./deepMerge")
 const apply = require("./apply")
+const cleanupManifest = require("./cleanupManifest")
 
 module.exports = function sync(params = {}) {
   const {
@@ -19,6 +20,7 @@ module.exports = function sync(params = {}) {
       remove(target)
     } else {
       const newObject = cloneObject(resource)
+      cleanupManifest(newObject)
       deepMerge(newObject, {
         metadata: {
           name: target.metadata.name,
