@@ -1,6 +1,6 @@
 {
   "name": "@foundernetes/helmix",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "license": "MIT",
   "description": "☸️ dropin replacement for helm in argocd that will allow to use custom `post-renderer` and `values` executables",
   "main": "index.js",

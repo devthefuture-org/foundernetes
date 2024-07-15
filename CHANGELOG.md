@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.7.0](https://codeberg.org/devthefuture/foundernetes/compare/v1.6.0...v1.7.0) (2024-07-15)
+
+
+### Features
+
+* jspolicy-toolkit ([7822ec7](https://codeberg.org/devthefuture/foundernetes/commit/7822ec7577fac2405cad67e59ac6d1b5a4ec6f19))
+* kubemarker module ([1ad227e](https://codeberg.org/devthefuture/foundernetes/commit/1ad227edd23923c760178a6b4126456176ff6c3c))
+
+
+### Bug Fixes
+
+* snipper stdinReadBuffer ([0a1a541](https://codeberg.org/devthefuture/foundernetes/commit/0a1a54112074387bd4b373ad7ab779fff3703657))
+
 ## [1.6.0](https://codeberg.org/devthefuture/foundernetes/compare/v1.5.2...v1.6.0) (2024-06-10)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "@foundernetes/kubemarker",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "license": "MIT",
   "description": "🏷️ Define and apply easily a strategy on sets of kubernetes resources",
   "dependencies": {
