@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+### [1.7.1](https://codeberg.org/devthefuture/foundernetes/compare/v1.7.0...v1.7.1) (2024-07-15)
+
+
+### Bug Fixes
+
+* jspolicy-toolkit ([234e4e9](https://codeberg.org/devthefuture/foundernetes/commit/234e4e9aea47158c3e122022dbe320d2e4e2ebcc))
+
 ## [1.7.0](https://codeberg.org/devthefuture/foundernetes/compare/v1.6.0...v1.7.0) (2024-07-15)
 
 
