@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+### [1.7.4](https://codeberg.org/devthefuture/foundernetes/compare/v1.7.3...v1.7.4) (2024-07-15)
+
+
+### Bug Fixes
+
+* typo ([b01f85b](https://codeberg.org/devthefuture/foundernetes/commit/b01f85b37c25c92a8921b516c7f20eb71eae0c42))
+
 ### [1.7.3](https://codeberg.org/devthefuture/foundernetes/compare/v1.7.2...v1.7.3) (2024-07-15)
 
 
