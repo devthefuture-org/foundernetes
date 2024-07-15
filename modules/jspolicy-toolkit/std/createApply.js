@@ -4,7 +4,7 @@ module.exports = function createApply(request) {
   return function apply(mutable) {
     if (equalManifests(request.object, mutable)) {
       // avoid infinite loop
-      return
+      return false
     }
 
     const result = update(request.object)
@@ -13,5 +13,6 @@ module.exports = function createApply(request) {
     } else {
       print("updated", result.object)
     }
+    return true
   }
 }
