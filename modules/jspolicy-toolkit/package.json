@@ -2,7 +2,7 @@
   "name": "@foundernetes/jspolicy-toolkit",
   "version": "1.7.0",
   "license": "MIT",
-  "description": "🏷️ Toolkit for jsPolicy, set of helpers and predefined policies",
+  "description": "🦸 Toolkit for jsPolicy, set of helpers and predefined policies",
   "devDependencies": {
     "@vercel/ncc": "^0.38.1",
     "lodash": "^4.5.0"
