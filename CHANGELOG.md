@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+### [1.7.3](https://codeberg.org/devthefuture/foundernetes/compare/v1.7.2...v1.7.3) (2024-07-15)
+
+
+### Bug Fixes
+
+* jspolicy apply clone sync ([9f125d5](https://codeberg.org/devthefuture/foundernetes/commit/9f125d54b243a34c2e9f062570115ecf3abda9ed))
+
 ### [1.7.2](https://codeberg.org/devthefuture/foundernetes/compare/v1.7.1...v1.7.2) (2024-07-15)
 
 
