@@ -13,7 +13,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "build": "rm -rf ./dist && ncc build index.js --out dist --source-map",
+    "build": "rm -rf ./dist && ncc build index.js --out dist",
     "lint": "eslint .",
     "prepublish": "yarn build"
   },
