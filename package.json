@@ -1,6 +1,6 @@
 {
   "name": "~foundernetes",
-  "version": "1.7.4",
+  "version": "1.7.5",
   "description": "Infra Idempotence As A Framework - Monorepo for core and plugins",
   "repository": "https://codeberg.org/devthefuture/foundernetes.git",
   "homepage": "https://devthejo.github.io/foundernetes/",

@@ -1,6 +1,6 @@
 {
   "name": "@foundernetes/async",
-  "version": "1.7.4",
+  "version": "1.7.5",
   "main": "index.js",
   "dependencies": {
     "async": "^3.2.4"

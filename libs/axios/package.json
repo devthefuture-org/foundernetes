@@ -1,6 +1,6 @@
 {
   "name": "@foundernetes/axios",
-  "version": "1.7.4",
+  "version": "1.7.5",
   "dependencies": {
     "@foundernetes/ctx": "*",
     "axios": "^1.4.0",
