@@ -23,7 +23,7 @@ module.exports = function sync(params = {}) {
         metadata: {
           name: target.metadata.name,
           namespace: target.metadata.namespace,
-          annotations: {
+          labels: {
             "sync.devthefuture.org": syncName,
           },
         },
