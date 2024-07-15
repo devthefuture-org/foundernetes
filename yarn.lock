@@ -734,6 +734,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@foundernetes/jspolicy-toolkit@workspace:modules/jspolicy-toolkit":
+  version: 0.0.0-use.local
+  resolution: "@foundernetes/jspolicy-toolkit@workspace:modules/jspolicy-toolkit"
+  dependencies:
+    "@vercel/ncc": "npm:^0.38.1"
+    lodash: "npm:^4.5.0"
+  languageName: unknown
+  linkType: soft
+
 "@foundernetes/kubemarker@workspace:modules/kubemarker":
   version: 0.0.0-use.local
   resolution: "@foundernetes/kubemarker@workspace:modules/kubemarker"
