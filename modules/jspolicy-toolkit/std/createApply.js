@@ -1,13 +1,13 @@
 const equalManifests = require("./equalManifests")
 
 module.exports = function createApply(request) {
-  return function apply(mutable) {
-    if (equalManifests(request.object, mutable)) {
+  return function apply(mutable, original = request.object) {
+    if (equalManifests(original, mutable)) {
       // avoid infinite loop
       return false
     }
 
-    const result = update(request.object)
+    const result = update(mutable)
     if (!result.ok) {
       warn(`error updating (Reason ${result.reason}): ${result.message}`)
     } else {
