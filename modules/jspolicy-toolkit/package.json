@@ -1,6 +1,6 @@
 {
   "name": "@foundernetes/jspolicy-toolkit",
-  "version": "1.7.5",
+  "version": "1.7.6",
   "license": "MIT",
   "description": "🦸 Toolkit for jsPolicy, set of helpers and predefined policies",
   "devDependencies": {

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+### [1.7.6](https://codeberg.org/devthefuture/foundernetes/compare/v1.7.5...v1.7.6) (2024-07-16)
+
+
+### Bug Fixes
+
+* jspolicy sortObjectByKeyDeep ([04125af](https://codeberg.org/devthefuture/foundernetes/commit/04125af88b65ea56d85c856760b39847537b4054))
+
 ### [1.7.5](https://codeberg.org/devthefuture/foundernetes/compare/v1.7.4...v1.7.5) (2024-07-15)
 
 

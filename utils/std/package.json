@@ -1,6 +1,6 @@
 {
   "name": "@foundernetes/std",
-  "version": "1.7.5",
+  "version": "1.7.6",
   "dependencies": {
     "@foundernetes/execa": "*",
     "direct-logger": "^2.15.0",
