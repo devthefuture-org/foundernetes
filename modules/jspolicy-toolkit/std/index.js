@@ -9,5 +9,6 @@ module.exports = {
   deepEqual: require("./deepEqual"),
   deepMerge: require("./deepMerge"),
   equalManifests: require("./equalManifests"),
+  sortObjectByKeyDeep: require("./sortObjectByKeyDeep"),
   sync: require("./sync"),
 }
