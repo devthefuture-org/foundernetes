@@ -4,6 +4,7 @@ const curlirize = require("./curlirize")
 
 const client = axios.create({
   headers: { "User-Agent": `foundernetes` },
+  family: 4,
 })
 
 axiosRetry(client, {
