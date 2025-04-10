@@ -51,14 +51,14 @@ ufw:
       # --- IPv6 NAT Rules ---
       - -A POSTROUTING -s fd42:21b1:18fb:7aba::/64 -d fd42:21b1:18fb:7aba::80 -o lxdbr0 -j MASQUERADE
       - -A POSTROUTING -s fd42:21b1:18fb:7aba::/64 -d fd42:21b1:18fb:7aba::22 -o lxdbr0 -j MASQUERADE
-      - -A PREROUTING -s fd42:21b1:18fb:7aba::/64 -d $${{ hostIPv6 }} -p tcp --dport 80 -j DNAT --to-destination fd42:21b1:18fb:7aba::80:80
-      - -A PREROUTING -s fd42:21b1:18fb:7aba::/64 -d $${{ hostIPv6 }} -p tcp --dport 443 -j DNAT --to-destination fd42:21b1:18fb:7aba::80:443
-      - -A PREROUTING -s fd42:21b1:18fb:7aba::/64 -d $${{ hostIPv6 }} -p tcp --dport 22 -j DNAT --to-destination fd42:21b1:18fb:7aba::22:22
+      - -A PREROUTING -s fd42:21b1:18fb:7aba::/64 -d $${{ hostIPv6 }} -p tcp --dport 80 -j DNAT --to-destination [fd42:21b1:18fb:7aba::80]:80
+      - -A PREROUTING -s fd42:21b1:18fb:7aba::/64 -d $${{ hostIPv6 }} -p tcp --dport 443 -j DNAT --to-destination [fd42:21b1:18fb:7aba::80]:443
+      - -A PREROUTING -s fd42:21b1:18fb:7aba::/64 -d $${{ hostIPv6 }} -p tcp --dport 22 -j DNAT --to-destination [fd42:21b1:18fb:7aba::22]:22
       - -A POSTROUTING -s fd42:21b1:18fb:7aba::80 -d fd42:21b1:18fb:7aba::/64 -j MASQUERADE
       - -A POSTROUTING -s fd42:21b1:18fb:7aba::22 -d fd42:21b1:18fb:7aba::/64 -j MASQUERADE
-      - -A PREROUTING -i bond0 -p tcp --dport 80 -j DNAT --to-destination fd42:21b1:18fb:7aba::80:80
-      - -A PREROUTING -i bond0 -p tcp --dport 443 -j DNAT --to-destination fd42:21b1:18fb:7aba::80:443
-      - -A PREROUTING -i bond0 -p tcp --dport 22 -j DNAT --to-destination fd42:21b1:18fb:7aba::22:22
+      - -A PREROUTING -i bond0 -p tcp --dport 80 -j DNAT --to-destination [fd42:21b1:18fb:7aba::80]:80
+      - -A PREROUTING -i bond0 -p tcp --dport 443 -j DNAT --to-destination [fd42:21b1:18fb:7aba::80]:443
+      - -A PREROUTING -i bond0 -p tcp --dport 22 -j DNAT --to-destination [fd42:21b1:18fb:7aba::22]:22
 
 
 
