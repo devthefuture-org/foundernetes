@@ -5,7 +5,13 @@ module.exports = async () =>
   createPlay({
     defaultTags: ["*"],
     check: async ({ name }) => {
-      return fs.pathExists(`/sys/module/${name}`)
+      if (await fs.pathExists(`/sys/module/${name}`)) {
+        return true
+      }
+      if (await fs.pathExists(`/sys/module/${name.replaceAll("-", "_")}`)) {
+        return true
+      }
+      return false
     },
     async run({ name }) {
       await $(`modprobe ${name}`, { sudo: true })
