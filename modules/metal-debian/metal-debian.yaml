@@ -1,7 +1,7 @@
 sshdConfig:
   port: 54567
 hostIP: "$${{ process.env.F10S_METALDEBIAN_HOST_IP || `10.0.0.8` }}"
-hostIPv6: "$${{ process.env.F10S_METALDEBIAN_HOST_IPV6 || `::ffff:10.0.0.8` }}"
+# hostIPv6: "$${{ process.env.F10S_METALDEBIAN_HOST_IPV6 || `::ffff:10.0.0.8` }}"
 hairpinning:
   hostIP: "$${{ hostIP }}"
 ufw:
@@ -21,15 +21,15 @@ ufw:
       - -A ufw-before-forward -d 172.21.0.80 -p tcp --dport 443 -j ACCEPT
       - -A ufw-before-forward -d 172.21.0.22 -p tcp --dport 22 -j ACCEPT
     nat: []
-  before6:
-    filter:
-      # --- IPv6 Forwarding / Filtering ---
-      # Allow forwarded packets from LXD containers (IPv6)
-      - -A ufw6-before-forward -s fd42:21b1:18fb:7aba::/64 -j ACCEPT
-      - -A ufw6-before-forward -d fd42:21b1:18fb:7aba::80 -p tcp --dport 80 -j ACCEPT
-      - -A ufw6-before-forward -d fd42:21b1:18fb:7aba::80 -p tcp --dport 443 -j ACCEPT
-      - -A ufw6-before-forward -d fd42:21b1:18fb:7aba::22 -p tcp --dport 22 -j ACCEPT
-    nat: []
+  # before6:
+  #   filter:
+  #     # --- IPv6 Forwarding / Filtering ---
+  #     # Allow forwarded packets from LXD containers (IPv6)
+  #     - -A ufw6-before-forward -s fd42:21b1:18fb:7aba::/64 -j ACCEPT
+  #     - -A ufw6-before-forward -d fd42:21b1:18fb:7aba::80 -p tcp --dport 80 -j ACCEPT
+  #     - -A ufw6-before-forward -d fd42:21b1:18fb:7aba::80 -p tcp --dport 443 -j ACCEPT
+  #     - -A ufw6-before-forward -d fd42:21b1:18fb:7aba::22 -p tcp --dport 22 -j ACCEPT
+  #   nat: []
 
   after:
     filter: []
@@ -45,20 +45,20 @@ ufw:
       - -A PREROUTING -i bond0 -p tcp --dport 80 -j DNAT --to-destination 172.21.0.80:80
       - -A PREROUTING -i bond0 -p tcp --dport 443 -j DNAT --to-destination 172.21.0.80:443
       - -A PREROUTING -i bond0 -p tcp --dport 22 -j DNAT --to-destination 172.21.0.22:22
-  after6:
-    filter: []
-    nat:
-      # --- IPv6 NAT Rules ---
-      - -A POSTROUTING -s fd42:21b1:18fb:7aba::/64 -d fd42:21b1:18fb:7aba::80 -o lxdbr0 -j MASQUERADE
-      - -A POSTROUTING -s fd42:21b1:18fb:7aba::/64 -d fd42:21b1:18fb:7aba::22 -o lxdbr0 -j MASQUERADE
-      - -A PREROUTING -s fd42:21b1:18fb:7aba::/64 -d $${{ hostIPv6 }} -p tcp --dport 80 -j DNAT --to-destination [fd42:21b1:18fb:7aba::80]:80
-      - -A PREROUTING -s fd42:21b1:18fb:7aba::/64 -d $${{ hostIPv6 }} -p tcp --dport 443 -j DNAT --to-destination [fd42:21b1:18fb:7aba::80]:443
-      - -A PREROUTING -s fd42:21b1:18fb:7aba::/64 -d $${{ hostIPv6 }} -p tcp --dport 22 -j DNAT --to-destination [fd42:21b1:18fb:7aba::22]:22
-      - -A POSTROUTING -s fd42:21b1:18fb:7aba::80 -d fd42:21b1:18fb:7aba::/64 -j MASQUERADE
-      - -A POSTROUTING -s fd42:21b1:18fb:7aba::22 -d fd42:21b1:18fb:7aba::/64 -j MASQUERADE
-      - -A PREROUTING -i bond0 -p tcp --dport 80 -j DNAT --to-destination [fd42:21b1:18fb:7aba::80]:80
-      - -A PREROUTING -i bond0 -p tcp --dport 443 -j DNAT --to-destination [fd42:21b1:18fb:7aba::80]:443
-      - -A PREROUTING -i bond0 -p tcp --dport 22 -j DNAT --to-destination [fd42:21b1:18fb:7aba::22]:22
+  # after6:
+  #   filter: []
+  #   nat:
+  #     # --- IPv6 NAT Rules ---
+  #     - -A POSTROUTING -s fd42:21b1:18fb:7aba::/64 -d fd42:21b1:18fb:7aba::80 -o lxdbr0 -j MASQUERADE
+  #     - -A POSTROUTING -s fd42:21b1:18fb:7aba::/64 -d fd42:21b1:18fb:7aba::22 -o lxdbr0 -j MASQUERADE
+  #     - -A PREROUTING -s fd42:21b1:18fb:7aba::/64 -d $${{ hostIPv6 }} -p tcp --dport 80 -j DNAT --to-destination [fd42:21b1:18fb:7aba::80]:80
+  #     - -A PREROUTING -s fd42:21b1:18fb:7aba::/64 -d $${{ hostIPv6 }} -p tcp --dport 443 -j DNAT --to-destination [fd42:21b1:18fb:7aba::80]:443
+  #     - -A PREROUTING -s fd42:21b1:18fb:7aba::/64 -d $${{ hostIPv6 }} -p tcp --dport 22 -j DNAT --to-destination [fd42:21b1:18fb:7aba::22]:22
+  #     - -A POSTROUTING -s fd42:21b1:18fb:7aba::80 -d fd42:21b1:18fb:7aba::/64 -j MASQUERADE
+  #     - -A POSTROUTING -s fd42:21b1:18fb:7aba::22 -d fd42:21b1:18fb:7aba::/64 -j MASQUERADE
+  #     - -A PREROUTING -i bond0 -p tcp --dport 80 -j DNAT --to-destination [fd42:21b1:18fb:7aba::80]:80
+  #     - -A PREROUTING -i bond0 -p tcp --dport 443 -j DNAT --to-destination [fd42:21b1:18fb:7aba::80]:443
+  #     - -A PREROUTING -i bond0 -p tcp --dport 22 -j DNAT --to-destination [fd42:21b1:18fb:7aba::22]:22
 
 
 
@@ -229,4 +229,8 @@ packages:
   duf:
     installer: apt
   tcpdump:
+    installer: apt
+  jool-dkms:
+    installer: apt
+  jool-tools:
     installer: apt
