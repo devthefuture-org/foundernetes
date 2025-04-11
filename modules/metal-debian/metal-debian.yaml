@@ -230,7 +230,7 @@ packages:
     installer: apt
   tcpdump:
     installer: apt
-  jool-dkms:
-    installer: apt
-  jool-tools:
-    installer: apt
+  # jool-dkms:
+  #   installer: apt
+  # jool-tools:
+  #   installer: apt
