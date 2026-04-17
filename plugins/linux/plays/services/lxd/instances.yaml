@@ -21,7 +21,6 @@ default:
         lxc.mount.auto=proc:rw sys:rw cgroup:rw
         lxc.seccomp.profile=
         lxc.mount.entry=/data data none rw,bind,create=dir 0 0
-        lxc.mount.entry=/storage storage none rw,bind,create=dir 0 0
         lxc.mount.entry=/var data-basic none rw,bind,create=dir 0 0
         # lxc.mount.entry=UID=xxx dev/nvme0n1p3 none bind,create=file 0 0
       # linux.kernel_modules: ip_tables,ip6_tables,netlink_diag,nf_nat,overlay,xt_conntrack
