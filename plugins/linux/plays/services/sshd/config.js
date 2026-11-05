@@ -1,7 +1,10 @@
 const ctx = require("@foundernetes/ctx")
 const { createComposer } = require("@foundernetes/blueprint")
 
-const capitalize = require("lodash/capitalize")
+// upperFirst, not capitalize: capitalize lowercases the rest of the key
+// (X11Forwarding -> X11forwarding), and sshd-config matches keys by exact
+// case, so it appended a second line that sshd ignored (first one wins)
+const upperFirst = require("lodash/upperFirst")
 
 module.exports = async ({ plays, mod }) =>
   createComposer(async (vars) => {
@@ -23,7 +26,7 @@ module.exports = async ({ plays, mod }) =>
       SyslogFacility: "AUTH",
       Port: 54567, // 49152–65535 https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers
       ...Object.entries(configSet).reduce((acc, [key, value]) => {
-        acc[capitalize(key)] = value
+        acc[upperFirst(key)] = value
         return acc
       }, {}),
     }
